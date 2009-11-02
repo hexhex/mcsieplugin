@@ -1,0 +1,70 @@
+dlvhex - script plugin (0.1.0)
+    
+    enables dlvhex to use scripts for generating atoms and
+    to rewrite whole input programs using a script before processing them
+    
+* Requirements:
+    
+    - dlvhex (version >= 1.4)
+    - (optional) dlvhex-stringplugin (just needed for the tests and examples)
+    
+* Installation:
+    
+    - ./configure
+      (use switch --enable-userinstall to install plugin into home directory)
+    - make install
+    
+* Testing:
+    
+    - make check
+    - you can also run 'make all' in dlvhex-scriptplugin-0.1.0/examples/demos/
+    
+* Usage:
+    
+    - script-atom:
+        
+        The plugin provides a single atom:
+            
+            &script[COMMAND_STRING](OUTPUT)
+            
+        COMMAND_STRING is the command to be executed
+        OUTPUT is line-wise
+        
+        The output of the atom is the set of lines that is returned from the
+        call of the command-string. The resulting atoms are all single-tuples.
+        The data-type of a tuple (number:without quotes; string:with quotes)
+        depends on the resulting line (contains only digits?).
+        
+    - script-converter:
+        
+        In order to specify a script for converting the input, the following
+        command-line flag hast to be passed to dlvhex. 
+            
+            --convert=SCRIPT
+            
+        SCRIPT is the script that converts the input file before passing it
+               back to dlvhex.
+               
+        The plugin calls your script with a file, containing the input, as the
+        first argument. This means that you have to read the content of the
+        file that you get as the first argument. After processing the
+        file-content you can pass the modified dlvhex-input back to dlvhex by
+        printing it out to STDOUT.
+        
+        
+    Notes: - you can use *.sh, *.awk, *.py, *.pl,... as scripts
+           - Every script you want to use within the script-atom or the
+             script-converter has to be exutable (permissions!).
+             (You can set the permission by using: chmod +x script.file)
+             
+           - To use a script directly, without having to specify its path,
+             you have to add its directory to the $PATH variable.
+             (you can set the path-variable with: PATH=$PATH:/dir/to/script/)
+             
+           - Use so-called shebangs to specify in the script with which
+             interpreter it is meant to be called.
+             http://en.wikipedia.org/wiki/Shebang_(Unix)
+             
+           - The output of a script, terminating with an error, will be
+             ignored.
+             

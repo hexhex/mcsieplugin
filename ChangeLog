@@ -1,0 +1,85 @@
+2009-09-23  Thomas Krennwallner  <tkren@kr.tuwien.ac.at>
+
+	* m4/boost.m4: Fix for autoconf 2.64 (see also
+	http://lists.gnu.org/archive/html/bug-autoconf/2009-08/msg00054.html).
+
+2009-08-26  Peter Schueller  <ps@kr.tuwien.ac.at>
+
+	* m4/boost.m4: Updating to version currently used in dlvhex.
+
+	* include/ScriptConverter.h: Setting tempfile location such
+	that make distcheck works, adding TODO (should use mkstemp).
+
+	* include/ScriptPlugin.h: Adding new parameter --addpath for
+	plugin which allows to extend the PATH environment variable.
+	* src/ScriptPlugin.cpp: Likewise.
+
+	* src/ScriptAtom.cpp: Adding/improving error message if script
+	execution by shell fails.
+	* src/ScriptConverter.cpp: Likewise.
+
+	* testsuite/run-dlvhex-tests.sh: Backporting python set changes
+	from dlvhex trunk. Changing test method as in dlplugin to make
+	"make distcheck" possible (especially EXAMPLES variable).
+	* testsuite/Makefile.am: Likewise.
+	* examples/tests/dlvhextests.test: Likewise, and disabled example5
+	(testcase broken by design), example6 (needs stringplugin) and
+	example8 (needs stringplugin).
+
+	* examples/Makefile.am: Removing wrong dependency.
+
+	* examples/example1/script.hex: Correcting paths to scripts, now
+	partially using and testing the new --addpath feature.
+	* examples/example2/int.hex: Likewise.
+
+2009-01-28  Thomas Krennwallner  <tkren@kr.tuwien.ac.at>
+
+	* src/ScriptAtom.cpp: g++ 4.3 introduced some backwards
+	incompatibility <http://gcc.gnu.org/gcc-4.3/porting_to.html> for
+	C-functions: #include cstring and climits.
+	* src/ScriptConverter.cpp: Likewise.
+
+2008-02-20  Thomas Krennwallner  <tkren@kr.tuwien.ac.at>
+
+	* configure.ac: Require autoconf >= 2.61.
+
+	* Makefile.am: Require automake >= 1.10.
+
+2008-02-12  Thomas Krennwallner  <tkren@kr.tuwien.ac.at>
+
+	* Makefile.am (AUTOMAKE_OPTIONS): Set to gnu.
+	* include/Makefile.am: Likewise.
+
+	* configure.ac: Integrate new boost searching macros.
+	* src/Makefile.am: Likewise.
+
+	* m4/boost.m4: Use boost.m4 from http://repo.or.cz/w/boost.m4.git.
+
+2008-01-27  Thomas Krennwallner  <tkren@kr.tuwien.ac.at>
+
+	* testsuite/run-dlvhex-tests.sh: Fix script.
+
+	* testsuite/Makefile.am: Setup environment for run-dlvhex-tests.sh.
+
+	* src/ScriptPlugin.cpp: Set plugin name to PACKAGE_TARNAME.
+
+	* examples/tests/dlvhextests.test: Fix testcase invocation.
+
+2008-01-10  Thomas Krennwallner  <tkren@kr.tuwien.ac.at>
+
+	* include/ScriptAtom.h: Adapt to new dlvhex plugin API.
+	* include/ScriptPlugin.h: Likewise.
+	* include/ScriptConverter.h: Likewise.
+	* src/ScriptPlugin.cpp: Likewise.
+	* src/ScriptConverter.cpp: Likewise.
+	* src/ScriptAtom.cpp: Likewise.
+
+	* configure.ac: Bump version to 0.2.0.
+	Check for boost.
+
+	* bootstrap.sh: Use autoreconf.
+
+	* m4/boost.m4: New file.
+	* NEWS: Likewise.
+	* AUTHORS: Likewise.
+
