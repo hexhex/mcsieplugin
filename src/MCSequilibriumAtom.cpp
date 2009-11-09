@@ -9,13 +9,15 @@
 #include <cstring>
 #include <sstream>
 #include <cstdlib>
+#include <iostream>
 
 namespace dlvhex {
   namespace mcsequilibrium {
 
 MCSequilibriumAtom::MCSequilibriumAtom() {
     addInputConstant();
-    setOutputArity(0);
+	addInputConstant();
+    setOutputArity(1);
 }
 
 
@@ -23,9 +25,13 @@ void
 MCSequilibriumAtom::retrieve(const Query& query, Answer& answer) throw (PluginError) {
 
     std::string in = query.getInputTuple()[0].getUnquotedString();
+	std::string in2 = query.getInputTuple()[1].getUnquotedString();
     Tuple out;
-    //out.push_back(Term(in,1));
-    answer.addTuple(out);
+    std::string t("e");
+    out.push_back(Term(in2, false));
+	if (in == "acc") {
+		answer.addTuple(out);
+	}
 }
 
   } // namespace script

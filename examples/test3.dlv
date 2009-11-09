@@ -1,0 +1,13 @@
+b(a,1) :- a(bcd,2), a(e,3), not a(b,1).
+a(bcd,2) :- not -a(bcd,2).
+-a(bcd,2) :- not a(bcd,2).
+a(e,3) :- not -a(e,3).
+-a(e,3) :- not a(e,3).
+a(b,1) :- not -a(b,1).
+-a(b,1) :- not a(b,1).
+:- not a(X,2), &mcsequi[acc,bcd](X).
+:- a(X,2), not &mcsequi[acc,bcd](X).
+:- not a(X,3), &mcsequi[acc,e](X).
+:- a(X,3), not &mcsequi[acc,e](X).
+:- not a(X,1), &mcsequi[no,b](X).
+:- a(X,1), not &mcsequi[no,b](X).

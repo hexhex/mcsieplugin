@@ -32,7 +32,7 @@ namespace dlvhex {
 		}
 
 		//o << i;
-		o << "a :- b." << std::endl << "b." << std::endl << "c.";	
+		o << "true.";// << std::endl << "b." << std::endl << "c.";	
 	}
 
   } // namespace script
