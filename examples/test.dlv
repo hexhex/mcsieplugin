@@ -1,10 +1,7 @@
-b(a,1) :- a(bcd,2), a(e,3), not a(b,1).
-a(bcd,2) :- not -a(bcd,2).
--a(bcd,2) :- not a(bcd,2).
-a(e,3) :- not -a(e,3).
--a(e,3) :- not a(e,3).
-a(b,1) :- not -a(b,1).
--a(b,1) :- not a(b,1).
-:- not b(a,1).
-a(bcd,2) :- &mcsequi[const]().
-a(e,3) :- &mcsequi[const]().
+a(bcd) v na(bcd).
+a(e) v na(e).
+a(b) v na(b).
+o(X) :- a(X).
+o(X) :- na(X).
+b(a) :- a(bcd), a(e), na(b).
+:- not &mcsequi[a,b,o,"acc"]().

@@ -1,2 +1,2 @@
 #!/bin/sh
-autoreconf -i -W all
+autoreconf -f -i -W all

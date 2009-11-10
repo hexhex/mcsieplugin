@@ -1,6 +1,0 @@
-b(a,1) :- a(bcd,2), a(e,3), not a(b,1).
-
-a(b,1) :- not -a(b,1), &mcsequi[notacc]().
-a(bcd,2) :- not -a(bcd,2), &mcsequi[acc]().
-a(e,3) :- not -a(e,3), &mcsequi[acc]().
--a(bcd,2) :- not a(bcd,2), not &mcsequi[notacc]().
