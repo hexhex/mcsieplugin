@@ -58,6 +58,9 @@ namespace dlvhex {
      for (std::vector<MCSequilibriumBridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
        MCSequilibriumBridgeRuleEntry elem = *it;
        o << "a" << elem << " v na" << elem << "." << std::endl;
+     }
+     for (std::vector<MCSequilibriumBridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
+       MCSequilibriumBridgeRuleEntry elem = *it;
        o << "o" << elem.ContextID() << "(X) :- a" << elem.ContextID() << "(X)." << std::endl;
        o << "o" << elem.ContextID() << "(X) :- na" << elem.ContextID() << "(X)." << std::endl;
      }
