@@ -4,7 +4,9 @@ plugin_LTLIBRARIES = libdlvhexmcsequilibrium.la
 
 libdlvhexmcsequilibrium_la_SOURCES = MCSequilibriumPlugin.cpp \
                              MCSequilibriumAtom.cpp \
-                             MCSequilibriumConverter.cpp
+                             MCSequilibriumConverter.cpp \
+                             MCSequilibriumBridgeRule.cpp \
+                             MCSequilibriumBridgeRuleEntry.cpp
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \

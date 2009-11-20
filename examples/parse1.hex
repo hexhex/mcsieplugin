@@ -1,0 +1,5 @@
+(1:abc) :- (3:az), (2:ax), not (1:b).
+(1:a) :- (3:az), not (2:b).
+#context(1,1111111111_acc,"context1.dlv").
+#context(2,22222222222_acc,"22222221.txt").
+#context(3,333333333333_acc,"33333331.dlv").
