@@ -4,6 +4,7 @@
 #include <dlvhex/PluginInterface.h>
 #include <MCSequilibriumParserDriver.h>
 #include <MCSequilibriumBridgeRule.h>
+#include <MCSequilibriumContext.h>
 
 #include <vector>
 
@@ -23,10 +24,11 @@ namespace dlvhex {
     			virtual void convert(std::istream& i, std::ostream& o);
 		private:
 			std::vector<MCSequilibriumBridgeRule> bridgerules;
+			std::vector<MCSequilibriumContext> context;
 			void convertParseTreeToDLVProgram(node_t& node, std::ostream& o);
 			void convertBridgeRule(node_t& at, MCSequilibriumBridgeRule& brule);
-
 			void convertBridgeRuleElem(node_t& at, int& id, std::string& fact);
+			void convertContext(node_t& at, MCSequilibriumContext& context);
 
 	}; // END class MCSequilibriumConverter
 	}  // END namespace mcsequilibrium

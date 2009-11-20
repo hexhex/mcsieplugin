@@ -17,11 +17,16 @@ namespace dlvhex {
   namespace mcsequilibrium {
 
    MCSequilibriumBridgeRuleEntry::MCSequilibriumBridgeRuleEntry(int id, std::string f, bool n)
-     : contextid(id), fact(f), neg(n) {
+    : contextid(id), fact(f), neg(n) {
+
+	/*contextid = 99;
+	fact = "aaaaa";
+        neg = true;*/
    }//BridgeRuleEntry End
 
    MCSequilibriumBridgeRuleEntry::MCSequilibriumBridgeRuleEntry()
      : contextid(0), fact(""), neg(false) {
+      contextid=3333;
    }//BridgeRuleEntry End
 
    std::ostream&

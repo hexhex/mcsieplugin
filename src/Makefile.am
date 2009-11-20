@@ -6,7 +6,8 @@ libdlvhexmcsequilibrium_la_SOURCES = MCSequilibriumPlugin.cpp \
                              MCSequilibriumAtom.cpp \
                              MCSequilibriumConverter.cpp \
                              MCSequilibriumBridgeRule.cpp \
-                             MCSequilibriumBridgeRuleEntry.cpp
+                             MCSequilibriumBridgeRuleEntry.cpp \
+                             MCSequilibriumContext.cpp
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \

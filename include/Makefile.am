@@ -5,4 +5,5 @@ noinst_HEADERS = MCSequilibriumPlugin.h \
                  MCSequilibriumConverter.h \
 		 MCSequilibriumParserDriver.h \
 		 MCSequilibriumBridgeRule.h \
-		 MCSequilibriumBridgeRuleEntry.h
+		 MCSequilibriumBridgeRuleEntry.h \
+		 MCSequilibriumContext.h

@@ -1,4 +1,4 @@
-dlvhex - script plugin (0.1.0)
+dlvhex - mcsequilibrium plugin (0.0.1)
     
     enables dlvhex to use scripts for generating atoms and
     to rewrite whole input programs using a script before processing them
