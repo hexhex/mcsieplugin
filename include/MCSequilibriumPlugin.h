@@ -27,11 +27,11 @@
  *
  */
 
-#ifndef _DLVHEX_MCSEQUILIBRIUMPLUGIN_H
-#define _DLVHEX_MCSEQUILIBRIUMPLUGIN_H
+#ifndef _DLVHEX_MCSEQUILIBRIUM_MCSEQUILIBRIUMPLUGIN_H
+#define _DLVHEX_MCSEQUILIBRIUM_MCSEQUILIBRIUMPLUGIN_H
 
 #include <dlvhex/PluginInterface.h>
-#include <MCSequilibriumConverter.h>
+#include <Converter.h>
 #include <MCSequilibriumAtom.h>
 
 namespace dlvhex {
@@ -42,7 +42,7 @@ namespace dlvhex {
 			/**
 			 *
 			 */
-			dlvhex::mcsequilibrium::MCSequilibriumConverter* mcseconverter;
+			Converter* mcseconverter;
 			
 			/**
 			 *

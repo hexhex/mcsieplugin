@@ -21,7 +21,7 @@ namespace dlvhex {
   namespace mcsequilibrium {
 
 MCSequilibriumPlugin::MCSequilibriumPlugin()
-    : activatePlugin(1), mcseconverter(new MCSequilibriumConverter()) {
+    : activatePlugin(1), mcseconverter(new Converter()) {
 }
 
 

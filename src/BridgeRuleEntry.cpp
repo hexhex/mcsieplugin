@@ -2,7 +2,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#include "MCSequilibriumBridgeRuleEntry.h"
+#include "BridgeRuleEntry.h"
 
 #include <climits>
 #include <sstream>
@@ -16,7 +16,7 @@
 namespace dlvhex {
   namespace mcsequilibrium {
 
-   MCSequilibriumBridgeRuleEntry::MCSequilibriumBridgeRuleEntry(int id, std::string f, bool n)
+   BridgeRuleEntry::BridgeRuleEntry(int id, std::string f, bool n)
     : contextid(id), fact(f), neg(n) {
 
 	/*contextid = 99;
@@ -24,13 +24,13 @@ namespace dlvhex {
         neg = true;*/
    }//BridgeRuleEntry End
 
-   MCSequilibriumBridgeRuleEntry::MCSequilibriumBridgeRuleEntry()
+   BridgeRuleEntry::BridgeRuleEntry()
      : contextid(0), fact(""), neg(false) {
       contextid=3333;
    }//BridgeRuleEntry End
 
    std::ostream&
-   operator<< (std::ostream& out, const MCSequilibriumBridgeRuleEntry& ruleentry) {
+   operator<< (std::ostream& out, const BridgeRuleEntry& ruleentry) {
      out << ruleentry.ContextID() << "(" << ruleentry.Fact() << ")";
      return out;
    }

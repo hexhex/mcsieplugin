@@ -2,9 +2,9 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#include "MCSequilibriumConverter.h"
+#include "Converter.h"
 #include "SpiritDebugging.h"
-#include "MCSequilibriumBridgeRuleEntry.h"
+#include "BridgeRuleEntry.h"
 
 #include <climits>
 #include <sstream>
@@ -18,12 +18,12 @@
 namespace dlvhex {
   namespace mcsequilibrium {
 
-   MCSequilibriumConverter::MCSequilibriumConverter() {
+   Converter::Converter() {
      // init
    }
 
    void
-   MCSequilibriumConverter::convertBridgeRuleElem(node_t& at, int& id, std::string& fact) {
+   Converter::convertBridgeRuleElem(node_t& at, int& id, std::string& fact) {
         node_t* n = &at;
 	node_t::tree_iterator it = at.children.begin();
 	node_t& bat = *it;
@@ -36,7 +36,7 @@ namespace dlvhex {
    } // end convertBridgeRuleElem
 
    void
-   MCSequilibriumConverter::convertBridgeRule(node_t& at, MCSequilibriumBridgeRule& brule) {
+   Converter::convertBridgeRule(node_t& at, BridgeRule& brule) {
      int id;
      std::string f;
      for (node_t::tree_iterator ait = at.children.begin(); ait != at.children.end(); ++ait) {
@@ -71,7 +71,7 @@ namespace dlvhex {
    }// End MCSequilibriumConverter::convertBridgeRule()
 
    void
-   MCSequilibriumConverter::convertContext(node_t& at, MCSequilibriumContext& context) {
+   Converter::convertContext(node_t& at, Context& context) {
      int id;
      std::string extatom;
      std::string param;
@@ -89,12 +89,12 @@ namespace dlvhex {
      bat = *it;
      assert(bat.value.id() == MCSdescriptionGrammar::Param);
      param = std::string(bat.value.begin(), bat.value.end());
-     context = MCSequilibriumContext(id,extatom,param);
+     context = Context(id,extatom,param);
      //std::cout << context;
    }// END MCSequilibriumConverter::convertContext
 
    void
-   MCSequilibriumConverter::convertParseTreeToDLVProgram(node_t& node, std::ostream& o) {
+   Converter::convertParseTreeToDLVProgram(node_t& node, std::ostream& o) {
      assert(node.value.id() == MCSdescriptionGrammar::Root);
      bridgerules.clear();
      context.clear();
@@ -108,31 +108,31 @@ namespace dlvhex {
        if (at.value.id() == MCSdescriptionGrammar::BridgeRule) {
          //printSpiritPT(std::cout, at, "BridgeRule");
          //create new Bridgerule elem and fill the vector with elements
-	 MCSequilibriumBridgeRule bridgeRule = MCSequilibriumBridgeRule();
+	 BridgeRule bridgeRule = BridgeRule();
          convertBridgeRule(at,bridgeRule);
 	 //bridgeRule.writeProgram(std::cout);
          bridgerules.push_back(bridgeRule);
        } //end if-rule Bridgerule
        if (at.value.id() == MCSdescriptionGrammar::Context) {
-         MCSequilibriumContext c = MCSequilibriumContext();
+         Context c = Context();
          convertContext(at,c);
          context.push_back(c);
 	 //printSpiritPT(std::cout, at, "Context");
        } //end if-rule Context		
      } // end for-loop over all children of root
      //std::cout << "Number of BridgeRules: " << bridgerules.size() << "\n";
-     for (std::vector<MCSequilibriumBridgeRule>::iterator it = bridgerules.begin(); it != bridgerules.end(); ++it) {
-	MCSequilibriumBridgeRule elem = *it;
+     for (std::vector<BridgeRule>::iterator it = bridgerules.begin(); it != bridgerules.end(); ++it) {
+	BridgeRule elem = *it;
 	elem.writeProgram(o);
      }//end for-loop print bridgerules
-     for (std::vector<MCSequilibriumContext>::iterator it = context.begin(); it != context.end(); ++it) {
-	MCSequilibriumContext elem = *it;
+     for (std::vector<Context>::iterator it = context.begin(); it != context.end(); ++it) {
+	Context elem = *it;
 	o << elem;
      }//end for-loop print context
    } // end convertParseTreeToDLVProgram
 
    void
-   MCSequilibriumConverter::convert(std::istream& i, std::ostream& o) {
+   Converter::convert(std::istream& i, std::ostream& o) {
      MCSdescriptionGrammar mcsdgram;
      std::ostringstream buf;
      buf << i.rdbuf();
@@ -169,9 +169,9 @@ namespace dlvhex {
      //o << i;
 
      // Convert the Parse Tree to a asp program
-     std::cout << "Converted DLV Program: " << std::endl;
-     convertParseTreeToDLVProgram(*info.trees.begin(), std::cout);
-     o << "true.";// << std::endl << "b." << std::endl << "c.";	
+     //std::cout << "Converted DLV Program: " << std::endl;
+     convertParseTreeToDLVProgram(*info.trees.begin(), o);//std::cout);
+     //o << "true.";// << std::endl << "b." << std::endl << "c.";	
    } // end of MCSequilibriumConverter::convert
 
   } // namespace script

@@ -1,5 +1,5 @@
-#ifndef _DLVHEX_MCSEQUILIBRIUMBRIDGERULEENTRY_H_
-#define _DLVHEX_MCSEQUILIBRIUMBRIDGERULEENTRY_H_
+#ifndef _DLVHEX_MCSEQUILIBRIUM_BRIDGERULEENTRY_H_
+#define _DLVHEX_MCSEQUILIBRIUM_BRIDGERULEENTRY_H_
 
 #include <vector>
 #include <string>
@@ -7,15 +7,15 @@
 namespace dlvhex {
   namespace mcsequilibrium {
 
-      class MCSequilibriumBridgeRuleEntry {
+      class BridgeRuleEntry {
         private:
           int contextid;
           std::string fact;
           bool neg;
 
         public:
-          MCSequilibriumBridgeRuleEntry(int id, std::string f, bool n=false);
-          MCSequilibriumBridgeRuleEntry();
+          BridgeRuleEntry(int id, std::string f, bool n=false);
+          BridgeRuleEntry();
 
           int ContextID() const { return contextid; }
           std::string Fact() const { return fact; }
@@ -24,8 +24,8 @@ namespace dlvhex {
       }; // END class BridgeRuleEntry
 
         std::ostream&
-        operator<< (std::ostream&, const MCSequilibriumBridgeRuleEntry&);
+        operator<< (std::ostream&, const BridgeRuleEntry&);
 
   }  // END namespace mcsequilibrium
 } // END namespace dlvhex
-#endif // _DLVHEX_MCSEQUILIBRIUMBRIDGERULE_H
+#endif // _DLVHEX_MCSEQUILIBRIUM_BRIDGERULEENTRY_H

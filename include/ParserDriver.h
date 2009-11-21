@@ -1,5 +1,5 @@
-#ifndef _DLVHEX_MCSEQUILIBRIUMPARSERDRIVER_H
-#define _DLVHEX_MCSEQUILIBRIUMPARSERDRIVER_H
+#ifndef _DLVHEX_MCSEQUILIBRIUM_PARSERDRIVER_H
+#define _DLVHEX_MCSEQUILIBRIUM_PARSERDRIVER_H
 
 #include <boost/spirit/core.hpp>
 #include <boost/spirit/utility/chset.hpp>
@@ -103,7 +103,7 @@ MCSdescriptionGrammar::definition<ScannerT>::definition(MCSdescriptionGrammar co
 } // END namespace mcsequilibriumparserdriver
 } // END namespace dlvhex
 
-#endif // _DLVHEX_MCSEQUILIBRIUMPARSERDRIVER_H
+#endif // _DLVHEX_MCSEQUILIBRIUM_PARSERDRIVER_H
 
 
 

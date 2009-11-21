@@ -2,7 +2,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#include "MCSequilibriumBridgeRule.h"
+#include "BridgeRule.h"
 
 #include <climits>
 #include <sstream>
@@ -12,41 +12,44 @@
 #include <string>
 #include <ostream>
 #include <vector>
+#include <list>
 
 
 namespace dlvhex {
   namespace mcsequilibrium {
 
-  MCSequilibriumBridgeRule::MCSequilibriumBridgeRule() {
+  BridgeRule::BridgeRule() {
      // init
    }
 
    void
-   MCSequilibriumBridgeRule::setHeadRule(int id, std::string f) {
-     head = MCSequilibriumBridgeRuleEntry(id,f);
-   } // end of MCSequilibriumBridgeRule::setHeadRule
+   BridgeRule::setHeadRule(int id, std::string f) {
+     head = BridgeRuleEntry(id,f);
+   } // end of BridgeRule::setHeadRule
 
    void
-   MCSequilibriumBridgeRule::addBodyRule(int id, std::string f, bool n){
+   BridgeRule::addBodyRule(int id, std::string f, bool n){
 	//std::cout << "add entry in vector: id: " << id << " fact: " << f << " neg: " << n << std::endl;
-     MCSequilibriumBridgeRuleEntry elem = MCSequilibriumBridgeRuleEntry(id,f,n);
+     BridgeRuleEntry elem = BridgeRuleEntry(id,f,n);
 	//std::cout << "elem entry: " << elem.ContextID() << " fact: " << elem.Fact() << " neg: " << elem.Neg() << std::endl;
      body.push_back(elem);
 
 /*     std::cout << "After inserting one element there are these elements in list: " << std::endl;
-     for (std::vector<MCSequilibriumBridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
-       MCSequilibriumBridgeRuleEntry elem = *it;
+     for (std::vector<BridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
+       BridgeRuleEntry elem = *it;
 	std::cout << "elem entry: " << elem.ContextID() << " fact: " << elem.Fact() << " neg: " << elem.Neg() << std::endl;
      }
 */
-   } // end of MCSequilibriumBridgeRule::addBodyRule
+   } // end of BridgeRule::addBodyRule
 
    void 
-   MCSequilibriumBridgeRule::writeProgram(std::ostream& o) {
+   BridgeRule::writeProgram(std::ostream& o) {
      // write bridgerule in asp form
+     std::list<int> ilist;
+
      o << "b" << head << " :- ";
-     for (std::vector<MCSequilibriumBridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
-       MCSequilibriumBridgeRuleEntry elem = *it;
+     for (std::vector<BridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
+       BridgeRuleEntry elem = *it;
        if (elem.Neg())
          o << "n";
        o << "a" << elem;
@@ -55,30 +58,37 @@ namespace dlvhex {
        else
          o << "." << std::endl;
      }
-     for (std::vector<MCSequilibriumBridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
-       MCSequilibriumBridgeRuleEntry elem = *it;
+     for (std::vector<BridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
+       BridgeRuleEntry elem = *it;
        o << "a" << elem << " v na" << elem << "." << std::endl;
+       ilist.push_back(elem.ContextID());
      }
-     for (std::vector<MCSequilibriumBridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
-       MCSequilibriumBridgeRuleEntry elem = *it;
+     ilist.unique();
+     ilist.sort();
+     for (std::list<int>::iterator it = ilist.begin(); it != ilist.end(); ++it) {
+       o << "o" << *it << "(X) :- a" << *it << "(X)." << std::endl;
+       o << "o" << *it << "(X) :- na" << *it << "(X)." << std::endl;
+     }
+     /*for (std::vector<BridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
+       BridgeRuleEntry elem = *it;
        o << "o" << elem.ContextID() << "(X) :- a" << elem.ContextID() << "(X)." << std::endl;
        o << "o" << elem.ContextID() << "(X) :- na" << elem.ContextID() << "(X)." << std::endl;
-     }
+     }*/
    }
 
    void 
-   MCSequilibriumBridgeRule::writeDebugProgram() {
-     std::cout << "MCSequilibriumBridgeRule DEBUG\n";
+   BridgeRule::writeDebugProgram() {
+     std::cout << "BridgeRule DEBUG\n";
      std::cout << "there are " << body.size() << " elements in the body. \n";
      writeProgram(std::cout);
    }
 
    std::ostream&
-   operator<< (std::ostream& out, const MCSequilibriumBridgeRule& rule) {
+   operator<< (std::ostream& out, const BridgeRule& rule) {
      // write bridgerule in asp form
     out << "b" << rule.Head() << " :- ";
-     for (std::vector<MCSequilibriumBridgeRuleEntry>::iterator it = rule.Body().begin(); it != rule.Body().end(); ++it) {
-       MCSequilibriumBridgeRuleEntry elem = *it;
+     for (std::vector<BridgeRuleEntry>::iterator it = rule.Body().begin(); it != rule.Body().end(); ++it) {
+       BridgeRuleEntry elem = *it;
        if (elem.Neg())
          out << "n";
        out << "a" << elem;
