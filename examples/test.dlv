@@ -1,7 +1,7 @@
-a(bcd) v na(bcd).
-a(e) v na(e).
-a(b) v na(b).
-o(X) :- a(X).
-o(X) :- na(X).
-b(a) :- a(bcd), a(e), na(b).
-:- not &mcsequi[a,b,o,"acc"]().
+a1(bcd).
+a1(e).
+na1(b).
+o1(X) :- a1(X).
+o1(X) :- na1(X).
+b1(a) :- a1(bcd), a1(e), na1(b).
+:- not &dlv_asp_context_acc[1,a1,b1,o1,"acc"]().

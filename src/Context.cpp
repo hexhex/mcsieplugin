@@ -26,8 +26,11 @@ namespace dlvhex {
 
    std::ostream&
    operator<< (std::ostream& out, const Context& context) {
-     out << ":- not &" << context.ExtAtom() << "[a" << context.ContextNum()
-       << ",b" << context.ContextNum() << ",o" << context.ContextNum()
+     out << ":- not &" << context.ExtAtom() 
+       << "[" << context.ContextNum()
+       << ",a" << context.ContextNum()
+       << ",b" << context.ContextNum() 
+       << ",o" << context.ContextNum()
        << ",\"" << context.Param() << "\"]()." << std::endl;
      return out;
    }

@@ -68,6 +68,8 @@ namespace dlvhex {
 			 */
 			~MCSequilibriumPlugin();
 			
+			virtual void setupProgramCtx(ProgramCtx& pc);
+
 			/**
 			 *
 			 */

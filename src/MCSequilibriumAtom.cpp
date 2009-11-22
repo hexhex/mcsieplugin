@@ -16,6 +16,7 @@ namespace dlvhex {
   namespace mcsequilibrium {
 
 MCSequilibriumAtom::MCSequilibriumAtom() {
+	addInputConstant();
 	addInputPredicate();
 	addInputPredicate();
 	addInputPredicate();
@@ -26,49 +27,46 @@ MCSequilibriumAtom::MCSequilibriumAtom() {
 
 void
 MCSequilibriumAtom::retrieve(const Query& query, Answer& answer) throw (PluginError) {
-	int ai = 0,bi=0,oi=0;
-	std::string in = query.getInputTuple()[3].getUnquotedString();
-	std::cout << "Constant: " << in << "\n";
+	std::set<std::string> oset,aset,bset;
+
+	int cid = query.getInputTuple()[0].getInt();
+	std::cout << "Context ID: " << cid << "\n";
+
+	std::stringstream ass, bss, oss;
+	ass << "a" << cid;
+	std::string ai_match(ass.str());
+	bss << "b" << cid;
+	std::string bi_match(bss.str());
+	oss << "o" << cid;
+	std::string oi_match(oss.str());
+
+	std::string param = query.getInputTuple()[4].getUnquotedString();
+	std::cout << "Param: " << param << "\n";
+
 	AtomSet input = query.getInterpretation();
 
 	AtomSet a;
-	input.matchPredicate("a",a);
+	input.matchPredicate(ai_match,a);
 	AtomSet b;
-	input.matchPredicate("b",b);
+	input.matchPredicate(bi_match,b);
 	AtomSet o;
-	input.matchPredicate("o",o);
+	input.matchPredicate(oi_match,o);
 
-	AtomSet::const_iterator a_cur = a.begin();
-	AtomSet::const_iterator a_last = a.end();
-	AtomSet::const_iterator b_cur = b.begin();
-	AtomSet::const_iterator b_last = b.end();
-	AtomSet::const_iterator o_cur = o.begin();
-	AtomSet::const_iterator o_last = o.end();
-
-	while (a_cur != a_last) {
-		ai++;
-		a_cur++;
+	for (AtomSet::const_iterator oi = o.begin(); oi != o.end(); ++oi) {
+	  std::cout << (*oi).getArguments() << std::endl;
+	  //oset.push_back((*oi).getArguments());
 	}
-	while (b_cur != b_last) {
-		bi++;
-		b_cur++;
-	}
-	while (o_cur != o_last) {
-		oi++;
-		o_cur++;
-	}
-
 
     
     Tuple out;
     std::string t("e");
     //out.push_back(Term(in2, false));
-	if (in == "acc") {
+	if (param == "acc") {
 		answer.addTuple(out);
 	}
-	std::cout << "a_count: " << ai << "\n";
-	std::cout << "b_count: " << bi << "\n";
-	std::cout << "o_count: " << oi << "\n";
+	std::cout << "a_count: " << a.size() << "\n";
+	std::cout << "b_count: " << b.size() << "\n";
+	std::cout << "o_count: " << o.size() << "\n";
 }
 
   } // namespace script

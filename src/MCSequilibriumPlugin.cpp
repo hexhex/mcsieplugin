@@ -13,15 +13,18 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "MCSequilibriumPlugin.h"
+#include "GenericContextAtom.h"
 
 #include <cstdlib>
+
+#include <iostream>
 
 
 namespace dlvhex {
   namespace mcsequilibrium {
 
 MCSequilibriumPlugin::MCSequilibriumPlugin()
-    : activatePlugin(1), mcseconverter(new Converter()) {
+    : activatePlugin(0), mcseconverter(new Converter()) {
 }
 
 
@@ -32,8 +35,17 @@ MCSequilibriumPlugin::~MCSequilibriumPlugin() {
 
 void
 MCSequilibriumPlugin::getAtoms(AtomFunctionMap& a) {
-  boost::shared_ptr<PluginAtom> mcsequi(new MCSequilibriumAtom);
-  a["mcsequi"] = mcsequi;
+  //boost::shared_ptr<PluginAtom> mcsequi(new MCSequilibriumAtom);
+  boost::shared_ptr<PluginAtom> mcsequi(new GenericContextAtom(""));
+
+  //boost::shared_ptr<PluginAtom> mcsequi((GenericContext)new DLV_ASP_Context);
+  a["dlv_asp_context_acc"] = mcsequi;
+}
+
+void
+MCSequilibriumPlugin::setupProgramCtx(dlvhex::ProgramCtx& pc) {
+	std::cout << "Seting up ProgrammContext!!!!!!!!!" << std::endl;
+	//std::vector<dlvhex::PluginInterface*> retv = pc.getPlugins();
 }
 
 

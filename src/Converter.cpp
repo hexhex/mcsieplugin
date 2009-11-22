@@ -140,33 +140,16 @@ namespace dlvhex {
 
      iterator_t it_begin = input.c_str();
      iterator_t it_end = input.c_str() + input.size();
-     /*boost::spirit::tree_parse_info<> info = 
-       boost::spirit::pt_parse(inputcontent.str().c_str(), 
-       inputcontent.str().c_str()+inputcontent.str().size(), 
-       mcsdgram, boost::spirit::space_p);
-*/
-     //parse_info<> info = parse(inputcontent.str().c_str(), mcsdgram, space_p);
+
      tree_parse_info<iterator_t, factory_t> info = 
        ast_parse<factory_t>(it_begin, it_end, mcsdgram, space_p);
-     // pt_parse<factory_t>(inputcontent.str().c_str(), inputcontent.str().c_str()+inputcontent.str().size(), mcsdgram, space_p);
-
-    /* std::cout << "match: ";
-     if (info.match) std::cout << "true\n";
-     else std::cout << "false\n";
-     std::cout << "full: ";
-     if (info.full) std::cout << "true\n";
-     else std::cout << "false\n"; */
 
      if (!info.full) {
        throw PluginError("MCS Equilibrium Plugin: Inputfile syntax error!");
      }
 
-     //printSpiritPT(std::cout, *info.trees.begin(), "");
-     //std::cout << "Treesize: " << info.trees.size() << "\n";
-
      // if there's not 1 tree in the result of the parser, this is a bug
      assert(info.trees.size() == 1);
-     //o << i;
 
      // Convert the Parse Tree to a asp program
      //std::cout << "Converted DLV Program: " << std::endl;
