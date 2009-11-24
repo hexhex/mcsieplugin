@@ -7,4 +7,5 @@ noinst_HEADERS = MCSequilibriumPlugin.h \
 		 BridgeRule.h \
 		 BridgeRuleEntry.h \
 		 Context.h \
-		 GenericContextAtom.h
+		 GenericContextAtom.h \
+		 DLV_ASP_Context.h

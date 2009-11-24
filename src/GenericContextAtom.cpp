@@ -15,7 +15,7 @@
 namespace dlvhex {
   namespace mcsequilibrium {
 
-GenericContextAtom::GenericContextAtom(std::string hex_atom) {
+GenericContextAtom::GenericContextAtom(std::string name) : hex_atom_name(name+"_context_acc") {
 	addInputConstant();
 	addInputPredicate();
 	addInputPredicate();
@@ -23,28 +23,25 @@ GenericContextAtom::GenericContextAtom(std::string hex_atom) {
 	addInputConstant();
 	setOutputArity(0);
 }
-
+/*
 bool
 issmaller(string a, string b) {
   if (a.compare(b) <= 0)
     return true;
   return false;
 }
-
+*/
 void
-GenericContextAtom::convertStringSet(AtomSet& as, set<string>& sset) {
+GenericContextAtom::convertAtomSetToStringSet(AtomSet& as, set<string>& sset) {
   for (AtomSet::const_iterator ai = as.begin(); ai != as.end(); ++ai) {
     sset.insert(((*ai).getArgument(1)).getString());
   }
-  //sort(sset.begin(),sset.end(),issmaller);
+  //sort(sset.begin(),sset.begin()+sset.size());
 }
 
 void
-GenericContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginError) {
-  std::set<std::string> oset,aset,bset,interset;
-
+GenericContextAtom::convertQueryToStringSets(const Query& query, set<string>& aset, set<string>& bset, set<string>& oset) throw (PluginError) {
   int cid = query.getInputTuple()[0].getInt();
-  std::cout << "Context ID: " << cid << "\n";
 
   std::stringstream ass, bss, oss;
   ass << "a" << cid;
@@ -53,9 +50,6 @@ GenericContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginEr
   std::string bi_match(bss.str());
   oss << "o" << cid;
   std::string oi_match(oss.str());
-
-  std::string param = query.getInputTuple()[4].getUnquotedString();
-  std::cout << "Param: " << param << "\n";
 
   AtomSet input = query.getInterpretation();
 
@@ -66,20 +60,66 @@ GenericContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginEr
   AtomSet o;
   input.matchPredicate(oi_match,o);
 
-  convertStringSet(a,aset);
-  convertStringSet(b,bset);
-  convertStringSet(o,oset);
+  convertAtomSetToStringSet(a,aset);
+  convertAtomSetToStringSet(b,bset);
+  convertAtomSetToStringSet(o,oset);
 
-//  set_intersection(bset.begin(),bset.end(),oset.begin(),oset.end(),interset.begin());
+}
 
-  Tuple out;
-//  if (interset.size() == aset.size())
-//    if (equal(interset.begin(),interset.end(),aset.begin()))
+void printSet(string s) {
+	cout << s << endl;
+}
+
+void
+GenericContextAtom::stringset_intersection(const set<string>& aset, const set<string>& bset, set<string>& result) {
+  set<string>::iterator ita,itb;
+  ita = aset.begin();
+  itb = bset.begin();
+  while (ita != aset.end() && itb != bset.end()) {
+    if (*ita < *itb) ++ita;
+    else if (*itb < *ita) ++itb;
+    else {
+      result.insert(*ita);
+      ita++;
+      itb++;
+    }
+  }
+}
+
+void
+GenericContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginError) {
+  std::set<std::string> oset,aset,bset;
+  set<string> interset, accset;
+
+  std::string param = query.getInputTuple()[4].getUnquotedString();
+  convertQueryToStringSets(query,aset,bset,oset);
+
+  accset = acc(param,bset);
+  stringset_intersection(accset,oset,interset);
+
+/*  cout << "a set contains: \n";
+  for_each (aset.begin(), aset.end(), printSet);
+  cout << "---------------------------\n";
+  cout << "b set contains: \n";
+  for_each (bset.begin(), bset.end(), printSet);
+  cout << "---------------------------\n";
+  cout << "o set contains: \n";
+  for_each (oset.begin(), oset.end(), printSet);
+  cout << "---------------------------\n";
+  cout << "interset contains: \n";
+  for_each (interset.begin(), interset.end(), printSet);
+  cout << "---------------------------\n";
+*/
+  cout << "are aset and interset equal? \n";
+  if (aset.size() == interset.size()) {
+    if (equal(aset.begin(),aset.end(),interset.begin())) {
+      cout << "true\n";
+      Tuple out;
       answer.addTuple(out);
-
-  std::cout << "a_count: " << aset.size() << "\n";
-  std::cout << "b_count: " << bset.size() << "\n";
-  std::cout << "o_count: " << oset.size() << "\n";
+    }
+    else cout << "false\n";  
+  }
+  else cout << "false\n";
 }
 
   } // namespace script

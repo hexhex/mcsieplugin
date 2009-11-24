@@ -31,12 +31,15 @@
 #define _DLVHEX_MCSEQUILIBRIUM_MCSEQUILIBRIUMPLUGIN_H
 
 #include <dlvhex/PluginInterface.h>
-#include <Converter.h>
-#include <MCSequilibriumAtom.h>
+#include <dlvhex/ProgramCtx.h>
+#include "Converter.h"
+#include "MCSequilibriumAtom.h"
 
 namespace dlvhex {
 	namespace mcsequilibrium {
 	
+//class ProgramCtx;
+
 	class MCSequilibriumPlugin : public PluginInterface {
 		private:
 			/**
