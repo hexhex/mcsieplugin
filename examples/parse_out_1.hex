@@ -8,6 +8,6 @@ o2(X) :- a2(X).
 o2(X) :- na2(X).
 o3(X) :- a3(X).
 o3(X) :- na3(X).
-:- not &dlv_asp_context_acc[a1,b1,o1,"ctx1.dlv"]().
-:- not &dlv_asp_context_acc[a2,b2,o2,"ctx2.dlv"]().
-:- not &dlv_asp_context_acc[a3,b3,o3,"ctx3.dlv"]().
+:- not &dlv_asp_context_acc[1,a1,b1,o1,"./examples/ctx1.dlv"]().
+:- not &dlv_asp_context_acc[2,a2,b2,o2,"./examples/ctx2.dlv"]().
+:- not &dlv_asp_context_acc[3,a3,b3,o3,"./examples/ctx3.dlv"]().

@@ -49,7 +49,7 @@ MCSequilibriumPlugin::getAtoms(AtomFunctionMap& a) {
 
 void
 MCSequilibriumPlugin::setupProgramCtx(dlvhex::ProgramCtx& pc) {
-	std::cout << "Seting up ProgrammContext!!!!!!!!!" << std::endl;
+	//std::cout << "Seting up ProgrammContext!!!!!!!!!" << std::endl;
 	//std::vector<dlvhex::PluginInterface*> *retv = pc.getPlugins();
 	//pc.openPlugins();
 }
