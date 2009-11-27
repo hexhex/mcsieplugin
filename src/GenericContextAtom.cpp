@@ -110,16 +110,23 @@ GenericContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginEr
   for_each (interset.begin(), interset.end(), printSet);
   cout << "---------------------------\n";
 */
-  cout << "are aset and interset equal? \n";
+
+  #ifdef DEBUG 
+    cout << "are aset and interset equal? \n"; 
+    if (aset.size() == interset.size()) {
+      if (equal(aset.begin(),aset.end(),interset.begin())) {
+        cout << "true\n";
+      }
+      else cout << "false\n";  
+    }
+    else cout << "false\n";
+  #endif
   if (aset.size() == interset.size()) {
     if (equal(aset.begin(),aset.end(),interset.begin())) {
-      cout << "true\n";
       Tuple out;
       answer.addTuple(out);
-    }
-    else cout << "false\n";  
+    } 
   }
-  else cout << "false\n";
 }
 
   } // namespace script
