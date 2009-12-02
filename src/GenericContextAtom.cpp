@@ -2,6 +2,8 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#define DEBUG
+
 #include "GenericContextAtom.h"
 
 #include <unistd.h>
@@ -95,7 +97,9 @@ GenericContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginEr
   convertQueryToStringSets(query,aset,bset,oset);
 
   accset = acc(param,bset);
-  stringset_intersection(accset,oset,interset);
+  //stringset_intersection(accset,oset,interset);
+  std::insert_iterator<std::set<std::string> > out_it(interset, interset.begin());
+  set_intersection(accset.begin(), accset.end(), oset.begin(), oset.end(), out_it);
 
 /*  cout << "a set contains: \n";
   for_each (aset.begin(), aset.end(), printSet);

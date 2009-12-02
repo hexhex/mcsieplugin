@@ -13,7 +13,7 @@ namespace dlvhex {
 
       public:
         DLV_ASP_Context();
-        //void retrieve(const Query& query, Answer& answer) throw (PluginError);
+        void retrieve(const Query& query, Answer& answer) throw (PluginError);
 	virtual set<string> acc(const string& param, const set<string>& input);
     };
 

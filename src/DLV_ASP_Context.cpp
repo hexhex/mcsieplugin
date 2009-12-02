@@ -2,6 +2,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+//#define DEBUG
 
 #include "DLV_ASP_Context.h"
 
@@ -150,7 +151,6 @@ DLV_ASP_Context::acc(const string& param, const set<string>& input) {
   return ret;
 } // end ACC implementation*/
 
-/*
 void
 DLV_ASP_Context::retrieve(const Query& query, Answer& answer) throw (PluginError) {
 
@@ -181,7 +181,7 @@ DLV_ASP_Context::retrieve(const Query& query, Answer& answer) throw (PluginError
   cout << "Readed Program: " << endl;
   cout << tmpin.str() << endl;
 */
-/*
+
   /////////////////////////////////////////////////////////////////
   //
   // Setting Up DLV Process and Options
@@ -207,16 +207,18 @@ DLV_ASP_Context::retrieve(const Query& query, Answer& answer) throw (PluginError
   /////////////////////////////////////////////////////////////////
 
   // 1. Art BaseASPSolver
-  std::auto_ptr<BaseASPSolver> solver(dlv.createSolver());
+  //std::auto_ptr<BaseASPSolver> solver(dlv.createSolver());
   // 2. Art ASPFileSolver
-  //ASPFileSolver<DLVresultParserDriver> solver(dlv,tmp);
+  std::auto_ptr<BaseASPSolver> solver(new ASPFileSolver<DLVresultParserDriver>(dlv,tmp));
     
 
+  /*
   Program *idb = new Program();
   /// stores the facts of the program
   AtomSet *edb = new AtomSet();
   const Program *pp = idb;
   const AtomSet *atsp = edb;
+  */
 
 
   /////////////////////////////////////////////////////////////////
@@ -227,7 +229,10 @@ DLV_ASP_Context::retrieve(const Query& query, Answer& answer) throw (PluginError
 
   //HexParserDriver driver;
   HexParserDriver driver;
-  driver.parse(param, *idb, *edb);
+  Program idb;
+  /// stores the facts of the program
+  AtomSet edb;
+  driver.parse(param, idb, edb);
 
   //DLVresultParserDriver driver;
   //driver.parse(param, 
@@ -240,7 +245,7 @@ DLV_ASP_Context::retrieve(const Query& query, Answer& answer) throw (PluginError
     #ifdef DEBUG
       cout << "added input belief: " << *inputit << endl;
     #endif
-    edb->insert(AtomPtr(new Atom(Tuple(1, Term(*inputit)))));
+    edb.insert(AtomPtr(new Atom(Tuple(1, Term(*inputit)))));
   }
 //  cout << "Atomset size: " << edb->size() << endl;
 
@@ -266,6 +271,7 @@ DLV_ASP_Context::retrieve(const Query& query, Answer& answer) throw (PluginError
     #endif
     idb->addRule(new Rule(h,b));
   }
+  */
 
 /*
   for (set<string>::iterator negit = naset.begin(); negit != naset.end(); ++negit) {
@@ -275,7 +281,6 @@ DLV_ASP_Context::retrieve(const Query& query, Answer& answer) throw (PluginError
   }
 */
 
-/*
   /////////////////////////////////////////////////////////////////
   //
   // Solve Program
@@ -298,7 +303,7 @@ DLV_ASP_Context::retrieve(const Query& query, Answer& answer) throw (PluginError
   #endif
 
   // 1. Art BaseASPSolver
-  solver->solve(*idb, *edb, answersets);
+  solver->solve(idb, edb, answersets);
   // 2. Art ASPFileSolver
   //solver.solve(*pp, *atsp, answersets);
 
@@ -322,7 +327,7 @@ DLV_ASP_Context::retrieve(const Query& query, Answer& answer) throw (PluginError
     Tuple out;
     answer.addTuple(out);
   }
-}*/
+}
 
   } // namespace script
 } // namespace dlvhex
