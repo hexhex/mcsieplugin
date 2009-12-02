@@ -2,9 +2,9 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-//#define DEBUG
+#define DEBUG
 
-#include "DLV_ASP_Context.h"
+#include "DLV_ASP_ContextAtom.h"
 
 #include <unistd.h>
 #include <climits>
@@ -13,6 +13,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 #include "dlvhex/ProgramCtx.h"
 #include "dlvhex/DLVProcess.h"
 #include "dlvhex/AtomSet.h"
@@ -27,8 +28,9 @@
 namespace dlvhex {
   namespace mcsequilibrium {
 
-DLV_ASP_Context::DLV_ASP_Context() : GenericContextAtom("dlv_asp") {}
+using namespace std;
 
+#if 0
 set<string> 
 DLV_ASP_Context::acc(const string& param, const set<string>& input) {
   set<string> ret;
@@ -150,21 +152,20 @@ DLV_ASP_Context::acc(const string& param, const set<string>& input) {
 
   return ret;
 } // end ACC implementation*/
+#endif
 
 void
-DLV_ASP_Context::retrieve(const Query& query, Answer& answer) throw (PluginError) {
+DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginError) {
 
-  std::set<std::string> oset,aset,bset,naset;
+  std::set<std::string> oset,aset,bset, aointerset, ominusaset;
   set<string> interset, accset;
 
   const std::string param = query.getInputTuple()[4].getUnquotedString();
+
   convertQueryToStringSets(query,aset,bset,oset);
+
 //  cout << "param filename: " << param << endl;
 
-  naset = oset;
-  for (set<string>::iterator strit = aset.begin(); strit != aset.end(); ++strit) {
-    naset.erase(*strit);
-  }
 /*  cout << "NASET Size: " << naset.size() << endl;
 
   std::stringstream tmpin;
@@ -253,33 +254,30 @@ DLV_ASP_Context::retrieve(const Query& query, Answer& answer) throw (PluginError
   RuleHead_t h;
   RuleBody_t b;
   h.clear();
-/*
-  for (set<string>::iterator osetit = oset.begin(); osetit != oset.end(); ++osetit) {
-    b.clear();
-    b.insert(new Literal(AtomPtr(new Atom(*osetit)), false));
-    #ifdef DEBUG
-      cout << "added Rule: :- " << *osetit << endl;
-    #endif
-    idb->addRule(new Rule(h,b));
-  } */
-/*
-  for (set<string>::iterator asetit = aset.begin(); asetit != aset.end(); ++asetit) {
-    b.clear();
-    b.insert(new Literal(AtomPtr(new Atom(*asetit)), true));
-    #ifdef DEBUG
-      cout << "added a set Rule: :- not " << *asetit << endl;
-    #endif
-    idb->addRule(new Rule(h,b));
-  }
-  */
 
-/*
-  for (set<string>::iterator negit = naset.begin(); negit != naset.end(); ++negit) {
+  std::insert_iterator<std::set<std::string> > aointer_it(aointerset, aointerset.begin());
+  set_intersection(aset.begin(), aset.end(), oset.begin(), oset.end(), aointer_it);
+
+  for (set<string>::iterator interit = aointerset.begin(); interit != aointerset.end(); ++interit) {
     b.clear();
-    b.insert(new Literal(AtomPtr(new Atom(*negit)), false));
-    idb->addRule(new Rule(h,b));
+    b.insert(new Literal(AtomPtr(new Atom(*interit)), true));
+    #ifdef DEBUG
+      cout << "added inter Rule: :- not " << *interit << endl;
+    #endif
+    idb.addRule(new Rule(h,b));
   }
-*/
+
+  std::insert_iterator<std::set<std::string> > ominusaset_it(ominusaset, ominusaset.begin());
+  set_difference(oset.begin(), oset.end(), aset.begin(), aset.end(), ominusaset_it);
+
+  for (set<string>::iterator aodiffit = ominusaset.begin(); aodiffit != ominusaset.end(); ++aodiffit) {
+    b.clear();
+    b.insert(new Literal(AtomPtr(new Atom(*aodiffit)), false));
+    #ifdef DEBUG
+      cout << "added diff set Rule: :- " << *aodiffit << endl;
+    #endif
+    idb.addRule(new Rule(h,b));
+  }
 
   /////////////////////////////////////////////////////////////////
   //
@@ -290,13 +288,13 @@ DLV_ASP_Context::retrieve(const Query& query, Answer& answer) throw (PluginError
     cout << "Start solving dlv program: " << endl;
     const Rule *r;
     int i=0;
-    for (Program::const_iterator progit = idb->begin(); progit != idb->end(); ++i, ++progit) {
+    for (Program::const_iterator progit = idb.begin(); progit != idb.end(); ++i, ++progit) {
       r=*(progit);
       cout << *r;
     }
 
     //cout << (*edb).getArgument(1).getSring();
-    for (AtomSet::const_iterator ai = edb->begin(); ai != edb->end(); ++ai) {
+    for (AtomSet::const_iterator ai = edb.begin(); ai != edb.end(); ++ai) {
       cout << *ai << endl;
     }
     cout << "solve" << endl;

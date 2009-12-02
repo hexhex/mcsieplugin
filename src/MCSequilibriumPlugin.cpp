@@ -13,8 +13,6 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "MCSequilibriumPlugin.h"
-#include "GenericContextAtom.h"
-#include "DLV_ASP_Context.h"
 
 #include <cstdlib>
 
@@ -43,7 +41,7 @@ MCSequilibriumPlugin::getAtoms(AtomFunctionMap& a) {
   //DLV_ASP_Context dlvc("");
   //GenericContextAtom *gca = &dlvc;
 
-  boost::shared_ptr<GenericContextAtom> mcsequi(new DLV_ASP_Context());
+  boost::shared_ptr<BaseContextAtom> mcsequi(new DLV_ASP_ContextAtom());
   a[(mcsequi.get())->getExtAtomName()] = mcsequi;
 }
 

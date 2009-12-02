@@ -33,7 +33,8 @@
 #include <dlvhex/PluginInterface.h>
 #include <dlvhex/ProgramCtx.h>
 #include "Converter.h"
-#include "MCSequilibriumAtom.h"
+#include "BaseContextAtom.h"
+#include "DLV_ASP_ContextAtom.h"
 
 namespace dlvhex {
 	namespace mcsequilibrium {
