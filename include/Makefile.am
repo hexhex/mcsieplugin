@@ -8,4 +8,5 @@ noinst_HEADERS = MCSequilibriumPlugin.h \
 		 Context.h \
 		 BaseContextAtom.h \
 		 ACC_ContextAtom.h \
-		 DLV_ASP_ContextAtom.h
+		 DLV_ASP_ContextAtom.h \
+                 EquilibriumOutputBuilder.h

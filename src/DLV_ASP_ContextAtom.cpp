@@ -208,9 +208,9 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
   /////////////////////////////////////////////////////////////////
 
   // 1. Art BaseASPSolver
-  //std::auto_ptr<BaseASPSolver> solver(dlv.createSolver());
+  std::auto_ptr<BaseASPSolver> solver(dlv.createSolver());
   // 2. Art ASPFileSolver
-  std::auto_ptr<BaseASPSolver> solver(new ASPFileSolver<DLVresultParserDriver>(dlv,tmp));
+  //std::auto_ptr<BaseASPSolver> solver(new ASPFileSolver<DLVresultParserDriver>(dlv,tmp));
     
 
   /*
@@ -297,7 +297,7 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
     for (AtomSet::const_iterator ai = edb.begin(); ai != edb.end(); ++ai) {
       cout << *ai << endl;
     }
-    cout << "solve" << endl;
+    cout << "solve ==========================" << endl;
   #endif
 
   // 1. Art BaseASPSolver
@@ -305,7 +305,7 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
   // 2. Art ASPFileSolver
   //solver.solve(*pp, *atsp, answersets);
 
-  #ifdef DEBUG
+  #if 0
     ResultContainer* result = new ResultContainer();
 
     for (as = answersets.begin(); as!=answersets.end(); ++as) {
@@ -318,9 +318,15 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
     cout << "-------------------------------------------" << endl;
   #endif
 
+  #ifdef DEBUG
+    cout << "are there Answersets?????? " << endl;
+    cout << "Answerset size: " << answersets.size() << endl;
+  #endif
+
   if (answersets.size() > 0) {
     #ifdef DEBUG
       cout << "there are Answersets!!!! " << endl;
+      cout  << "-------------------------------------------" <<  endl;
     #endif
     Tuple out;
     answer.addTuple(out);

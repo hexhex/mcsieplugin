@@ -33,6 +33,7 @@
 #include <dlvhex/PluginInterface.h>
 #include <dlvhex/ProgramCtx.h>
 #include "Converter.h"
+#include "EquilibriumOutputBuilder.h"
 #include "BaseContextAtom.h"
 #include "DLV_ASP_ContextAtom.h"
 
@@ -47,6 +48,11 @@ namespace dlvhex {
 			 *
 			 */
 			Converter* mcseconverter;
+
+			/**
+			 *
+			 */
+			OutputBuilder* equilibriumOB;
 			
 			/**
 			 *
@@ -73,6 +79,11 @@ namespace dlvhex {
 			~MCSequilibriumPlugin();
 			
 			virtual void setupProgramCtx(ProgramCtx& pc);
+
+    			/**
+     			 * creates an OutputBuilder
+     			 */
+    			virtual OutputBuilder* createOutputBuilder();
 
 			/**
 			 *

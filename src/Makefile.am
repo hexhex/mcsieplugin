@@ -8,7 +8,8 @@ libdlvhexmcsequilibrium_la_SOURCES = MCSequilibriumPlugin.cpp \
                              BridgeRuleEntry.cpp \
                              Context.cpp \
 			     ACC_ContextAtom.cpp \
-			     DLV_ASP_ContextAtom.cpp
+			     DLV_ASP_ContextAtom.cpp \
+                             EquilibriumOutputBuilder.cpp
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
