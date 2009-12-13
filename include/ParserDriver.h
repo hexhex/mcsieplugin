@@ -57,7 +57,7 @@ MCSdescriptionGrammar::definition<ScannerT>::definition(MCSdescriptionGrammar co
 		const node_parser_gen<discard_node_op> rm =
 		node_parser_gen<discard_node_op>();
 
-		chset<> alnumdot("a-zA-Z0-9_.");
+		chset<> alnumdot("a-zA-Z0-9_./");
 		chset<> alnum_("a-zA-Z0-9_");
 		rulenum
     			=	lexeme_d[token_node_d[(+digit_p)]];
@@ -69,7 +69,7 @@ MCSdescriptionGrammar::definition<ScannerT>::definition(MCSdescriptionGrammar co
 			=	token_node_d[+alnum_];
 
 		extatom
-			=	token_node_d[+alnum_];
+			=	rm[ch_p('"')] >> token_node_d[+alnum_] >> rm[ch_p('"')];
 
 		param
 			=	rm[ch_p('"')] >> token_node_d[+alnumdot] >> rm[ch_p('"')];

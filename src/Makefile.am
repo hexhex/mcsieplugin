@@ -9,7 +9,8 @@ libdlvhexmcsequilibrium_la_SOURCES = MCSequilibriumPlugin.cpp \
                              Context.cpp \
 			     ACC_ContextAtom.cpp \
 			     DLV_ASP_ContextAtom.cpp \
-                             EquilibriumOutputBuilder.cpp
+                             EquilibriumOutputBuilder.cpp \
+			     EquilibriumPrintVisitor.cpp
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \

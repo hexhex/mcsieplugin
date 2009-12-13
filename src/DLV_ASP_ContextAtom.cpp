@@ -2,7 +2,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#define DEBUG
+//#define DEBUG
 
 #include "DLV_ASP_ContextAtom.h"
 
@@ -166,7 +166,7 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
 
 //  cout << "param filename: " << param << endl;
 
-/*  cout << "NASET Size: " << naset.size() << endl;
+/*
 
   std::stringstream tmpin;
   std::ifstream ifs;
@@ -333,5 +333,5 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
   }
 }
 
-  } // namespace script
+  } // namespace mcsequilibrium
 } // namespace dlvhex

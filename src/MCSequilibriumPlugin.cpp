@@ -23,7 +23,7 @@ namespace dlvhex {
   namespace mcsequilibrium {
 
 MCSequilibriumPlugin::MCSequilibriumPlugin()
-    : activatePlugin(0), mcseconverter(new Converter()), equilibriumOB(new EquilibriumOutputBuilder()) {
+    : activatePlugin(1), mcseconverter(new Converter()), equilibriumOB(new EquilibriumOutputBuilder()) {
 }
 
 
@@ -48,9 +48,8 @@ MCSequilibriumPlugin::getAtoms(AtomFunctionMap& a) {
 
 void
 MCSequilibriumPlugin::setupProgramCtx(dlvhex::ProgramCtx& pc) {
-	//std::cout << "Seting up ProgrammContext!!!!!!!!!" << std::endl;
-	//std::vector<dlvhex::PluginInterface*> *retv = pc.getPlugins();
-	//pc.openPlugins();
+
+	pc.setOutputBuilder(equilibriumOB);
 }
 
 OutputBuilder* 

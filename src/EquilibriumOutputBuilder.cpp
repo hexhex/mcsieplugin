@@ -1,7 +1,7 @@
 #include "EquilibriumOutputBuilder.h"
-#include "dlvhex/PrintVisitor.h"
 #include "dlvhex/globals.h"
 #include "dlvhex/ResultContainer.h"
+#include "EquilibriumPrintVisitor.h"
 
 #include <iostream>
 
@@ -30,39 +30,19 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
     {
       return;
     }
-
-  if (((*results.begin())->hasWeights()) && !Globals::Instance()->getOption("AllModels"))
-    {
-      stream << "Best model: ";
-    }
   
   for (ResultContainer::result_t::const_iterator rit = results.begin(); rit != results.end(); ++rit)
     {
+  #if 0
       RawPrintVisitor rpv(stream);
       (*rit)->accept(rpv);
       stream << std::endl;
+  #endif
 
-      if ((*rit)->hasWeights())
-	{
-	  stream << "Cost ([Weight:Level]): <";
-	  
-	  //
-	  // Display all weight values up to the highest specified level
-	  //
-	  for (unsigned lev = 1; lev <= AnswerSet::getMaxLevel(); ++lev)
-	    {
-	      if (lev > 1)
-		stream << ",";
-	      
-	      stream << "[" << (*rit)->getWeight(lev) << ":" << lev << "]";
-	    }
-	  
-	  stream << ">" << std::endl;
-	}
-      
-      //
-      // empty line
-      //
+      EquilibriumPrintVisitor epv(stream);
+      (*rit)->accept(epv);
+      stream << std::endl;
+
       if (!Globals::Instance()->getOption("Silent"))
 	{
 	  stream << std::endl;
