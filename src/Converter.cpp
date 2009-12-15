@@ -71,7 +71,7 @@ namespace dlvhex {
    }// End MCSequilibriumConverter::convertBridgeRule()
 
    void
-   Converter::convertContext(node_t& at, Context& context) {
+   Converter::convertContext(node_t& at, ParseContext& context) {
      int id;
      std::string extatom;
      std::string param;
@@ -89,7 +89,7 @@ namespace dlvhex {
      bat = *it;
      assert(bat.value.id() == MCSdescriptionGrammar::Param);
      param = std::string(bat.value.begin(), bat.value.end());
-     context = Context(id,extatom,param);
+     context = ParseContext(id,extatom,param);
      //std::cout << context;
    }// END MCSequilibriumConverter::convertContext
 
@@ -114,7 +114,7 @@ namespace dlvhex {
          bridgerules.push_back(bridgeRule);
        } //end if-rule Bridgerule
        if (at.value.id() == MCSdescriptionGrammar::Context) {
-         Context c = Context();
+         ParseContext c = ParseContext();
          convertContext(at,c);
          context.push_back(c);
 	 //printSpiritPT(std::cout, at, "Context");
@@ -125,8 +125,8 @@ namespace dlvhex {
 	BridgeRule elem = *it;
 	elem.writeProgram(o);
      }//end for-loop print bridgerules
-     for (std::vector<Context>::iterator it = context.begin(); it != context.end(); ++it) {
-	Context elem = *it;
+     for (std::vector<ParseContext>::iterator it = context.begin(); it != context.end(); ++it) {
+	ParseContext elem = *it;
 	o << elem;
      }//end for-loop print context
    } // end convertParseTreeToDLVProgram

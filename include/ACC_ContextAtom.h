@@ -16,7 +16,7 @@ namespace dlvhex {
         ACC_ContextAtom(std::string name): BaseContextAtom(name) {};
         void retrieve(const Query& query, Answer& answer) throw (PluginError);
 
-	virtual std::set<std::string> acc(const std::string& param, const std::set<std::string>& input) = 0;
+	virtual std::set<std::set<std::string> > acc(const std::string& param, const std::set<std::string>& input) = 0;
 
     };
 

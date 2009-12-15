@@ -19,8 +19,9 @@ namespace dlvhex {
 
     void
     ACC_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginError) {
-      std::set<std::string> oset,aset,bset;
-      std::set<std::string> interset, accset;
+      bool accept = false;
+      std::set<std::string> oset,aset,bset,interset;
+      std::set<std::set<std::string> > accset;
 
       std::string param = query.getInputTuple()[4].getUnquotedString();
       convertQueryToStringSets(query,aset,bset,oset);
@@ -31,8 +32,19 @@ namespace dlvhex {
       //
       /////////////////////////////////////////////////////////////////
       accset = acc(param,bset);
-      std::insert_iterator<std::set<std::string> > out_it(interset, interset.begin());
-      set_intersection(accset.begin(), accset.end(), oset.begin(), oset.end(), out_it);
+
+      for (std::set<std::set<std::string> >::iterator setit = accset.begin(); setit != accset.end(); ++setit) {
+	std::insert_iterator<std::set<std::string> > out_it(interset, interset.begin());
+        set_intersection((*setit).begin(), (*setit).end(), oset.begin(), oset.end(), out_it);
+        if (aset.size() == interset.size()) {
+          if (equal(aset.begin(),aset.end(),interset.begin())) {
+            accept = true;
+          } 
+        }
+      }
+
+      //std::insert_iterator<std::set<std::string> > out_it(interset, interset.begin());
+      //set_intersection(accset.begin(), accset.end(), oset.begin(), oset.end(), out_it);
 
       #ifdef DEBUG 
         std::cout << "are aset and interset equal? \n"; 
@@ -44,11 +56,17 @@ namespace dlvhex {
         }
         else std::cout << "false\n";
       #endif
+    #if 0
       if (aset.size() == interset.size()) {
         if (equal(aset.begin(),aset.end(),interset.begin())) {
           Tuple out;
           answer.addTuple(out);
         } 
+      }
+    #endif
+      if (accept) {
+        Tuple out;
+	answer.addTuple(out);
       }
     } // end ACC_ContextAtom::retrieve()
 

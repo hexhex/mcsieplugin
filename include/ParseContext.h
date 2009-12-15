@@ -1,20 +1,20 @@
-#ifndef _DLVHEX_MCSEQUILIBRIUM_CONTEXT_H_
-#define _DLVHEX_MCSEQUILIBRIUM_CONTEXT_H_
+#ifndef _DLVHEX_MCSEQUILIBRIUM_PARSECONTEXT_H_
+#define _DLVHEX_MCSEQUILIBRIUM_PARSECONTEXT_H_
 
 #include <string>
 
 namespace dlvhex {
   namespace mcsequilibrium {
 
-      class Context {
+      class ParseContext {
         private:
           int contextnum;
           std::string extatom;
           std::string param;
 
         public:
-          Context(int num, std::string e, std::string p);
-          Context();
+          ParseContext(int num, std::string e, std::string p);
+          ParseContext();
 
           int ContextNum() const { return contextnum; }
           std::string ExtAtom() const { return extatom; }
@@ -23,7 +23,7 @@ namespace dlvhex {
       }; // END class Context
 
         std::ostream&
-        operator<< (std::ostream&, const Context&);
+        operator<< (std::ostream&, const ParseContext&);
 
   }  // END namespace mcsequilibrium
 } // END namespace dlvhex

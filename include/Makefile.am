@@ -5,7 +5,7 @@ noinst_HEADERS = MCSequilibriumPlugin.h \
 		 ParserDriver.h \
 		 BridgeRule.h \
 		 BridgeRuleEntry.h \
-		 Context.h \
+		 ParseContext.h \
 		 BaseContextAtom.h \
 		 ACC_ContextAtom.h \
 		 DLV_ASP_ContextAtom.h \

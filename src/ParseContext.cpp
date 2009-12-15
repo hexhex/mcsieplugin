@@ -2,7 +2,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#include "Context.h"
+#include "ParseContext.h"
 
 #include <climits>
 #include <sstream>
@@ -16,16 +16,16 @@
 namespace dlvhex {
   namespace mcsequilibrium {
 
-   Context::Context(int num, std::string e, std::string p)
+   ParseContext::ParseContext(int num, std::string e, std::string p)
      : contextnum(num), extatom(e), param(p) {
    }//BridgeRuleEntry End
 
-   Context::Context()
+   ParseContext::ParseContext()
      : contextnum(0), extatom(""), param("") {
    }//BridgeRuleEntry End
 
    std::ostream&
-   operator<< (std::ostream& out, const Context& context) {
+   operator<< (std::ostream& out, const ParseContext& context) {
      out << ":- not &" << context.ExtAtom() 
        << "[" << context.ContextNum()
        << ",a" << context.ContextNum()

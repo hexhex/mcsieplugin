@@ -6,7 +6,7 @@ libdlvhexmcsequilibrium_la_SOURCES = MCSequilibriumPlugin.cpp \
                              Converter.cpp \
                              BridgeRule.cpp \
                              BridgeRuleEntry.cpp \
-                             Context.cpp \
+                             ParseContext.cpp \
 			     ACC_ContextAtom.cpp \
 			     DLV_ASP_ContextAtom.cpp \
                              EquilibriumOutputBuilder.cpp \
