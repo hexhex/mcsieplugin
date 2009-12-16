@@ -237,7 +237,9 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
 
   //DLVresultParserDriver driver;
   //driver.parse(param, 
-
+    #ifdef DEBUG
+      cout  << "---------------- DLV_ASP_ContextAtom Retrieve---------------------------" <<  endl;
+    #endif
 
 //  cout << "Atomset size: " << edb->size() << endl;
   // add Atomsets b<i>
@@ -264,7 +266,8 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
     #ifdef DEBUG
       cout << "added inter Rule: :- not " << *interit << endl;
     #endif
-    idb.addRule(new Rule(h,b));
+    Rule *r = new Rule(h,b);
+    idb.addRule(r);
   }
 
   std::insert_iterator<std::set<std::string> > ominusaset_it(ominusaset, ominusaset.begin());

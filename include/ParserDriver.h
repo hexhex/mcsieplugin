@@ -87,10 +87,10 @@ MCSdescriptionGrammar::definition<ScannerT>::definition(MCSdescriptionGrammar co
 		rulebody
 			=	(ruleelem|negruleelem) >> *( rm[ch_p(',')] >> (ruleelem|negruleelem) );
 
-		bridgerule// =	ruleheadelem >> rm[str_p(":-")] >> rulebody >> rm[ch_p('.')];
+		bridgerule //=	ruleheadelem >> rm[str_p(":-")] >> rulebody >> rm[ch_p('.')];
 			=	ruleheadelem >> no_node_d[str_p(":-")] >> rulebody >> no_node_d[ch_p('.')];
 
-		context// =	contextnum >> rm[ch_p(',')] >> extatom >> rm[ch_p(',')] >> param;
+		context //=	contextnum >> rm[ch_p(',')] >> extatom >> rm[ch_p(',')] >> param;
 			=	infix_node_d[contextnum >> ',' >> extatom >> ',' >> param];
 
 		expression

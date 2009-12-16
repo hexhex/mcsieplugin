@@ -29,7 +29,7 @@ MCSequilibriumPlugin::MCSequilibriumPlugin()
 
 MCSequilibriumPlugin::~MCSequilibriumPlugin() {
     delete mcseconverter;
-    delete equilibriumOB;
+    //delete equilibriumOB;
 }
 
 

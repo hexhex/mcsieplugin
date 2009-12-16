@@ -15,6 +15,8 @@
 #include <string>
 #include <boost/functional.hpp>
 
+//#define DEBUG
+
 namespace dlvhex {
   namespace mcsequilibrium {
 ////////////////////////////////////////////////////////////////////////////
@@ -29,57 +31,62 @@ EquilibriumPrintVisitor::EquilibriumPrintVisitor(std::ostream& s)
 void
 EquilibriumPrintVisitor::visit(AtomSet* const as)
 {
-  std::multimap<std::string,std::string> outlist; 
+  std::multimap<int,std::string> outlist; 
   std::string pred;
+  int id=0,maxid=0;
 
-  stream << '{';
+  stream << '(';
+  #ifdef DEBUG
+    std::cout << "AS size: " << as->size() << std::endl;
+  #endif
   if (!as->empty()) {
-    for (AtomSet::atomset_t::const_iterator a = as->atoms.begin(); a != --as->atoms.end(); ++a) {
+    for (AtomSet::atomset_t::const_iterator a = as->atoms.begin(); a != as->atoms.end(); ++a) {
       //(*a)->accept(*this);
+      #ifdef DEBUG
+        std::cout << std::endl << "Atoms: " << (*a)->getPredicate();
+        const Tuple& argu = (*a)->getArguments();
+        for (Tuple::const_iterator ait = argu.begin(); ait != argu.end(); ait++) {
+          std::stringstream sstr;
+          sstr << *ait;
+          std::cout << sstr.str() << std::endl;
+        } // for over Tuples
+      #endif
       std::stringstream sspred;
       sspred << (*a)->getPredicate();
       pred = sspred.str();
       if (pred[0] == 'a') {
+        pred.erase(0,1);
         const Tuple& arguments = (*a)->getArguments();
         for (Tuple::const_iterator it = arguments.begin(); it != arguments.end(); it++) {
           std::stringstream sstr;
           sstr << *it;
-          outlist.insert(std::pair<std::string,std::string>(pred,sstr.str()));
+          //outlist.insert(std::pair<std::string,std::string>(pred,sstr.str()));
+          id = std::atoi(pred.c_str());
+          if (id > maxid) maxid=id;
+          outlist.insert(std::pair<int,std::string>(id,sstr.str()));
         } // for over Tuples
       } // if pred == a<i>
     } // for-loop over AtomSet's
 
-    //(*(--as->atoms.end()))->accept(*this);
-    AtomSet::atomset_t::const_iterator at = --as->atoms.end();
-    std::stringstream sspred;
-    sspred << (*at)->getPredicate();
-    pred = sspred.str();
-    if (pred[0] == 'a') {
-      const Tuple& arguments = (*at)->getArguments();
-      for (Tuple::const_iterator it = arguments.begin(); it != arguments.end(); it++) {
-        std::stringstream sstr;
-        sstr << *it;
-        outlist.insert(std::pair<std::string,std::string>(pred,sstr.str()));
+    //std::multimap<std::string,std::string>::iterator oit;
+    std::multimap<int,std::string>::iterator oit;
+    std::pair<std::multimap<int,std::string>::iterator,std::multimap<int,std::string>::iterator> rangeit;
+    //std::string s;
+    int s;
+
+    for (int i=1; i <= maxid; i++) {
+      stream << "{";
+      rangeit = outlist.equal_range(i);
+      for (oit = rangeit.first; oit != rangeit.second; ) {
+        stream << oit->second;
+        if (++oit != rangeit.second)
+           stream << ",";
       }
-    }
-    std::multimap<std::string,std::string>::iterator oit;
-    std::string s;
-    while (!outlist.empty()) {
-      oit = outlist.begin();
-      s = oit->first;
-      stream << "(" << oit->second;
-      outlist.erase(oit);
-      oit = outlist.find(s);
-      while (oit != outlist.end()) {
-        stream << "," << oit->second;
-        outlist.erase(oit);
-        oit = outlist.find(s);
-      }
-      stream << ")";
-      if (!outlist.empty()) stream << ",";
-    }
+      stream << "}";
+      if (i < maxid) stream << ",";
+    }//end for-loop over int
   } // if empty
-  stream << '}';
+  stream << ')';
 }//EquilibriumPrintVisitor::visit(AtomSet* const as)
 
 }//namespace mcsequilibrium
