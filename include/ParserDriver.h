@@ -3,6 +3,7 @@
 
 #include <boost/spirit/core.hpp>
 #include <boost/spirit/utility/chset.hpp>
+#include <boost/spirit/utility/confix.hpp>
 #include <boost/spirit/tree/parse_tree.hpp>
 #include <boost/spirit/tree/ast.hpp>
 
@@ -84,8 +85,7 @@ MCSdescriptionGrammar::definition<ScannerT>::definition(MCSdescriptionGrammar co
 			=	rm[ch_p('(')] >> rulenum >> rm[ch_p(':')] >> fact >> rm[ch_p(')')];
 
 		rulebody
-			=	ruleelem >> *(rm[ch_p(',')] >> ruleelem ) >> 
-				*( rm[ch_p(',')] >> negruleelem);
+			=	(ruleelem|negruleelem) >> *( rm[ch_p(',')] >> (ruleelem|negruleelem) );
 
 		bridgerule// =	ruleheadelem >> rm[str_p(":-")] >> rulebody >> rm[ch_p('.')];
 			=	ruleheadelem >> no_node_d[str_p(":-")] >> rulebody >> no_node_d[ch_p('.')];
@@ -95,7 +95,8 @@ MCSdescriptionGrammar::definition<ScannerT>::definition(MCSdescriptionGrammar co
 
 		expression
 			=	bridgerule
-			|	(no_node_d[str_p("#context(")] >> context >> no_node_d[str_p(").")]);
+			|	(no_node_d[str_p("#context(")] >> context >> no_node_d[str_p(").")])
+      | rm[boost::spirit::comment_p("%")];
 
 		root
 			=	*expression >> !end_p;
