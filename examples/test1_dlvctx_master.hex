@@ -19,7 +19,7 @@
 (3:needs_rescue) :- (2:can_fly).
 #context(3,"dlv_asp_context_acc", "./examples/test1_dlvctx_ctx3.dlv").
 
-% there should exist exactly the following three equilibria:
+% there should exist exactly the following three output-projected equilibria:
 %
 % tweedy is a penguin, cannot fly and we should do nothing
 % ({tweedy_is_penguin},{},{do_nothing})
