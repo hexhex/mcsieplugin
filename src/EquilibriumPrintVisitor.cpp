@@ -41,7 +41,6 @@ EquilibriumPrintVisitor::visit(AtomSet* const as)
   #endif
   if (!as->empty()) {
     for (AtomSet::atomset_t::const_iterator a = as->atoms.begin(); a != as->atoms.end(); ++a) {
-      //(*a)->accept(*this);
       #ifdef DEBUG
         std::cout << std::endl << "Atoms: " << (*a)->getPredicate();
         const Tuple& argu = (*a)->getArguments();
@@ -54,15 +53,28 @@ EquilibriumPrintVisitor::visit(AtomSet* const as)
       std::stringstream sspred;
       sspred << (*a)->getPredicate();
       pred = sspred.str();
+      //std::cout << "pred: " << pred << std::endl;
+      if (pred[0] != 'a') {
+        pred.erase(0,1);
+        id = std::atoi(pred.c_str());
+        if (id > maxid) maxid=id;
+        if (outlist.count(id) < 1) outlist.insert(std::pair<int,std::string>(id,""));
+      }
+      pred = sspred.str();
       if (pred[0] == 'a') {
         pred.erase(0,1);
+        id = std::atoi(pred.c_str());
+        if (id > maxid) maxid=id;
+        if (outlist.count(id) == 1) {
+          if ((outlist.find(id)->second).length() < 1) {
+            outlist.erase(outlist.find(id));
+          }
+        }
         const Tuple& arguments = (*a)->getArguments();
         for (Tuple::const_iterator it = arguments.begin(); it != arguments.end(); it++) {
           std::stringstream sstr;
           sstr << *it;
           //outlist.insert(std::pair<std::string,std::string>(pred,sstr.str()));
-          id = std::atoi(pred.c_str());
-          if (id > maxid) maxid=id;
           outlist.insert(std::pair<int,std::string>(id,sstr.str()));
         } // for over Tuples
       } // if pred == a<i>
@@ -72,7 +84,7 @@ EquilibriumPrintVisitor::visit(AtomSet* const as)
     std::multimap<int,std::string>::iterator oit;
     std::pair<std::multimap<int,std::string>::iterator,std::multimap<int,std::string>::iterator> rangeit;
     //std::string s;
-    int s;
+    //int s;
 
     for (int i=1; i <= maxid; i++) {
       stream << "{";

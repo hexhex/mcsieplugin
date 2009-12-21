@@ -13,11 +13,8 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "MCSequilibriumPlugin.h"
-
 #include <cstdlib>
-
 #include <iostream>
-
 
 namespace dlvhex {
   namespace mcsequilibrium {

@@ -10,4 +10,5 @@ noinst_HEADERS = MCSequilibriumPlugin.h \
 		 ACC_ContextAtom.h \
 		 DLV_ASP_ContextAtom.h \
                  EquilibriumOutputBuilder.h \
-		 EquilibriumPrintVisitor.h
+		 EquilibriumPrintVisitor.h \
+		 ContextAtom.h
