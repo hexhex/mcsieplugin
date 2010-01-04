@@ -29,6 +29,12 @@ MCSequilibriumPlugin::~MCSequilibriumPlugin() {
     //delete equilibriumOB;
 }
 
+bool 
+MCSequilibriumPlugin::registerContext(BaseContextAtom& bca) {
+  //boost::shared_ptr<BaseContextAtom> mcsequi(bca);
+  //afm[bca->getExtAtomName()] = mcsequi;
+  return true;
+}
 
 void
 MCSequilibriumPlugin::getAtoms(AtomFunctionMap& a) {
@@ -38,7 +44,8 @@ MCSequilibriumPlugin::getAtoms(AtomFunctionMap& a) {
   //GenericContextAtom *gca = new DLV_ASP_Context(""));
   //DLV_ASP_Context dlvc("");
   //GenericContextAtom *gca = &dlvc;
-
+  afm = &a;
+  //registerContext(new DLV_ASP_ContextAtom());
   boost::shared_ptr<BaseContextAtom> mcsequi(new DLV_ASP_ContextAtom());
   a[(mcsequi.get())->getExtAtomName()] = mcsequi;
 }
@@ -51,16 +58,7 @@ MCSequilibriumPlugin::setupProgramCtx(dlvhex::ProgramCtx& pc) {
 
 OutputBuilder* 
 MCSequilibriumPlugin::createOutputBuilder() {
-  std::cout << "Create output builder" << std::endl;
-  return equilibriumOB;
-}
-
-
-void
-MCSequilibriumPlugin::setOptions(bool doHelp, std::vector<std::string>& argv,
-                         std::ostream& out) {
-
-  
+   return equilibriumOB;
 }
 
 

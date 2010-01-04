@@ -40,72 +40,22 @@
 namespace dlvhex {
 	namespace mcsequilibrium {
 	
-//class ProgramCtx;
-
 	class MCSequilibriumPlugin : public PluginInterface {
 		private:
-			/**
-			 *
-			 */
 			Converter* mcseconverter;
-
-			/**
-			 *
-			 */
 			OutputBuilder* equilibriumOB;
-			
-			/**
-			 *
-			 */
 			MCSequilibriumPlugin(const MCSequilibriumPlugin&);
-			
-			
-			/**
-			 *
-			 */
 			bool activatePlugin;
-			
+			AtomFunctionMap *afm;
 			
 		public:
-
-			/**
-			 *
-			 */
 			MCSequilibriumPlugin();
-
-			/**
-			 *
-			 */
 			~MCSequilibriumPlugin();
-			
 			virtual void setupProgramCtx(ProgramCtx& pc);
-
-    			/**
-     			 * creates an OutputBuilder
-     			 */
     			virtual OutputBuilder* createOutputBuilder();
-
-			/**
-			 *
-			 */
 			virtual PluginConverter* createConverter();
-			
-			/**
-			 * Add new MCSequilibrium external atoms with the according names to m.
-			 *
-			 * @param m
-			 */
 			virtual void getAtoms(AtomFunctionMap& m);
-			
-			/**
-			 * Set the command line arguments here.
-			 *
-			 * @param doHelp
-			 * @param argv 
-			 * @param out
-			 */
-			virtual void setOptions(bool doHelp, std::vector<std::string>& argv,
-						std::ostream& out);
+			virtual bool registerContext(BaseContextAtom&);
 			
 	
 	}; // END class MCSequilibriumPlugin

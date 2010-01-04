@@ -45,6 +45,7 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
   convertQueryToStringSets(query,aset,bset,oset);
   #ifdef DEBUG
     std::cout << "===========================================" << std::endl;
+    std::cout << param << std::endl;
     std::cout << "aset: " << std::endl;
     for_each(aset.begin(),aset.end(),printSet);
     std::cout << "oset: " << std::endl;

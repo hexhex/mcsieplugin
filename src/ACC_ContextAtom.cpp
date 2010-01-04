@@ -2,7 +2,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#define DEBUG
+//#define DEBUG
 
 #include "ACC_ContextAtom.h"
 

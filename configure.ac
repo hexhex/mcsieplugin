@@ -5,6 +5,7 @@ AC_INIT([dlvhex-mcs-equilibrium],[0.0.1],[max@boegl.at])
 AC_CONFIG_SRCDIR([src/MCSequilibriumPlugin.cpp])
 
 AC_CONFIG_HEADERS([src/config.h])
+AC_CONFIG_MACRO_DIR([m4])
 
 MAJOR=`echo $PACKAGE_VERSION | sed "s/^\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/"`
 MINOR=`echo $PACKAGE_VERSION | sed "s/^\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/"`
