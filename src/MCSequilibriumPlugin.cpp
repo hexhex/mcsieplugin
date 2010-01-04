@@ -72,11 +72,11 @@ MCSequilibriumPlugin::createConverter() {
 }
 
 
-MCSequilibriumPlugin theMCSequilibriumPlugin;
+//MCSequilibriumPlugin theMCSequilibriumPlugin;
 
   } // namespace mcsequilibrium
 } // namespace dlvhex
-
+#if 0
 extern "C"
 dlvhex::mcsequilibrium::MCSequilibriumPlugin*
 PLUGINIMPORTFUNCTION() {
@@ -87,3 +87,4 @@ PLUGINIMPORTFUNCTION() {
 
   return &dlvhex::mcsequilibrium::theMCSequilibriumPlugin;
 }
+#endif

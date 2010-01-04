@@ -10,7 +10,7 @@ namespace dlvhex {
     class DLV_ASP_ContextAtom : public BaseContextAtom {
 
       public:
-        DLV_ASP_ContextAtom() : BaseContextAtom("dlv_asp") {};
+        DLV_ASP_ContextAtom() : BaseContextAtom("dlv_asp_context_acc") {};
         void retrieve(const Query& query, Answer& answer) throw (PluginError);
     };
 

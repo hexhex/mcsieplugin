@@ -1,8 +1,23 @@
 AUTOMAKE_OPTIONS = gnu
 
-EXTRA_DIST =	test1_dlvctx_master.hex \
-		test1_dlvctx_ctx1.dlv \
-		test1_dlvctx_ctx2.dlv \
-		test1_dlvctx_ctx3.dlv \
-		test1_dlvctx.out \
-		mcsequilibriumtest.test
+EXTRA_DIST =	mcsequilibriumtest.test
+
+plugin_LTLIBRARIES = libdlvhexmcstestcontext1.la
+
+libdlvhexmcstestcontext1_la_SOURCES = ./test1/TestContext1.cpp
+
+AM_CPPFLAGS = \
+	-I$(top_srcdir)/include \
+        $(BOOST_CPPFLAGS) \
+	$(DLVHEX_CFLAGS)
+
+libdlvhexmcstestcontext1_la_LDFLAGS = -avoid-version -module \
+			     $(top_srcdir)/src/MCSequilibriumPlugin.lo \
+                             $(top_srcdir)/src/Converter.lo \
+                             $(top_srcdir)/src/BridgeRule.lo \
+                             $(top_srcdir)/src/BridgeRuleEntry.lo \
+                             $(top_srcdir)/src/ParseContext.lo \
+			     $(top_srcdir)/src/ACC_ContextAtom.lo \
+			     $(top_srcdir)/src/DLV_ASP_ContextAtom.lo \
+                             $(top_srcdir)/src/EquilibriumOutputBuilder.lo \
+			     $(top_srcdir)/src/EquilibriumPrintVisitor.lo

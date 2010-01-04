@@ -12,7 +12,7 @@ namespace dlvhex {
     class BaseContextAtom : public PluginAtom {
 
       public:
-        BaseContextAtom(std::string name): atom_name(name+"_context_acc") {
+        BaseContextAtom(std::string name): atom_name(name) {
           addInputConstant();
           addInputPredicate();
           addInputPredicate();
