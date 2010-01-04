@@ -84,6 +84,7 @@ AC_CONFIG_FILES([
            Makefile 
            src/Makefile
            include/Makefile
+	   testsuite/Makefile
 ])
 
 AC_OUTPUT

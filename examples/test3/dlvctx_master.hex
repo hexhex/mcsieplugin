@@ -1,10 +1,10 @@
 % ctx1 is a context which either believes "foo" or "bar"
-#context(1,"dlv_asp_context_acc", "./examples/test3_dlvctx_ctx1.dlv").
+#context(1,"dlv_asp_context_acc", "./test3/dlvctx_ctx1.dlv").
 
 % ctx2 is a context which only accepts if the input is "fee"
 (2:fee) :- (1:foo).
 (2:baz) :- (1:bar).
-#context(2,"dlv_asp_context_acc", "./examples/test3_dlvctx_ctx2.dlv").
+#context(2,"dlv_asp_context_acc", "./test3/dlvctx_ctx2.dlv").
 
 % there should exist exactly the following output-projected equilibrium:
 %
