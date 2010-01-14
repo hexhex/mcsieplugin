@@ -1,18 +1,18 @@
 #ifndef _CONTEXTPLUGIN_H
 #define _CONTEXTPLUGIN_H
 
-#include "MCSequilibriumPlugin.h"
+#include <dlvhex/PluginInterface.h>
 
 #define DLVHEX_MCSEQUILIBRIUM_PLUGIN(classname,major,minor,micro) \
-  class classname : public dlvhex::mcsequilibrium::MCSequilibriumPlugin {\
+namespace {\
+  class classname : public dlvhex::PluginInterface {\
     public:\
       classname();\
       virtual void getAtoms(AtomFunctionMap&);\
   };\
-  classname::classname(): dlvhex::mcsequilibrium::MCSequilibriumPlugin() {};\
-
-#if 0
+  classname::classname() {};\
   classname thePlugin;\
+}\
 \
   extern "C"\
   classname* PLUGINIMPORTFUNCTION() {\
@@ -21,5 +21,4 @@
 \
     return &thePlugin;\
   }
-#endif
 #endif
