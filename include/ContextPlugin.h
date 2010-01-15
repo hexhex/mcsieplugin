@@ -1,14 +1,14 @@
 #ifndef _CONTEXTPLUGIN_H
 #define _CONTEXTPLUGIN_H
 
-#include <dlvhex/PluginInterface.h>
+#include "BaseContextPlugin.h"
 
 #define DLVHEX_MCSEQUILIBRIUM_PLUGIN(classname,major,minor,micro) \
 namespace {\
-  class classname : public dlvhex::PluginInterface {\
+  class classname : public dlvhex::mcsequilibrium::BaseContextPlugin {\
     public:\
       classname();\
-      virtual void getAtoms(AtomFunctionMap&);\
+      virtual void registerAtoms();\
   };\
   classname::classname() {};\
   classname thePlugin;\
@@ -16,7 +16,7 @@ namespace {\
 \
   extern "C"\
   classname* PLUGINIMPORTFUNCTION() {\
-    thePlugin.setPluginName(classname);\
+    thePlugin.setPluginName(#classname);\
     thePlugin.setVersion(major,minor,micro);\
 \
     return &thePlugin;\

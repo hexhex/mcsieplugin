@@ -1,8 +1,7 @@
 #include "ContextAtom.h"
 #include "ContextPlugin.h"
-#include <iostream>
 
-DLVHEX_MCSEQUILIBRIUM_PLUGIN(TestPlugin,0,1,0)
+DLVHEX_MCSEQUILIBRIUM_PLUGIN(TestPlugin1,0,1,0)
 
 namespace
 {//test_context1
@@ -69,25 +68,10 @@ namespace
     return ret;
   }
 
-  void
-  TestPlugin::getAtoms(AtomFunctionMap& a) {
-    boost::shared_ptr<dlvhex::mcsequilibrium::BaseContextAtom> test1(new TestContext1());
-    a[(test1.get())->getExtAtomName()] = test1;
-    boost::shared_ptr<dlvhex::mcsequilibrium::BaseContextAtom> test2(new TestContext2());
-    a[(test2.get())->getExtAtomName()] = test2;
-    boost::shared_ptr<dlvhex::mcsequilibrium::BaseContextAtom> test3(new TestContext3());
-    a[(test3.get())->getExtAtomName()] = test3;
+  void TestPlugin1::registerAtoms() {
+    registerAtom<TestContext1>();
+    registerAtom<TestContext2>();
+    registerAtom<TestContext3>();
   }
 
-  //TestPlugin theTestPlugin;
 }
-#if 0
-extern "C"
-TestNamespace::TestPlugin*
-PLUGINIMPORTFUNCTION() {
-  TestNamespace::theTestPlugin.setPluginName("TestPlugin1");
-  TestNamespace::theTestPlugin.setVersion(0,0,1);
-
-  return &TestNamespace::theTestPlugin;
-}
-#endif

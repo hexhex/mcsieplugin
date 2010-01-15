@@ -12,4 +12,5 @@ noinst_HEADERS = MCSequilibriumPlugin.h \
                  EquilibriumOutputBuilder.h \
 		 EquilibriumPrintVisitor.h \
 		 ContextAtom.h \
-		 ContextPlugin.h
+		 ContextPlugin.h \
+		 BaseContextPlugin.h
