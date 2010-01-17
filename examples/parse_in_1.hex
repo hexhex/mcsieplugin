@@ -1,4 +1,0 @@
-(1:a) :- (2:bcd), (3:e), not (1:b).
-#context(1,"dlv_asp_context_acc","./examples/ctx1.dlv").
-#context(2,"dlv_asp_context_acc","./examples/ctx2.dlv").
-#context(3,"dlv_asp_context_acc","./examples/ctx3.dlv").

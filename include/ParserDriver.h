@@ -95,11 +95,11 @@ MCSdescriptionGrammar::definition<ScannerT>::definition(MCSdescriptionGrammar co
 
 		expression
 			=	bridgerule
-			|	(no_node_d[str_p("#context(")] >> context >> no_node_d[str_p(").")])
-      | rm[boost::spirit::comment_p("%")];
+			|	(no_node_d[str_p("#context(")] >> context >> no_node_d[str_p(").")]);
+      		//	| 	rm[boost::spirit::comment_p("%")];
 
 		root
-			=	*expression >> !end_p;
+			=	*rm[boost::spirit::comment_p("%")] >> expression >> *(expression | rm[boost::spirit::comment_p("%")]) >> !end_p;
 };
 } // END namespace mcsequilibriumparserdriver
 } // END namespace dlvhex

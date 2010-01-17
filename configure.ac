@@ -1,6 +1,6 @@
 AC_PREREQ(2.63)
 
-AC_INIT([dlvhex-mcs-equilibrium],[0.0.1],[max@boegl.at])
+AC_INIT([dlvhex-mcs-equilibrium],[0.1.0],[max@boegl.at])
 
 AC_CONFIG_SRCDIR([src/MCSequilibriumPlugin.cpp])
 

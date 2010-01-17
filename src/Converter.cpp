@@ -130,7 +130,9 @@ namespace dlvhex {
 
    void
    Converter::convertParseTreeToDLVProgram(node_t& node, std::ostream& o) {
-     assert(node.value.id() == MCSdescriptionGrammar::Root);
+     if (!(node.value.id() == MCSdescriptionGrammar::Root)) {
+       throw PluginError("MCS Equilibrium Plugin: Inputfile syntax error!");
+     }
      bridgerules.clear();
      context.clear();
 
