@@ -3,13 +3,6 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "ACC_ContextAtom.h"
-//#include <unistd.h>
-//#include <climits>
-//#include <cstring>
-//#include <sstream>
-//#include <cstdlib>
-//#include <iostream>
-//#include <algorithm>
 
 namespace dlvhex {
   namespace mcsequilibrium {
@@ -46,7 +39,8 @@ namespace dlvhex {
       // if there's at least one set equal, the answerset is accepted.
       //
       /////////////////////////////////////////////////////////////////
-      for (std::set<std::set<std::string> >::iterator setit = accset.begin(); ((setit != accset.end()) && (!accept)); ++setit) {
+      for (std::set<std::set<std::string> >::iterator setit = accset.begin(); 
+		((setit != accset.end()) && (!accept)); ++setit) {
 	interset.clear();
 	std::insert_iterator<std::set<std::string> > out_it(interset, interset.begin());
         set_intersection((*setit).begin(), (*setit).end(), oset.begin(), oset.end(), out_it);

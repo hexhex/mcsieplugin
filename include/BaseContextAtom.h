@@ -2,8 +2,6 @@
 #define _DLVHEX_MCSEQUILIBRIUM_BASECONTEXTATOM_H
 
 #include <dlvhex/PluginInterface.h>
-#include <dlvhex/Error.h>
-#include <string>
 #include <sstream>
 
 namespace dlvhex {
@@ -29,7 +27,6 @@ namespace dlvhex {
         virtual void retrieve(const Query& query, Answer& answer) throw (PluginError) = 0;
 
       protected:
-        
         void
         convertAtomSetToStringSet(AtomSet& as, std::set<std::string>& sset) {
           for (AtomSet::const_iterator ai = as.begin(); ai != as.end(); ++ai) {
@@ -38,7 +35,7 @@ namespace dlvhex {
         }
 
         void
-        convertQueryToStringSets( const Query& query, 
+        convertQueryToStringSets( const Query& query,
                                   std::set<std::string>& aset, 
                                   std::set<std::string>& bset, 
                                   std::set<std::string>& oset) 

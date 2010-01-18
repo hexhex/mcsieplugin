@@ -4,7 +4,6 @@
 #include "BridgeRuleEntry.h"
 #include <vector>
 #include <string>
-#include <set>
 
 namespace dlvhex {
   namespace mcsequilibrium {

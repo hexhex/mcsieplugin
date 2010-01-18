@@ -15,14 +15,15 @@ namespace dlvhex {
 //  Grammer for MCS description
 //
 ////////////////////////////////////////////////////////////////////////////
-using namespace std;
-using namespace boost::spirit;
+//using namespace std;
+//using namespace boost::spirit;
 // "The Grammar"
 struct MCSdescriptionGrammar:
-  public grammar<MCSdescriptionGrammar>
+  public boost::spirit::grammar<MCSdescriptionGrammar>
 {
   enum RuleTags {
-    None = 0, Root, Expression, BridgeRule, RuleHeadElem, RuleBody, RuleElem, NegRuleElem, RuleNum, Fact, Context, ContextNum, ExtAtom, Param };
+    None = 0, Root, Expression, BridgeRule, RuleHeadElem, RuleBody, 
+    RuleElem, NegRuleElem, RuleNum, Fact, Context, ContextNum, ExtAtom, Param };
 
   // S = ScannerT
   template<typename S>
@@ -52,62 +53,60 @@ struct MCSdescriptionGrammar:
 };
 
 template<typename ScannerT>
-MCSdescriptionGrammar::definition<ScannerT>::definition(MCSdescriptionGrammar const&)
-{
-		// shortcut for sp::discard_node_d()
-		const node_parser_gen<discard_node_op> rm =
-		node_parser_gen<discard_node_op>();
+MCSdescriptionGrammar::definition<ScannerT>::definition(MCSdescriptionGrammar const&) {
+  // shortcut for sp::discard_node_d()
+  const boost::spirit::node_parser_gen<boost::spirit::discard_node_op> rm =
+  boost::spirit::node_parser_gen<boost::spirit::discard_node_op>();
 
-		chset<> alnumdot("a-zA-Z0-9_./");
-		chset<> alnum_("a-zA-Z0-9_");
-		rulenum
-    			=	lexeme_d[token_node_d[(+digit_p)]];
+  boost::spirit::chset<> alnumdot("a-zA-Z0-9_./");
+  boost::spirit::chset<> alnum_("a-zA-Z0-9_");
 
-		contextnum
-    			=	lexeme_d[token_node_d[(+digit_p)]];
-		
-		fact
-			=	token_node_d[+alnum_];
+  rulenum = 
+	boost::spirit::lexeme_d[boost::spirit::token_node_d[(+boost::spirit::digit_p)]];
 
-		extatom
-			=	rm[ch_p('"')] >> token_node_d[+alnum_] >> rm[ch_p('"')];
+  contextnum =
+	boost::spirit::lexeme_d[boost::spirit::token_node_d[(+boost::spirit::digit_p)]];
+  fact =
+	boost::spirit::token_node_d[+alnum_];
 
-		param
-			=	rm[ch_p('"')] >> token_node_d[+alnumdot] >> rm[ch_p('"')];
+  extatom =
+	rm[boost::spirit::ch_p('"')] >> boost::spirit::token_node_d[+alnum_] >> rm[boost::spirit::ch_p('"')];
 
-		ruleelem
-			=	rm[ch_p('(')] >> rulenum >> rm[ch_p(':')] >> fact >> rm[ch_p(')')];
+  param =
+	rm[boost::spirit::ch_p('"')] >> boost::spirit::token_node_d[+alnumdot] >> rm[boost::spirit::ch_p('"')];
 
-		negruleelem
-			=	rm[str_p("not")] >> rm[ch_p('(')] >> rulenum >> rm[ch_p(':')] >> fact >> rm[ch_p(')')];
+  ruleelem =
+	rm[boost::spirit::ch_p('(')] >> rulenum >> 
+	rm[boost::spirit::ch_p(':')] >> fact >> rm[boost::spirit::ch_p(')')];
 
-		ruleheadelem
-			=	rm[ch_p('(')] >> rulenum >> rm[ch_p(':')] >> fact >> rm[ch_p(')')];
+  negruleelem =
+	rm[boost::spirit::str_p("not")] >> rm[boost::spirit::ch_p('(')] >> 
+	rulenum >> rm[boost::spirit::ch_p(':')] >> fact >> rm[boost::spirit::ch_p(')')];
 
-		rulebody
-			=	(ruleelem|negruleelem) >> *( rm[ch_p(',')] >> (ruleelem|negruleelem) );
+  ruleheadelem =
+	rm[boost::spirit::ch_p('(')] >> rulenum >> rm[boost::spirit::ch_p(':')] >> 
+	fact >> rm[boost::spirit::ch_p(')')];
 
-		bridgerule //=	ruleheadelem >> rm[str_p(":-")] >> rulebody >> rm[ch_p('.')];
-			=	ruleheadelem >> no_node_d[str_p(":-")] >> rulebody >> no_node_d[ch_p('.')];
+  rulebody =
+	(ruleelem|negruleelem) >> *( rm[boost::spirit::ch_p(',')] >> (ruleelem|negruleelem) );
 
-		context //=	contextnum >> rm[ch_p(',')] >> extatom >> rm[ch_p(',')] >> param;
-			=	infix_node_d[contextnum >> ',' >> extatom >> ',' >> param];
+  bridgerule =
+	ruleheadelem >> boost::spirit::no_node_d[boost::spirit::str_p(":-")] >> 
+	rulebody >> boost::spirit::no_node_d[boost::spirit::ch_p('.')];
 
-		expression
-			=	bridgerule
-			|	(no_node_d[str_p("#context(")] >> context >> no_node_d[str_p(").")]);
-      		//	| 	rm[boost::spirit::comment_p("%")];
+  context =
+	boost::spirit::infix_node_d[contextnum >> ',' >> extatom >> ',' >> param];
 
-		root
-			=	*rm[boost::spirit::comment_p("%")] >> expression >> *(expression | rm[boost::spirit::comment_p("%")]) >> !end_p;
+  expression =
+	bridgerule
+      |	(boost::spirit::no_node_d[boost::spirit::str_p("#context(")] >> context >> 
+	boost::spirit::no_node_d[boost::spirit::str_p(").")]);
+
+  root =
+	*rm[boost::spirit::comment_p("%")] >> expression >> 
+	*(expression | rm[boost::spirit::comment_p("%")]) >> !boost::spirit::end_p;
 };
 } // END namespace mcsequilibriumparserdriver
 } // END namespace dlvhex
 
 #endif // _DLVHEX_MCSEQUILIBRIUM_PARSERDRIVER_H
-
-
-
-// Local Variables:
-// mode: C++
-// End:

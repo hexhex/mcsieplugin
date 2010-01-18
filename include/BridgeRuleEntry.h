@@ -1,7 +1,6 @@
 #ifndef _DLVHEX_MCSEQUILIBRIUM_BRIDGERULEENTRY_H_
 #define _DLVHEX_MCSEQUILIBRIUM_BRIDGERULEENTRY_H_
 
-#include <vector>
 #include <string>
 
 namespace dlvhex {
@@ -23,8 +22,8 @@ namespace dlvhex {
 
       }; // END class BridgeRuleEntry
 
-        std::ostream&
-        operator<< (std::ostream&, const BridgeRuleEntry&);
+      std::ostream&
+      operator<< (std::ostream&, const BridgeRuleEntry&);
 
   }  // END namespace mcsequilibrium
 } // END namespace dlvhex
