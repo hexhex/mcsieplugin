@@ -2,17 +2,14 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-//#define DEBUG
-
 #include "ACC_ContextAtom.h"
-
-#include <unistd.h>
-#include <climits>
-#include <cstring>
-#include <sstream>
-#include <cstdlib>
-#include <iostream>
-#include <algorithm>
+//#include <unistd.h>
+//#include <climits>
+//#include <cstring>
+//#include <sstream>
+//#include <cstdlib>
+//#include <iostream>
+//#include <algorithm>
 
 namespace dlvhex {
   namespace mcsequilibrium {
@@ -23,6 +20,13 @@ namespace dlvhex {
       std::set<std::string> oset,aset,bset,interset;
       std::set<std::set<std::string> > accset;
 
+      /////////////////////////////////////////////////////////////////
+      //
+      // get the parameter out of the External Atom
+      // get the belief set's out of the External Atom an fill in the
+      // stringset's
+      //
+      /////////////////////////////////////////////////////////////////
       std::string param = query.getInputTuple()[4].getUnquotedString();
       convertQueryToStringSets(query,aset,bset,oset);
 
@@ -31,9 +35,19 @@ namespace dlvhex {
       // get accepted set of beliefsets
       //
       /////////////////////////////////////////////////////////////////
+
       accset = acc(param,bset);
 
-      for (std::set<std::set<std::string> >::iterator setit = accset.begin(); setit != accset.end(); ++setit) {
+      /////////////////////////////////////////////////////////////////
+      //
+      // Iterate throw the accepted set's, 
+      // build intersection with Output-beliefs
+      // and compare to beliefs in Bridgerulebody
+      // if there's at least one set equal, the answerset is accepted.
+      //
+      /////////////////////////////////////////////////////////////////
+      for (std::set<std::set<std::string> >::iterator setit = accset.begin(); ((setit != accset.end()) && (!accept)); ++setit) {
+	interset.clear();
 	std::insert_iterator<std::set<std::string> > out_it(interset, interset.begin());
         set_intersection((*setit).begin(), (*setit).end(), oset.begin(), oset.end(), out_it);
         if (aset.size() == interset.size()) {
@@ -43,32 +57,11 @@ namespace dlvhex {
         }
       }
 
-      //std::insert_iterator<std::set<std::string> > out_it(interset, interset.begin());
-      //set_intersection(accset.begin(), accset.end(), oset.begin(), oset.end(), out_it);
-
-      #ifdef DEBUG 
-        std::cout << "are aset and interset equal? \n"; 
-        if (aset.size() == interset.size()) {
-          if (equal(aset.begin(),aset.end(),interset.begin())) {
-            std::cout << "true\n";
-          }
-          else std::cout << "false\n";  
-        }
-        else std::cout << "false\n";
-      #endif
-    #if 0
-      if (aset.size() == interset.size()) {
-        if (equal(aset.begin(),aset.end(),interset.begin())) {
-          Tuple out;
-          answer.addTuple(out);
-        } 
-      }
-    #endif
       if (accept) {
         Tuple out;
 	answer.addTuple(out);
       }
     } // end ACC_ContextAtom::retrieve()
 
-  } // namespace script
+  } // namespace mcsequilibrium
 } // namespace dlvhex

@@ -1,5 +1,5 @@
 ./test1/dlvctx_master.hex ./test1/dlvctx.out
-./test1/testctx_master.hex ./test1/testctx.out
+./test1/testctx_master.hex ./test1/dlvctx.out
 ./test2/dlvctx_master.hex ./test2/dlvctx.out
 ./test2/testctx_master.hex ./test2/dlvctx.out
 ./test3/dlvctx_master.hex ./test3/dlvctx.out

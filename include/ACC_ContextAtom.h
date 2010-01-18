@@ -1,10 +1,9 @@
 #ifndef _DLVHEX_MCSEQUILIBRIUM_ACC_CONTEXTATOM_H
 #define _DLVHEX_MCSEQUILIBRIUM_ACC_CONTEXTATOM_H
 
-#include <dlvhex/PluginInterface.h>
 #include <dlvhex/Error.h>
-#include <set>
-#include <string>
+//#include <set>
+//#include <string>
 #include "BaseContextAtom.h"
 
 namespace dlvhex {
