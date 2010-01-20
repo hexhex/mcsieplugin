@@ -29,11 +29,28 @@ namespace dlvhex {
    } // end convertBridgeRuleElem
 
    void
+   Converter::convertBridgeRuleFact(node_t& at, BridgeRule& brule) {
+     int id;
+     std::string f;
+     if (at.value.id() == MCSdescriptionGrammar::RuleHeadElem) {
+         #ifdef DEBUG
+           printSpiritPT(std::cout, at, "HeadElem");
+         #endif
+         assert(at.children.size()==2);
+	 convertBridgeRuleElem(at,id,f);
+	brule.setHeadRule(id,f);
+     }//end if-rule bridgeruleheadelem
+   }// End MCSequilibriumConverter::convertBridgeRule()
+
+   void
    Converter::convertBridgeRule(node_t& at, BridgeRule& brule) {
      int id;
      std::string f;
      for (node_t::tree_iterator ait = at.children.begin(); ait != at.children.end(); ++ait) {
-	node_t& bat = *ait;
+       node_t& bat = *ait;
+       ////////////////////////////////////////////
+       // get the Head of the BridgeRule         //
+       ////////////////////////////////////////////
        if (bat.value.id() == MCSdescriptionGrammar::RuleHeadElem) {
          #ifdef DEBUG
            printSpiritPT(std::cout, bat, "HeadElem");
@@ -46,7 +63,6 @@ namespace dlvhex {
        // there are more than 1 rule in the body //
        ////////////////////////////////////////////
        if (bat.value.id() == MCSdescriptionGrammar::RuleBody) {
-	 std::cout << "RuleBody" << std::endl;
          for (node_t::tree_iterator bit = bat.children.begin(); bit != bat.children.end(); ++bit) {
            node_t& bbeat = *bit;
            if (bbeat.value.id() == MCSdescriptionGrammar::RuleElem) {
@@ -123,6 +139,9 @@ namespace dlvhex {
      for (node_t::tree_iterator it = node.children.begin(); 
        it != node.children.end(); ++it) {
        node_t& at = *it;
+       #ifdef DEBUG
+	std::cout << "ParseTree id: " << MCSdescriptionGrammar::BridgeRuleFact << std::endl;
+       #endif
        if (at.value.id() == MCSdescriptionGrammar::BridgeRule) {
 	 #ifdef DEBUG
            printSpiritPT(std::cout, at, "BridgeRule");
@@ -130,6 +149,20 @@ namespace dlvhex {
          //create new Bridgerule elem and fill the vector with elements
 	 BridgeRule bridgeRule = BridgeRule();
          convertBridgeRule(at,bridgeRule);
+	 //bridgeRule.writeProgram(std::cout);
+         bridgerules.push_back(bridgeRule);
+       } //end if-rule Bridgerule
+       ////////////////////////////////////////////
+       // If the Bridgerule is only a fact,      //
+       // there is only a RuleHeadElement        //
+       ////////////////////////////////////////////
+       if (at.value.id() == MCSdescriptionGrammar::RuleHeadElem) {
+	 #ifdef DEBUG
+           printSpiritPT(std::cout, at, "BridgeRuleFact");
+	 #endif
+         //create new Bridgerule elem and fill the vector with elements
+	 BridgeRule bridgeRule = BridgeRule(true);
+         convertBridgeRuleFact(at,bridgeRule);
 	 //bridgeRule.writeProgram(std::cout);
          bridgerules.push_back(bridgeRule);
        } //end if-rule Bridgerule
@@ -142,6 +175,13 @@ namespace dlvhex {
          #endif
        } //end if-rule Context		
      } // end for-loop over all children of root
+
+     ////////////////////////////////////////////////
+     // write the Parsed Program in the out stream //
+     // first write out the Rules an additional    //
+     // output of the rules, then the              //
+     // external Atom output for the context       //
+     ////////////////////////////////////////////////
      for (std::vector<BridgeRule>::iterator it = bridgerules.begin(); it != bridgerules.end(); ++it) {
 	BridgeRule elem = *it;
 	elem.writeProgram(o);

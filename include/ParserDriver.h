@@ -23,7 +23,7 @@ struct MCSdescriptionGrammar:
 {
   enum RuleTags {
     None = 0, Root, Expression, BridgeRule, RuleHeadElem, RuleBody, 
-    RuleElem, NegRuleElem, RuleNum, Fact, Context, ContextNum, ExtAtom, Param };
+    RuleElem, NegRuleElem, RuleNum, Fact, Context, ContextNum, ExtAtom, Param, BridgeRuleFact };
 
   // S = ScannerT
   template<typename S>
@@ -49,6 +49,7 @@ struct MCSdescriptionGrammar:
     boost::spirit::rule<S, c, tag<ContextNum> >  	contextnum;	/* 11 */
     boost::spirit::rule<S, c, tag<ExtAtom> >      	extatom;	/* 12 */
     boost::spirit::rule<S, c, tag<Param> >         	param;		/* 13 */
+    boost::spirit::rule<S, c, tag<BridgeRuleFact> >	bridgerulefact; /* 14 */
   };
 };
 
@@ -94,11 +95,17 @@ MCSdescriptionGrammar::definition<ScannerT>::definition(MCSdescriptionGrammar co
 	ruleheadelem >> boost::spirit::no_node_d[boost::spirit::str_p(":-")] >> 
 	rulebody >> boost::spirit::no_node_d[boost::spirit::ch_p('.')];
 
+  bridgerulefact =
+	ruleheadelem >> boost::spirit::no_node_d[boost::spirit::ch_p('.')]
+      | ruleheadelem >> boost::spirit::no_node_d[boost::spirit::str_p(":-")] >> 
+	boost::spirit::no_node_d[boost::spirit::ch_p('.')];
+
   context =
 	boost::spirit::infix_node_d[contextnum >> ',' >> extatom >> ',' >> param];
 
   expression =
 	bridgerule
+      | bridgerulefact
       |	(boost::spirit::no_node_d[boost::spirit::str_p("#context(")] >> context >> 
 	boost::spirit::no_node_d[boost::spirit::str_p(").")]);
 

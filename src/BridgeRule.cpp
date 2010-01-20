@@ -19,7 +19,11 @@ namespace dlvhex {
   namespace mcsequilibrium {
 
   BridgeRule::BridgeRule() {
-     // init
+     fact = false;
+   }
+
+  BridgeRule::BridgeRule(bool f) {
+     fact = f;
    }
 
    void
@@ -46,34 +50,37 @@ namespace dlvhex {
    BridgeRule::writeProgram(std::ostream& o) {
      // write bridgerule in asp form
      std::list<int> ilist;
-
-     o << "b" << head << " :- ";
-     for (std::vector<BridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
-       BridgeRuleEntry elem = *it;
-       if (elem.Neg())
-         o << "n";
-       o << "a" << elem;
-       if (it+1 != body.end())
-         o << ", ";
-       else
-         o << "." << std::endl;
-     }
-     for (std::vector<BridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
-       BridgeRuleEntry elem = *it;
-       o << "a" << elem << " v na" << elem << "." << std::endl;
-       ilist.push_back(elem.ContextID());
-     }
-     ilist.unique();
-     ilist.sort();
-     for (std::list<int>::iterator it = ilist.begin(); it != ilist.end(); ++it) {
-       o << "o" << *it << "(X) :- a" << *it << "(X)." << std::endl;
-       o << "o" << *it << "(X) :- na" << *it << "(X)." << std::endl;
-     }
-     /*for (std::vector<BridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
-       BridgeRuleEntry elem = *it;
-       o << "o" << elem.ContextID() << "(X) :- a" << elem.ContextID() << "(X)." << std::endl;
-       o << "o" << elem.ContextID() << "(X) :- na" << elem.ContextID() << "(X)." << std::endl;
-     }*/
+     if (!fact) {
+	     o << "b" << head << " :- ";
+	     for (std::vector<BridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
+	       BridgeRuleEntry elem = *it;
+	       if (elem.Neg())
+		 o << "n";
+	       o << "a" << elem;
+	       if (it+1 != body.end())
+		 o << ", ";
+	       else
+		 o << "." << std::endl;
+	     }
+	     for (std::vector<BridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
+	       BridgeRuleEntry elem = *it;
+	       o << "a" << elem << " v na" << elem << "." << std::endl;
+	       ilist.push_back(elem.ContextID());
+	     }
+	     ilist.unique();
+	     ilist.sort();
+	     for (std::list<int>::iterator it = ilist.begin(); it != ilist.end(); ++it) {
+	       o << "o" << *it << "(X) :- a" << *it << "(X)." << std::endl;
+	       o << "o" << *it << "(X) :- na" << *it << "(X)." << std::endl;
+	     }
+	     /*for (std::vector<BridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
+	       BridgeRuleEntry elem = *it;
+	       o << "o" << elem.ContextID() << "(X) :- a" << elem.ContextID() << "(X)." << std::endl;
+	       o << "o" << elem.ContextID() << "(X) :- na" << elem.ContextID() << "(X)." << std::endl;
+	     }*/
+    } else {
+	o << "b" << head << "." << std::endl;
+    }
    }
 
    void 

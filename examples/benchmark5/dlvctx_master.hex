@@ -1,0 +1,8 @@
+#context(1,"dlv_asp_context_acc", "./benchmark5/dlvctx_ctx1.dlv").
+#context(2,"dlv_asp_context_acc", "./benchmark5/dlvctx_ctx2.dlv").
+#context(2,"dlv_asp_context_acc", "./benchmark5/dlvctx_ctx3.dlv").
+#context(2,"dlv_asp_context_acc", "./benchmark5/dlvctx_ctx4.dlv").
+
+(4:a) :- (1:na).
+(4:b) :- (2:nb).
+(4:c) :- (3:nc).

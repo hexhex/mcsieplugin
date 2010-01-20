@@ -36,39 +36,12 @@ void printSet (std::string s) {
 
 void
 DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginError) {
-
   std::set<std::string> oset,aset,bset, aointerset, ominusaset;
   set<string> interset, accset;
 
   const std::string param = query.getInputTuple()[4].getUnquotedString();
 
   convertQueryToStringSets(query,aset,bset,oset);
-  #ifdef DEBUG
-    std::cout << "===========================================" << std::endl;
-    std::cout << param << std::endl;
-    std::cout << "aset: " << std::endl;
-    for_each(aset.begin(),aset.end(),printSet);
-    std::cout << "oset: " << std::endl;
-    for_each(oset.begin(),oset.end(),printSet);
-    std::cout << "--------------------------------------------" << std::endl;
-  #endif
-
-/*
-
-  std::stringstream tmpin;
-  std::ifstream ifs;
-  ifs.open(param.c_str());
-
-  if (!ifs.is_open())
-    {
-      throw GeneralError("File " + param + " not found");
-    }
-
-  tmpin << ifs.rdbuf();
-  ifs.close();
-  cout << "Readed Program: " << endl;
-  cout << tmpin.str() << endl;
-*/
 
   /////////////////////////////////////////////////////////////////
   //
@@ -82,9 +55,6 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
   std::vector<AtomSet>::const_iterator as;
 
   std::vector<std::string> tmp;
-
-  //tmp.push_back(DLVPATH);
-  // never include the set of initial facts in the answer sets
   tmp.push_back("-silent");
 
 
@@ -98,20 +68,10 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
   std::auto_ptr<BaseASPSolver> solver(dlv.createSolver());
   // 2. Art ASPFileSolver
   //std::auto_ptr<BaseASPSolver> solver(new ASPFileSolver<DLVresultParserDriver>(dlv,tmp));
-    
-
-  /*
-  Program *idb = new Program();
-  /// stores the facts of the program
-  AtomSet *edb = new AtomSet();
-  const Program *pp = idb;
-  const AtomSet *atsp = edb;
-  */
-
 
   /////////////////////////////////////////////////////////////////
   //
-  // Parsing Programm
+  // Parsing Programm given as param into idb and edb
   //
   /////////////////////////////////////////////////////////////////
 
@@ -122,14 +82,13 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
   AtomSet edb;
   driver.parse(param, idb, edb);
 
-  //DLVresultParserDriver driver;
-  //driver.parse(param, 
-    #ifdef DEBUG
-      cout  << "---------------- DLV_ASP_ContextAtom Retrieve---------------------------" <<  endl;
-    #endif
+  /////////////////////////////////////////////////////////////////
+  //
+  // add additional rules to the program
+  //
+  /////////////////////////////////////////////////////////////////
 
-//  cout << "Atomset size: " << edb->size() << endl;
-  // add Atomsets b<i>
+  // add Atomsets b<i> as facts to program
   for (set<string>::iterator inputit = bset.begin(); inputit != bset.end(); ++inputit) {
     //*inputit
     #ifdef DEBUG
@@ -137,16 +96,15 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
     #endif
     edb.insert(AtomPtr(new Atom(Tuple(1, Term(*inputit)))));
   }
-//  cout << "Atomset size: " << edb->size() << endl;
 
   // Rules of Programm
   RuleHead_t h;
   RuleBody_t b;
   h.clear();
 
+  // add the intersection of A and O as Constraint ":- not x."
   std::insert_iterator<std::set<std::string> > aointer_it(aointerset, aointerset.begin());
   set_intersection(aset.begin(), aset.end(), oset.begin(), oset.end(), aointer_it);
-
   for (set<string>::iterator interit = aointerset.begin(); interit != aointerset.end(); ++interit) {
     b.clear();
     b.insert(new Literal(AtomPtr(new Atom(*interit)), true));
@@ -157,9 +115,9 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
     idb.addRule(r);
   }
 
+  // add the difference of O and A as Constraint ":- x."
   std::insert_iterator<std::set<std::string> > ominusaset_it(ominusaset, ominusaset.begin());
   set_difference(oset.begin(), oset.end(), aset.begin(), aset.end(), ominusaset_it);
-
   for (set<string>::iterator aodiffit = ominusaset.begin(); aodiffit != ominusaset.end(); ++aodiffit) {
     b.clear();
     b.insert(new Literal(AtomPtr(new Atom(*aodiffit)), false));
@@ -195,29 +153,7 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
   // 2. Art ASPFileSolver
   //solver.solve(*pp, *atsp, answersets);
 
-  #if 0
-    ResultContainer* result = new ResultContainer();
-
-    for (as = answersets.begin(); as!=answersets.end(); ++as) {
-      result->addSet(*as);
-    }
-
-    OutputBuilder *outputbuilder = new TextOutputBuilder();
-    result->print(std::cout, outputbuilder);
-
-    cout << "-------------------------------------------" << endl;
-  #endif
-
-  #ifdef DEBUG
-    cout << "are there Answersets?????? " << endl;
-    cout << "Answerset size: " << answersets.size() << endl;
-  #endif
-
   if (answersets.size() > 0) {
-    #ifdef DEBUG
-      cout << "there are Answersets!!!! " << endl;
-      cout  << "-------------------------------------------" <<  endl;
-    #endif
     Tuple out;
     answer.addTuple(out);
   }

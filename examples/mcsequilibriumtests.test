@@ -4,3 +4,7 @@
 ./test2/testctx_master.hex ./test2/dlvctx.out
 ./test3/dlvctx_master.hex ./test3/dlvctx.out
 ./test3/testctx_master.hex ./test3/dlvctx.out
+./benchmark1/dlvctx_master.hex ./benchmark1/dlvctx.out
+./benchmark2/dlvctx_master.hex ./benchmark2/dlvctx.out
+./benchmark3/dlvctx_master.hex ./benchmark3/dlvctx.out
+./benchmark4/dlvctx_master.hex ./benchmark4/dlvctx.out

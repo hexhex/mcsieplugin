@@ -10,6 +10,7 @@ namespace dlvhex {
 
     class BridgeRule {
       public:
+	BridgeRule(bool f);
         BridgeRule();
         virtual void setHeadRule(int id, std::string f);
 	virtual void addBodyRule(int id, std::string f, bool n);
@@ -25,6 +26,7 @@ namespace dlvhex {
       private:
         BridgeRuleEntry head;
 	std::vector<BridgeRuleEntry> body;
+	bool fact;
 
 
     }; // END class BridgeRule
