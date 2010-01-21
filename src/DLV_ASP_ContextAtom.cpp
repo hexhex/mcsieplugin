@@ -43,6 +43,16 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
 
   convertQueryToStringSets(query,aset,bset,oset);
 
+  #ifdef DEBUG
+       std::cout << "===========================================" << std::endl;
+       std::cout << param << std::endl;
+       std::cout << "aset: " << std::endl;
+       for_each(aset.begin(),aset.end(),printSet);
+       std::cout << "oset: " << std::endl;
+       for_each(oset.begin(),oset.end(),printSet);
+       std::cout << "--------------------------------------------" << std::endl;
+  #endif
+
   /////////////////////////////////////////////////////////////////
   //
   // Setting Up DLV Process and Options
@@ -152,6 +162,23 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
   solver->solve(idb, edb, answersets);
   // 2. Art ASPFileSolver
   //solver.solve(*pp, *atsp, answersets);
+
+  #ifdef DEBUG
+       ResultContainer* result = new ResultContainer();
+   
+       for (as = answersets.begin(); as!=answersets.end(); ++as) {
+         result->addSet(*as);
+       }
+   
+       OutputBuilder *outputbuilder = new TextOutputBuilder();
+       result->print(std::cout, outputbuilder);
+   
+       cout << "-------------------------------------------" << endl;
+
+       cout << "are there Answersets?????? " << endl;
+       cout << "Answerset size: " << answersets.size() << endl;
+  #endif
+
 
   if (answersets.size() > 0) {
     Tuple out;

@@ -54,7 +54,7 @@ EquilibriumPrintVisitor::visit(AtomSet* const as)
       sspred << (*a)->getPredicate();
       pred = sspred.str();
       //std::cout << "pred: " << pred << std::endl;
-      if (pred[0] != 'a') {
+      if (pred[0] != 'a'){
         pred.erase(0,1);
         id = std::atoi(pred.c_str());
         if (id > maxid) maxid=id;
