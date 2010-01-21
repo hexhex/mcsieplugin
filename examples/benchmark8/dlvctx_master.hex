@@ -1,0 +1,12 @@
+#context(1,"dlv_asp_context_acc", "./benchmark8/dlvctx_ctx1.dlv").
+#context(2,"dlv_asp_context_acc", "./benchmark8/dlvctx_ctx2.dlv").
+#context(3,"dlv_asp_context_acc", "./benchmark8/dlvctx_ctx3.dlv").
+
+(1:b) :- (1:a).
+(1:a) :- (1:b).
+(2:b) :- (1:a).
+(2:a) :- (1:b).
+(3:b) :- (1:a).
+(3:a) :- (1:b).
+(3:b).
+(3:a).

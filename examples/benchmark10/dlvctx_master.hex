@@ -1,0 +1,6 @@
+#context(1,"dlv_asp_context_acc", "./benchmark10/dlvctx_ctx1.dlv").
+#context(2,"dlv_asp_context_acc", "./benchmark10/dlvctx_ctx2.dlv").
+
+(1:a) :- (2:d).
+(1:e).
+(2:c) :- (1:b).

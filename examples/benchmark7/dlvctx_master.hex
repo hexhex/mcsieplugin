@@ -1,5 +1,8 @@
 #context(1,"dlv_asp_context_acc", "./benchmark7/dlvctx_ctx1.dlv").
 #context(2,"dlv_asp_context_acc", "./benchmark7/dlvctx_ctx2.dlv").
+#context(3,"dlv_asp_context_acc", "./benchmark7/dlvctx_ctx3.dlv").
+#context(4,"dlv_asp_context_acc", "./benchmark7/dlvctx_ctx4.dlv").
 
-(2:insured(X,Y,Z)) :- (1:ninsured(X,Y,Z)).
-(2:person(X,Y,Z)) :- (1:nperson(X,Y,Z)).
+(2:b) :- not (1:a).
+(3:c) :- not (2:b).
+(4:d) :- not (3:c).

@@ -8,3 +8,10 @@
 ./benchmark2/dlvctx_master.hex ./benchmark2/dlvctx.out
 ./benchmark3/dlvctx_master.hex ./benchmark3/dlvctx.out
 ./benchmark4/dlvctx_master.hex ./benchmark4/dlvctx.out
+./benchmark5/dlvctx_master.hex ./benchmark5/dlvctx.out
+./benchmark6/dlvctx_master.hex ./benchmark6/dlvctx.out
+./benchmark7/dlvctx_master.hex ./benchmark7/dlvctx.out
+./benchmark8/dlvctx_master.hex ./benchmark8/dlvctx.out
+./benchmark9/dlvctx_master.hex ./benchmark9/dlvctx.out
+./benchmark10/dlvctx_master.hex ./benchmark10/dlvctx.out
+./benchmark11/dlvctx_master.hex ./benchmark11/dlvctx.out
