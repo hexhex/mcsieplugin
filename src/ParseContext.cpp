@@ -3,13 +3,6 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "ParseContext.h"
-
-#include <climits>
-#include <sstream>
-#include <cstdlib>
-
-#include <iostream>
-#include <string>
 #include <ostream>
 
 
@@ -35,5 +28,5 @@ namespace dlvhex {
      return out;
    }
 
-  } // namespace script
+  } // namespace mcsequilibrium
 } // namespace dlvhex

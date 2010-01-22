@@ -5,7 +5,7 @@
 //#define DEBUG
 
 #include "Converter.h"
-#include "SpiritDebugging.h"
+#include "dlvhex/SpiritDebugging.h"
 #include "BridgeRuleEntry.h"
 
 #include <iostream>

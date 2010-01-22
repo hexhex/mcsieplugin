@@ -1,20 +1,12 @@
-#include "EquilibriumPrintVisitor.h"
-#include "dlvhex/Program.h"
-#include "dlvhex/AtomSet.h"
-#include "dlvhex/Rule.h"
-#include "dlvhex/Literal.h"
-#include "dlvhex/Atom.h"
-#include "dlvhex/ExternalAtom.h"
-#include "dlvhex/AggregateAtom.h"
-#include "dlvhex/PrintVisitor.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H */
 
+#include "EquilibriumPrintVisitor.h"
+
+#include "dlvhex/AtomSet.h"
 #include <iostream>
-#include <cstdlib>
-#include <iterator>
-#include <map>
 #include <sstream>
-#include <string>
-#include <boost/functional.hpp>
 
 //#define DEBUG
 
@@ -98,10 +90,3 @@ EquilibriumPrintVisitor::visit(AtomSet* const as)
 
 }//namespace mcsequilibrium
 }//namespace dlvhex
-
-/* vim: set noet sw=4 ts=4 tw=80: */
-
-
-// Local Variables:
-// mode: C++
-// End:

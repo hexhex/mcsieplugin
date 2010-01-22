@@ -27,4 +27,4 @@ namespace dlvhex {
 
   }  // END namespace mcsequilibrium
 } // END namespace dlvhex
-#endif // _DLVHEX_MCSEQUILIBRIUMCONTEXT_H
+#endif // _DLVHEX_MCSEQUILIBRIUM_PARSECONTEXT_H_

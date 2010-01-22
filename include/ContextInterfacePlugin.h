@@ -1,5 +1,5 @@
-#ifndef _CONTEXTPLUGIN_H
-#define _CONTEXTPLUGIN_H
+#ifndef _CONTEXTINTERFACEPLUGIN_H_
+#define _CONTEXTINTERFACEPLUGIN_H_
 
 #include "BaseContextPlugin.h"
 
@@ -21,4 +21,4 @@ namespace {\
 \
     return &thePlugin;\
   }
-#endif
+#endif //_CONTEXTINTERFACEPLUGIN_H_

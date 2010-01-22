@@ -6,24 +6,12 @@
 
 #include "DLV_ASP_ContextAtom.h"
 
-#include <unistd.h>
-#include <climits>
-#include <cstring>
-#include <sstream>
-#include <cstdlib>
-#include <iostream>
-#include <fstream>
-#include <algorithm>
-#include "dlvhex/ProgramCtx.h"
 #include "dlvhex/DLVProcess.h"
 #include "dlvhex/AtomSet.h"
 #include "dlvhex/Program.h"
-#include "dlvhex/ResultContainer.h"
-#include "dlvhex/globals.h"
 #include "dlvhex/HexParserDriver.h"
 #include "dlvhex/ASPSolver.h"
 #include "dlvhex/TextOutputBuilder.h"
-#include "dlvhex/DLVresultParserDriver.h"
 
 namespace dlvhex {
   namespace mcsequilibrium {

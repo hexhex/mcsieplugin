@@ -6,12 +6,11 @@ noinst_HEADERS = MCSequilibriumPlugin.h \
 		 BridgeRule.h \
 		 BridgeRuleEntry.h \
 		 ParseContext.h \
-		 BaseContextAtom.h \
 		 ACC_ContextAtom.h \
 		 DLV_ASP_ContextAtom.h \
                  EquilibriumOutputBuilder.h \
 		 EquilibriumPrintVisitor.h \
-		 ContextAtom.h \
-		 SpiritDebugging.h \
-		 ContextPlugin.h \
-		 BaseContextPlugin.h
+		 BaseContextAtom.h \
+		 BaseContextPlugin.h \
+		 ContextInterfaceAtom.h \
+		 ContextInterfacePlugin.h

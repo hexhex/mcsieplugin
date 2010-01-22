@@ -1,5 +1,5 @@
-#ifndef _DLVHEX_MCSEQUILIBRIUM_PARSERDRIVER_H
-#define _DLVHEX_MCSEQUILIBRIUM_PARSERDRIVER_H
+#ifndef _DLVHEX_MCSEQUILIBRIUM_PARSERDRIVER_H_
+#define _DLVHEX_MCSEQUILIBRIUM_PARSERDRIVER_H_
 
 #include <boost/spirit/core.hpp>
 #include <boost/spirit/utility/chset.hpp>
@@ -15,9 +15,6 @@ namespace dlvhex {
 //  Grammer for MCS description
 //
 ////////////////////////////////////////////////////////////////////////////
-//using namespace std;
-//using namespace boost::spirit;
-// "The Grammar"
 struct MCSdescriptionGrammar:
   public boost::spirit::grammar<MCSdescriptionGrammar>
 {
@@ -113,7 +110,7 @@ MCSdescriptionGrammar::definition<ScannerT>::definition(MCSdescriptionGrammar co
 	*rm[boost::spirit::comment_p("%")] >> expression >> 
 	*(expression | rm[boost::spirit::comment_p("%")]) >> !boost::spirit::end_p;
 };
-} // END namespace mcsequilibriumparserdriver
+} // END namespace mcsequilibrium
 } // END namespace dlvhex
 
-#endif // _DLVHEX_MCSEQUILIBRIUM_PARSERDRIVER_H
+#endif // _DLVHEX_MCSEQUILIBRIUM_PARSERDRIVER_H_

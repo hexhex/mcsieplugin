@@ -2,8 +2,7 @@ AUTOMAKE_OPTIONS = gnu
 
 plugin_LTLIBRARIES = libdlvhexmcsequilibrium.la
 
-libdlvhexmcsequilibrium_la_SOURCES = PluginImport.cpp \
-			     MCSequilibriumPlugin.cpp \
+libdlvhexmcsequilibrium_la_SOURCES = MCSequilibriumPlugin.cpp \
                              Converter.cpp \
                              BridgeRule.cpp \
                              BridgeRuleEntry.cpp \

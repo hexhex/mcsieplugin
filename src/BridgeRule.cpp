@@ -4,14 +4,7 @@
 
 #include "BridgeRule.h"
 
-#include <climits>
-#include <sstream>
-#include <cstdlib>
-
-#include <iostream>
-#include <string>
 #include <ostream>
-#include <vector>
 #include <list>
 
 
@@ -33,17 +26,8 @@ namespace dlvhex {
 
    void
    BridgeRule::addBodyRule(int id, std::string f, bool n){
-	//std::cout << "add entry in vector: id: " << id << " fact: " << f << " neg: " << n << std::endl;
      BridgeRuleEntry elem = BridgeRuleEntry(id,f,n);
-	//std::cout << "elem entry: " << elem.ContextID() << " fact: " << elem.Fact() << " neg: " << elem.Neg() << std::endl;
      body.push_back(elem);
-
-/*     std::cout << "After inserting one element there are these elements in list: " << std::endl;
-     for (std::vector<BridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
-       BridgeRuleEntry elem = *it;
-	std::cout << "elem entry: " << elem.ContextID() << " fact: " << elem.Fact() << " neg: " << elem.Neg() << std::endl;
-     }
-*/
    } // end of BridgeRule::addBodyRule
 
    void 
@@ -73,39 +57,9 @@ namespace dlvhex {
 	       o << "o" << *it << "(X) :- a" << *it << "(X)." << std::endl;
 	       o << "o" << *it << "(X) :- na" << *it << "(X)." << std::endl;
 	     }
-	     /*for (std::vector<BridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
-	       BridgeRuleEntry elem = *it;
-	       o << "o" << elem.ContextID() << "(X) :- a" << elem.ContextID() << "(X)." << std::endl;
-	       o << "o" << elem.ContextID() << "(X) :- na" << elem.ContextID() << "(X)." << std::endl;
-	     }*/
     } else {
 	o << "b" << head << "." << std::endl;
     }
    }
-
-   void 
-   BridgeRule::writeDebugProgram() {
-     std::cout << "BridgeRule DEBUG\n";
-     std::cout << "there are " << body.size() << " elements in the body. \n";
-     writeProgram(std::cout);
-   }
-
-   std::ostream&
-   operator<< (std::ostream& out, const BridgeRule& rule) {
-     // write bridgerule in asp form
-    out << "b" << rule.Head() << " :- ";
-     for (std::vector<BridgeRuleEntry>::iterator it = rule.Body().begin(); it != rule.Body().end(); ++it) {
-       BridgeRuleEntry elem = *it;
-       if (elem.Neg())
-         out << "n";
-       out << "a" << elem;
-       if (it+1 != rule.Body().end())
-         out << ", ";
-       else
-         out << "." << std::endl;
-     }
-     return out;
-   }
-
   } // namespace script
 } // namespace dlvhex

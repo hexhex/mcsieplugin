@@ -1,3 +1,7 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H */
+
 #include "EquilibriumOutputBuilder.h"
 #include "dlvhex/globals.h"
 #include "dlvhex/ResultContainer.h"
@@ -30,15 +34,9 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
     {
       return;
     }
-  
+
   for (ResultContainer::result_t::const_iterator rit = results.begin(); rit != results.end(); ++rit)
     {
-  #if 0
-      RawPrintVisitor rpv(stream);
-      (*rit)->accept(rpv);
-      stream << std::endl;
-  #endif
-
       EquilibriumPrintVisitor epv(stream);
       (*rit)->accept(epv);
       stream << std::endl;
@@ -52,10 +50,3 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 
 }//namespace mcsequilibrium
 }//namespace dlvhex
-
-/* vim: set noet sw=4 ts=4 tw=80: */
-
-
-// Local Variables:
-// mode: C++
-// End:

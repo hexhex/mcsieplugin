@@ -1,5 +1,5 @@
-#ifndef _CONTEXTATOM_H
-#define _CONTEXTATOM_H
+#ifndef _CONTEXTINTERFACEATOM_H_
+#define _CONTEXTINTERFACEATOM_H_
 
 #include "ACC_ContextAtom.h"
 
@@ -10,4 +10,5 @@
       virtual std::set<std::set<std::string> > acc(const std::string& param, const std::set<std::string>& input);\
   };\
   classname::classname(): ACC_ContextAtom(funcname) {};
-#endif
+
+#endif // _CONTEXTINTERFACEATOM_H_

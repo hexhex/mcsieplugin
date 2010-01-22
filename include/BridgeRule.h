@@ -12,28 +12,18 @@ namespace dlvhex {
       public:
 	BridgeRule(bool f);
         BridgeRule();
-        virtual void setHeadRule(int id, std::string f);
-	virtual void addBodyRule(int id, std::string f, bool n);
-	virtual void writeProgram(std::ostream& o);
-	virtual void writeDebugProgram();
-
+        void setHeadRule(int id, std::string f);
+	void addBodyRule(int id, std::string f, bool n);
+	void writeProgram(std::ostream& o);
 
         BridgeRuleEntry Head() const { return head; }
         std::vector<BridgeRuleEntry> Body() const { return body; }
 
-//        static std::vector<BridgeRuleEntry> body;
-//	BridgeRuleEntry head;
       private:
         BridgeRuleEntry head;
 	std::vector<BridgeRuleEntry> body;
 	bool fact;
-
-
     }; // END class BridgeRule
-
-    std::ostream&
-    operator<< (std::ostream&, const BridgeRule&);
-
   }  // END namespace mcsequilibrium
 } // END namespace dlvhex
-#endif // _DLVHEX_BRIDGERULE_H
+#endif // _DLVHEX_MCSEQUILIBRIUM_BRIDGERULE_H_

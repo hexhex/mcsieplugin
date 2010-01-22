@@ -2,7 +2,6 @@
 #define _DLVHEX_MCSEQUILIBRIUM_DLV_ASP_CONTEXTATOM_H
 
 #include "BaseContextAtom.h"
-#include <string>
 
 namespace dlvhex {
   namespace mcsequilibrium {

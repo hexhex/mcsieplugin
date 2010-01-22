@@ -1,20 +1,8 @@
-/* -*- C++ -*- */
-
-/**
- * @file   MCSEquilibriumPlugin.cpp
- * @author Markus Boegl
- * @date   October 2009
- *
- * @brief  Equilibrium evaluation for Multi Context Systems in DLVHEX
- */
-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
 #include "MCSequilibriumPlugin.h"
-#include <cstdlib>
-#include <iostream>
 
 namespace dlvhex {
   namespace mcsequilibrium {
@@ -26,37 +14,17 @@ MCSequilibriumPlugin::MCSequilibriumPlugin()
 
 MCSequilibriumPlugin::~MCSequilibriumPlugin() {
     delete mcseconverter;
-    //delete equilibriumOB;
-}
-
-bool 
-MCSequilibriumPlugin::registerContext(BaseContextAtom& bca) {
-  //boost::shared_ptr<BaseContextAtom> mcsequi(bca);
-  //afm[bca->getExtAtomName()] = mcsequi;
-  return true;
-}
-
-void
-MCSequilibriumPlugin::getAtoms(AtomFunctionMap& a) {
-  //boost::shared_ptr<PluginAtom> mcsequi(new GenericContextAtom(""));
-  //a["dlv_asp_context_acc"] = mcsequi;
-
-  //GenericContextAtom *gca = new DLV_ASP_Context(""));
-  //DLV_ASP_Context dlvc("");
-  //GenericContextAtom *gca = &dlvc;
-  afm = &a;
-  //registerContext(new DLV_ASP_ContextAtom());
-  boost::shared_ptr<BaseContextAtom> mcsequi(new DLV_ASP_ContextAtom());
-  a[(mcsequi.get())->getExtAtomName()] = mcsequi;
+    // do not delete the equilibriumOB here because the
+    // OutputBuilder will be deleted by dlvhex
+    // and if you delete it here, there will be an error
 }
 
 void
 MCSequilibriumPlugin::setupProgramCtx(dlvhex::ProgramCtx& pc) {
-
 	pc.setOutputBuilder(equilibriumOB);
 }
 
-OutputBuilder* 
+OutputBuilder*
 MCSequilibriumPlugin::createOutputBuilder() {
    return equilibriumOB;
 }
@@ -67,16 +35,19 @@ MCSequilibriumPlugin::createConverter() {
     if (!this->activatePlugin) {
         return 0;
     }
-
     return mcseconverter;
 }
 
+void 
+MCSequilibriumPlugin::registerAtoms() {
+   registerAtom<DLV_ASP_ContextAtom>();
+}
 
-//MCSequilibriumPlugin theMCSequilibriumPlugin;
+    MCSequilibriumPlugin theMCSequilibriumPlugin;
 
   } // namespace mcsequilibrium
 } // namespace dlvhex
-#if 0
+
 extern "C"
 dlvhex::mcsequilibrium::MCSequilibriumPlugin*
 PLUGINIMPORTFUNCTION() {
@@ -87,4 +58,3 @@ PLUGINIMPORTFUNCTION() {
 
   return &dlvhex::mcsequilibrium::theMCSequilibriumPlugin;
 }
-#endif

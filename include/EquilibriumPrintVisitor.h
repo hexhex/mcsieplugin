@@ -1,8 +1,7 @@
-#ifndef _DLVHEX_MCSEQUILIBRIUM_EQUILIBRIUMPRINTVISITOR_H
-#define _DLVHEX_MCSEQUILIBRIUM_EQUILIBRIUMPRINTVISITOR_H
+#ifndef _DLVHEX_MCSEQUILIBRIUM_EQUILIBRIUMPRINTVISITOR_H_
+#define _DLVHEX_MCSEQUILIBRIUM_EQUILIBRIUMPRINTVISITOR_H_
 
 #include "dlvhex/PrintVisitor.h"
-#include <iosfwd>
 
 namespace dlvhex {
   namespace mcsequilibrium {
@@ -19,9 +18,4 @@ namespace dlvhex {
   } // END namespace mcsequilibrium
 } // END namespace dlvhex
 
-#endif /* _DLVHEX_EQUILIBRIUMOUTPUTBUILDER_H */
-
-
-// Local Variables:
-// mode: C++
-// End:
+#endif // _DLVHEX_MCSEQUILIBRIUM_EQUILIBRIUMPRINTVISITOR_H_

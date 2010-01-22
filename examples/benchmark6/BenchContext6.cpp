@@ -1,5 +1,5 @@
-#include "ContextAtom.h"
-#include "ContextPlugin.h"
+#include "ContextInterfaceAtom.h"
+#include "ContextInterfacePlugin.h"
 
 DLVHEX_MCSEQUILIBRIUM_PLUGIN(BenchmarkPlugin6,0,1,0)
 
