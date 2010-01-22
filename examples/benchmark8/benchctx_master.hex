@@ -1,0 +1,12 @@
+#context(1,"benchcontext8_context_acc1", "./benchmark8/dlvctx_ctx1.dlv").
+#context(2,"benchcontext8_context_acc2", "./benchmark8/dlvctx_ctx2.dlv").
+#context(3,"benchcontext8_context_acc3", "./benchmark8/dlvctx_ctx3.dlv").
+
+(1:b) :- (1:a).
+(1:a) :- (1:b).
+(2:b) :- (1:a).
+(2:a) :- (1:b).
+(3:b) :- (1:a).
+(3:a) :- (1:b).
+(3:b).
+(3:a).

@@ -9,7 +9,13 @@ plugin_LTLIBRARIES = 	libdlvhexmcstestcontext1.la\
 			libdlvhexmcsbenchmark2.la\
 			libdlvhexmcsbenchmark3.la\
 			libdlvhexmcsbenchmark4.la\
-			libdlvhexmcsbenchmark10.la
+			libdlvhexmcsbenchmark5.la\
+			libdlvhexmcsbenchmark6.la\
+			libdlvhexmcsbenchmark7.la\
+			libdlvhexmcsbenchmark8.la\
+			libdlvhexmcsbenchmark9.la\
+			libdlvhexmcsbenchmark10.la\
+			libdlvhexmcsbenchmark11.la
 
 AM_CPPFLAGS = \
  	-I$(top_srcdir)/include \
@@ -44,6 +50,30 @@ libdlvhexmcsbenchmark4_la_SOURCES = ./benchmark4/BenchContext4.cpp
 libdlvhexmcsbenchmark4_la_LDFLAGS = -avoid-version -module \
  			     $(top_builddir)/src/ACC_ContextAtom.lo
 
+libdlvhexmcsbenchmark5_la_SOURCES = ./benchmark5/BenchContext5.cpp
+libdlvhexmcsbenchmark5_la_LDFLAGS = -avoid-version -module \
+ 			     $(top_builddir)/src/ACC_ContextAtom.lo
+
+libdlvhexmcsbenchmark6_la_SOURCES = ./benchmark6/BenchContext6.cpp
+libdlvhexmcsbenchmark6_la_LDFLAGS = -avoid-version -module \
+ 			     $(top_builddir)/src/ACC_ContextAtom.lo
+
+libdlvhexmcsbenchmark7_la_SOURCES = ./benchmark7/BenchContext7.cpp
+libdlvhexmcsbenchmark7_la_LDFLAGS = -avoid-version -module \
+ 			     $(top_builddir)/src/ACC_ContextAtom.lo
+
+libdlvhexmcsbenchmark8_la_SOURCES = ./benchmark8/BenchContext8.cpp
+libdlvhexmcsbenchmark8_la_LDFLAGS = -avoid-version -module \
+ 			     $(top_builddir)/src/ACC_ContextAtom.lo
+
+libdlvhexmcsbenchmark9_la_SOURCES = ./benchmark9/BenchContext9.cpp
+libdlvhexmcsbenchmark9_la_LDFLAGS = -avoid-version -module \
+ 			     $(top_builddir)/src/ACC_ContextAtom.lo
+
 libdlvhexmcsbenchmark10_la_SOURCES = ./benchmark10/BenchContext10.cpp
 libdlvhexmcsbenchmark10_la_LDFLAGS = -avoid-version -module \
+ 			     $(top_builddir)/src/ACC_ContextAtom.lo
+
+libdlvhexmcsbenchmark11_la_SOURCES = ./benchmark11/BenchContext11.cpp
+libdlvhexmcsbenchmark11_la_LDFLAGS = -avoid-version -module \
  			     $(top_builddir)/src/ACC_ContextAtom.lo

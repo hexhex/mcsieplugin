@@ -6,6 +6,7 @@
 #include "dlvhex/Atom.h"
 #include "dlvhex/ExternalAtom.h"
 #include "dlvhex/AggregateAtom.h"
+#include "dlvhex/PrintVisitor.h"
 
 #include <iostream>
 #include <cstdlib>
@@ -35,67 +36,61 @@ EquilibriumPrintVisitor::visit(AtomSet* const as)
   std::string pred;
   int id=0,maxid=0;
 
-  stream << '(';
   #ifdef DEBUG
-    std::cout << "AS size: " << as->size() << std::endl;
+    std::cerr << "Answerset: ";
+		::dlvhex::RawPrintVisitor dbgVisitor(std::cerr);
+		as->accept(dbgVisitor);
+		std::cerr << std::endl;
   #endif
+
+  stream << '(';
   if (!as->empty()) {
     for (AtomSet::atomset_t::const_iterator a = as->atoms.begin(); a != as->atoms.end(); ++a) {
-      #ifdef DEBUG
-        std::cout << std::endl << "Atoms: " << (*a)->getPredicate();
-        const Tuple& argu = (*a)->getArguments();
-        for (Tuple::const_iterator ait = argu.begin(); ait != argu.end(); ait++) {
-          std::stringstream sstr;
-          sstr << *ait;
-          std::cout << sstr.str() << std::endl;
-        } // for over Tuples
-      #endif
-      std::stringstream sspred;
-      sspred << (*a)->getPredicate();
-      pred = sspred.str();
-      //std::cout << "pred: " << pred << std::endl;
-      if (pred[0] != 'a'){
-        pred.erase(0,1);
-        id = std::atoi(pred.c_str());
-        if (id > maxid) maxid=id;
-        if (outlist.count(id) < 1) outlist.insert(std::pair<int,std::string>(id,""));
-      }
-      pred = sspred.str();
-      if (pred[0] == 'a') {
-        pred.erase(0,1);
-        id = std::atoi(pred.c_str());
-        if (id > maxid) maxid=id;
-        if (outlist.count(id) == 1) {
-          if ((outlist.find(id)->second).length() < 1) {
-            outlist.erase(outlist.find(id));
-          }
-        }
-        const Tuple& arguments = (*a)->getArguments();
-        for (Tuple::const_iterator it = arguments.begin(); it != arguments.end(); it++) {
-          std::stringstream sstr;
-          sstr << *it;
-          //outlist.insert(std::pair<std::string,std::string>(pred,sstr.str()));
-          outlist.insert(std::pair<int,std::string>(id,sstr.str()));
-        } // for over Tuples
-      } // if pred == a<i>
+	// get predicate (we are interested in o<i> a<i> d1 d2)
+	std::string pred;
+	{
+		std::stringstream s; s << (*a)->getPredicate();
+		pred = s.str();
+	}
+	assert(!pred.empty());
+
+	// get argument
+	std::string arg;
+	{
+        	const Tuple& arguments = (*a)->getArguments();
+		assert(arguments.size() == 1);
+		std::stringstream s; s << arguments[0];
+		arg = s.str();
+	}
+
+	// process pred
+	if( pred[0] == 'o' or pred[0] == 'a' or pred[0] == 'b' ) {
+		std::stringstream s; s << pred.substr(1,std::string::npos);
+		s >> id;
+		// remember max index for contexts
+		if (id > maxid) maxid=id;
+
+		// if "a<i>", add belief to output container
+		if( pred[0] == 'a' )
+			outlist.insert(std::make_pair(id,arg));
+		}
     } // for-loop over AtomSet's
 
-    //std::multimap<std::string,std::string>::iterator oit;
     std::multimap<int,std::string>::iterator oit;
     std::pair<std::multimap<int,std::string>::iterator,std::multimap<int,std::string>::iterator> rangeit;
-    //std::string s;
-    //int s;
 
     for (int i=1; i <= maxid; i++) {
-      stream << "{";
-      rangeit = outlist.equal_range(i);
-      for (oit = rangeit.first; oit != rangeit.second; ) {
-        stream << oit->second;
-        if (++oit != rangeit.second)
-           stream << ",";
-      }
-      stream << "}";
-      if (i < maxid) stream << ",";
+	stream << "{";
+	if( outlist.count(i) > 0 ) {
+		rangeit = outlist.equal_range(i);
+		for (oit = rangeit.first; oit != rangeit.second; ) {
+			stream << oit->second;
+			if (++oit != rangeit.second)
+			  stream << ",";
+		}
+	}
+	stream << "}";
+	if (i < maxid) stream << ",";
     }//end for-loop over int
   } // if empty
   stream << ')';
