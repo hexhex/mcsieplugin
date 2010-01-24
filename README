@@ -1,15 +1,16 @@
 dlvhex - mcsequilibrium plugin (0.0.1)
     
-    enables dlvhex to use scripts for generating atoms and
-    to rewrite whole input programs using a script before processing them
+    enables dlvhex to calculate Equilibrium-semantics of Multi Context Systems.
+    This Plugin provide an Interface to implement arbitrary contexts, as well
+    there is a implementation to use ASP-Programs as contexts.
     
 * Requirements:
     
-    - dlvhex (version >= 1.4)
-    - (optional) dlvhex-stringplugin (just needed for the tests and examples)
+    - dlvhex (version >= 1.7)
     
 * Installation:
-    
+
+    - ./bootstrap.sh    
     - ./configure
       (use switch --enable-userinstall to install plugin into home directory)
     - make install
@@ -17,54 +18,102 @@ dlvhex - mcsequilibrium plugin (0.0.1)
 * Testing:
     
     - make check
-    - you can also run 'make all' in dlvhex-scriptplugin-0.1.0/examples/demos/
     
 * Usage:
-    
-    - script-atom:
-        
-        The plugin provides a single atom:
-            
-            &script[COMMAND_STRING](OUTPUT)
-            
-        COMMAND_STRING is the command to be executed
-        OUTPUT is line-wise
-        
-        The output of the atom is the set of lines that is returned from the
-        call of the command-string. The resulting atoms are all single-tuples.
-        The data-type of a tuple (number:without quotes; string:with quotes)
-        depends on the resulting line (contains only digits?).
-        
-    - script-converter:
-        
-        In order to specify a script for converting the input, the following
-        command-line flag hast to be passed to dlvhex. 
-            
-            --convert=SCRIPT
-            
-        SCRIPT is the script that converts the input file before passing it
-               back to dlvhex.
-               
-        The plugin calls your script with a file, containing the input, as the
-        first argument. This means that you have to read the content of the
-        file that you get as the first argument. After processing the
-        file-content you can pass the modified dlvhex-input back to dlvhex by
-        printing it out to STDOUT.
-        
-        
-    Notes: - you can use *.sh, *.awk, *.py, *.pl,... as scripts
-           - Every script you want to use within the script-atom or the
-             script-converter has to be exutable (permissions!).
-             (You can set the permission by using: chmod +x script.file)
-             
-           - To use a script directly, without having to specify its path,
-             you have to add its directory to the $PATH variable.
-             (you can set the path-variable with: PATH=$PATH:/dir/to/script/)
-             
-           - Use so-called shebangs to specify in the script with which
-             interpreter it is meant to be called.
-             http://en.wikipedia.org/wiki/Shebang_(Unix)
-             
-           - The output of a script, terminating with an error, will be
-             ignored.
-             
+
+    - Input file for Multi Context System description:
+
+        Bridgerules are of the form
+
+            (1:a) :- (2:bcd), (3:e), not (1:b).
+
+        where the number is the ID of the Context, that is defined also in
+        the Input file.
+
+        Facts can be of the form
+
+            (1:a).
+
+        or
+
+            (1:a) :- .
+
+        Context descriptions are of the form
+
+            #context(<num>,"<extatom>","<param>").
+
+        e. g. for ASP contexts
+
+            #context(2,"dlv_asp_context_acc","ctx.dlv").
+
+        -> uses dlv and program "ctx.dlv" to implement context 2's semantics.
+
+        e. g. for User-implemented contexts
+
+            #context(3,"user_named_context_acc","parameter").
+
+        -> uses the User-implemented ContextInterfaceAtom user_named_context_acc
+           to implement context 3's semantics.
+
+    - Implement a Context:
+
+        to use a self implemented context, you have to include 2 Interface-header
+
+            #include <ContextInterfaceAtom.h>
+            #include <ContextInterfacePlugin.h>
+
+        Then name your Plugin, by using the defined preprocessor directive
+
+            DLVHEX_MCSEQUILIBRIUM_PLUGIN(YourPluginClassName,0,1,0)
+
+        where the 3 numbers are the major, minor and micro number of 
+        your Plugin version.
+
+        After that, it's recommended to write the following in a
+        anonym namespace.
+
+        Now you have to define your Context and Implement the
+        accept function. Here you also use a defined preprocessor
+        directive
+
+            DLVHEX_MCSEQUILIBRIUM_CONTEXT(YourContextClassName,"user_named_context_acc")
+
+        Where YourContextClassName is the Class name of the Context and
+        user_named_context_acc is tha name of the External Atom that is
+        used in the Input file. 
+
+        then implement the acc function
+
+            std::set<std::set<std::string> >
+            YourContextClassName::acc(const std::string& param, 
+                                      const std::set<std::string>& input) {
+            ...
+            }
+
+        this function should return the accepted set of beliefsets.
+
+        You can define and implement in your Plugin as much Contexts
+        as you like. They only have to have a unique Classname and
+        different names for the External Atom.
+
+	After that you defined your Contexts, you have to register them
+        to your Plugin. For that you have to implement the function
+
+           registerAtoms()
+
+        of your defined Plugin. That looks like
+
+           void YourPluginClassName::registerAtoms() {
+             registerAtom<YourContextClassName>();
+             ...
+           }
+
+	where calling for every defined Context the 
+        registerAtom<BaseContext>().
+
+	when running dlvhex with the Plugin loaded and a
+	MCS-description as Input file, you get Equilibria of the form
+
+           ({a,b},{},{c})
+
+        There is for every Context a set of beliefs that are in equilibrium.            
