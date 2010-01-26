@@ -102,7 +102,7 @@ MCSdescriptionGrammar::definition<ScannerT>::definition(MCSdescriptionGrammar co
 	rm[boost::spirit::ch_p('"')] >> boost::spirit::token_node_d[+alnum_] >> rm[boost::spirit::ch_p('"')];
 
   param =
-	rm[boost::spirit::ch_p('"')] >> boost::spirit::token_node_d[+alnumdot] >> rm[boost::spirit::ch_p('"')];
+	rm[boost::spirit::ch_p('"')] >> boost::spirit::token_node_d[*alnumdot] >> rm[boost::spirit::ch_p('"')];
 
   ruleelem =
 	rm[boost::spirit::ch_p('(')] >> rulenum >> 
