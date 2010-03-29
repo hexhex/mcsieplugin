@@ -29,8 +29,8 @@
  * 
  * @brief  Converts the Input file
  */
-#ifndef _DLVHEX_MCSEQUILIBRIUM_CONVERTER_H_
-#define _DLVHEX_MCSEQUILIBRIUM_CONVERTER_H_
+#ifndef _DLVHEX_MCSDIAGEXPL_CONVERTER_H_
+#define _DLVHEX_MCSDIAGEXPL_CONVERTER_H_
 
 #include <dlvhex/PluginInterface.h>
 #include "ParserDriver.h"
@@ -38,7 +38,7 @@
 #include "ParseContext.h"
 
 namespace dlvhex {
-  namespace mcsequilibrium {
+  namespace mcsdiagexpl {
 
     class Converter : public PluginConverter {
       public:
@@ -57,7 +57,7 @@ namespace dlvhex {
 	void convertBridgeRuleElem(node_t& at, int& id, std::string& fact);
 	void convertContext(node_t& at, ParseContext& context);
     }; // END class Converter
-  }  // END namespace mcsequilibrium
+  }  // END namespace mcsdiagexpl
 } // END namespace dlvhex
 
-#endif // _DLVHEX_MCSEQUILIBRIUM_CONVERTER_H
+#endif // _DLVHEX_MCSDIAGEXPL_CONVERTER_H

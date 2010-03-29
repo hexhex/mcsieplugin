@@ -36,6 +36,7 @@
 //#define DEBUG
 
 #include "DLV_ASP_ContextAtom.h"
+#include "Timing.h"
 
 #include "dlvhex/DLVProcess.h"
 #include "dlvhex/AtomSet.h"
@@ -45,7 +46,7 @@
 #include "dlvhex/TextOutputBuilder.h"
 
 namespace dlvhex {
-  namespace mcsequilibrium {
+  namespace mcsdiagexpl {
 
 using namespace std;
 
@@ -71,6 +72,8 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
        for_each(oset.begin(),oset.end(),printSet);
        std::cout << "--------------------------------------------" << std::endl;
   #endif
+
+  (Timing::getInstance())->start();
 
   /////////////////////////////////////////////////////////////////
   //
@@ -198,6 +201,7 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
        cout << "Answerset size: " << answersets.size() << endl;
   #endif
 
+  (Timing::getInstance())->stop();
 
   if (answersets.size() > 0) {
     Tuple out;
@@ -205,5 +209,5 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
   }
 }
 
-  } // namespace mcsequilibrium
+  } // namespace mcsdiagexpl
 } // namespace dlvhex

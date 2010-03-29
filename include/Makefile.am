@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = gnu
 
-noinst_HEADERS = MCSequilibriumPlugin.h \
+noinst_HEADERS = MCSdiagexplPlugin.h \
                  Converter.h \
 		 ParserDriver.h \
 		 BridgeRule.h \

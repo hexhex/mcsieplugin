@@ -29,13 +29,13 @@
  * 
  * @brief  Context element for Parsing the Input file
  */
-#ifndef _DLVHEX_MCSEQUILIBRIUM_PARSECONTEXT_H_
-#define _DLVHEX_MCSEQUILIBRIUM_PARSECONTEXT_H_
+#ifndef _DLVHEX_MCSDIAGEXPL_PARSECONTEXT_H_
+#define _DLVHEX_MCSDIAGEXPL_PARSECONTEXT_H_
 
 #include <string>
 
 namespace dlvhex {
-  namespace mcsequilibrium {
+  namespace mcsdiagexpl {
 
       class ParseContext {
         private:
@@ -56,6 +56,6 @@ namespace dlvhex {
         std::ostream&
         operator<< (std::ostream&, const ParseContext&);
 
-  }  // END namespace mcsequilibrium
+  }  // END namespace mcsdiagexpl
 } // END namespace dlvhex
-#endif // _DLVHEX_MCSEQUILIBRIUM_PARSECONTEXT_H_
+#endif // _DLVHEX_MCSDIAGEXPL_PARSECONTEXT_H_

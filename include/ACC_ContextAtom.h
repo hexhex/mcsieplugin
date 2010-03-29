@@ -29,13 +29,14 @@
  * 
  * @brief  Base Class for User implemented Context Atoms
  */
-#ifndef _DLVHEX_MCSEQUILIBRIUM_ACC_CONTEXTATOM_H
-#define _DLVHEX_MCSEQUILIBRIUM_ACC_CONTEXTATOM_H
+#ifndef _DLVHEX_MCSDIAGEXPL_ACC_CONTEXTATOM_H
+#define _DLVHEX_MCSDIAGEXPL_ACC_CONTEXTATOM_H
 
 #include "BaseContextAtom.h"
+#include "Timing.h"
 
 namespace dlvhex {
-  namespace mcsequilibrium {
+  namespace mcsdiagexpl {
 
     class ACC_ContextAtom : public BaseContextAtom {
 
@@ -48,6 +49,6 @@ namespace dlvhex {
 	virtual std::set<std::set<std::string> > 
 	acc(const std::string& param, const std::set<std::string>& input) = 0;
     };
-  } // namespace mcsequilibrium
+  } // namespace mcsdiagexpl
 } // namespace dlvhex
 #endif // _DLVHEX_MCSEQUILIBRIUM_ACC_CONTEXTATOM_H

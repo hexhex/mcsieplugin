@@ -33,17 +33,19 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#include "MCSequilibriumPlugin.h"
+#include "MCSdiagexplPlugin.h"
+#include "Timing.h"
 
 namespace dlvhex {
-  namespace mcsequilibrium {
+  namespace mcsdiagexpl {
 
-MCSequilibriumPlugin::MCSequilibriumPlugin()
+MCSdiagexplPlugin::MCSdiagexplPlugin()
     : activatePlugin(1), mcseconverter(new Converter()), equilibriumOB(new EquilibriumOutputBuilder()) {
+    (Timing::getInstance())->begin();
 }
 
 
-MCSequilibriumPlugin::~MCSequilibriumPlugin() {
+MCSdiagexplPlugin::~MCSdiagexplPlugin() {
     delete mcseconverter;
     // do not delete the equilibriumOB here because the
     // OutputBuilder will be deleted by dlvhex
@@ -51,18 +53,18 @@ MCSequilibriumPlugin::~MCSequilibriumPlugin() {
 }
 
 void
-MCSequilibriumPlugin::setupProgramCtx(dlvhex::ProgramCtx& pc) {
+MCSdiagexplPlugin::setupProgramCtx(dlvhex::ProgramCtx& pc) {
 	pc.setOutputBuilder(equilibriumOB);
 }
 
 OutputBuilder*
-MCSequilibriumPlugin::createOutputBuilder() {
+MCSdiagexplPlugin::createOutputBuilder() {
    return equilibriumOB;
 }
 
 
 PluginConverter*
-MCSequilibriumPlugin::createConverter() {
+MCSdiagexplPlugin::createConverter() {
     if (!this->activatePlugin) {
         return 0;
     }
@@ -70,22 +72,22 @@ MCSequilibriumPlugin::createConverter() {
 }
 
 void 
-MCSequilibriumPlugin::registerAtoms() {
+MCSdiagexplPlugin::registerAtoms() {
    registerAtom<DLV_ASP_ContextAtom>();
 }
 
-    MCSequilibriumPlugin theMCSequilibriumPlugin;
+    MCSdiagexplPlugin theMCSdiagexplPlugin;
 
   } // namespace mcsequilibrium
 } // namespace dlvhex
 
 extern "C"
-dlvhex::mcsequilibrium::MCSequilibriumPlugin*
+dlvhex::mcsdiagexpl::MCSdiagexplPlugin*
 PLUGINIMPORTFUNCTION() {
-  dlvhex::mcsequilibrium::theMCSequilibriumPlugin.setPluginName(PACKAGE_TARNAME);
-  dlvhex::mcsequilibrium::theMCSequilibriumPlugin.setVersion(MCSEQUILIBRIUMPLUGIN_MAJOR,
-					     MCSEQUILIBRIUMPLUGIN_MINOR,
-					     MCSEQUILIBRIUMPLUGIN_MICRO);
+  dlvhex::mcsdiagexpl::theMCSdiagexplPlugin.setPluginName(PACKAGE_TARNAME);
+  dlvhex::mcsdiagexpl::theMCSdiagexplPlugin.setVersion(MCSDIAGEXPLPLUGIN_MAJOR,
+					     MCSDIAGEXPLPLUGIN_MINOR,
+					     MCSDIAGEXPLPLUGIN_MICRO);
 
-  return &dlvhex::mcsequilibrium::theMCSequilibriumPlugin;
+  return &dlvhex::mcsdiagexpl::theMCSdiagexplPlugin;
 }

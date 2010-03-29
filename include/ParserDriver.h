@@ -29,8 +29,8 @@
  * 
  * @brief  Defines Grammer of the Input File
  */
-#ifndef _DLVHEX_MCSEQUILIBRIUM_PARSERDRIVER_H_
-#define _DLVHEX_MCSEQUILIBRIUM_PARSERDRIVER_H_
+#ifndef _DLVHEX_MCSDIAGEXPL_PARSERDRIVER_H_
+#define _DLVHEX_MCSDIAGEXPL_PARSERDRIVER_H_
 
 #include <boost/spirit/core.hpp>
 #include <boost/spirit/utility/chset.hpp>
@@ -39,7 +39,7 @@
 #include <boost/spirit/tree/ast.hpp>
 
 namespace dlvhex {
-	namespace mcsequilibrium {
+	namespace mcsdiagexpl {
 
 ////////////////////////////////////////////////////////////////////////////
 //
@@ -141,7 +141,7 @@ MCSdescriptionGrammar::definition<ScannerT>::definition(MCSdescriptionGrammar co
 	*rm[boost::spirit::comment_p("%")] >> expression >> 
 	*(expression | rm[boost::spirit::comment_p("%")]) >> !boost::spirit::end_p;
 };
-} // END namespace mcsequilibrium
+} // END namespace mcsdiagexpl
 } // END namespace dlvhex
 
-#endif // _DLVHEX_MCSEQUILIBRIUM_PARSERDRIVER_H_
+#endif // _DLVHEX_MCSDIAGEXPL_PARSERDRIVER_H_

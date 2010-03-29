@@ -36,7 +36,7 @@
 #include "ACC_ContextAtom.h"
 
 namespace dlvhex {
-  namespace mcsequilibrium {
+  namespace mcsdiagexpl {
 
     void
     ACC_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginError) {
@@ -60,7 +60,10 @@ namespace dlvhex {
       //
       /////////////////////////////////////////////////////////////////
 
+      (Timing::getInstance())->start();
+	std::cout << "ACC START cout" << std::endl;
       accset = acc(param,bset);
+      (Timing::getInstance())->stop();
 
       /////////////////////////////////////////////////////////////////
       //
@@ -88,5 +91,5 @@ namespace dlvhex {
       }
     } // end ACC_ContextAtom::retrieve()
 
-  } // namespace mcsequilibrium
+  } // namespace mcsdiagexpl
 } // namespace dlvhex

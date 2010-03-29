@@ -36,7 +36,7 @@
 
 #define DLVHEX_MCSEQUILIBRIUM_PLUGIN(classname,major,minor,micro) \
 namespace {\
-  class classname : public dlvhex::mcsequilibrium::BaseContextPlugin {\
+  class classname : public dlvhex::mcsdiagexpl::BaseContextPlugin {\
     public:\
       classname();\
       virtual void registerAtoms();\

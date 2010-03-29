@@ -43,7 +43,7 @@
 #include <sstream>
 
 namespace dlvhex {
-  namespace mcsequilibrium {
+  namespace mcsdiagexpl {
 
    Converter::Converter() {}
 
@@ -257,5 +257,5 @@ namespace dlvhex {
      o << ss.rdbuf();
    } // end of MCSequilibriumConverter::convert
 
-  } // namespace script
+  } // namespace mcsdiagexpl
 } // namespace dlvhex

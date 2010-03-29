@@ -29,13 +29,13 @@
  * 
  * @brief  OutputBuilder to write the Answersets as Equilibria
  */
-#ifndef _DLVHEX_MCSEQUILIBRIUM_EQUILIBRIUMOUTPUTBUILDER_H_
-#define _DLVHEX_MCSEQUILIBRIUM_EQUILIBRIUMOUTPUTBUILDER_H_
+#ifndef _DLVHEX_MCSDIAGEXPL_EQUILIBRIUMOUTPUTBUILDER_H_
+#define _DLVHEX_MCSDIAGEXPL_EQUILIBRIUMOUTPUTBUILDER_H_
 
 #include "dlvhex/OutputBuilder.h"
 
 namespace dlvhex {
-  namespace mcsequilibrium {
+  namespace mcsdiagexpl {
 
   class EquilibriumOutputBuilder : public OutputBuilder {
 
@@ -51,7 +51,7 @@ namespace dlvhex {
       buildResult(std::ostream&, const ResultContainer&);
    };
 
-  } // END namespace mcsequilibrium
+  } // END namespace mcsdiagexpl
 } // END namespace dlvhex
 
-#endif // _DLVHEX_EQUILIBRIUMOUTPUTBUILDER_H_
+#endif // _DLVHEX_MCSDIAGEXPL_EQUILIBRIUMOUTPUTBUILDER_H_

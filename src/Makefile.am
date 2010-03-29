@@ -1,8 +1,8 @@
 AUTOMAKE_OPTIONS = gnu
 
-plugin_LTLIBRARIES = libdlvhexmcsequilibrium.la
+plugin_LTLIBRARIES = libdlvhexmcsdiagexpl.la
 
-libdlvhexmcsequilibrium_la_SOURCES = MCSequilibriumPlugin.cpp \
+libdlvhexmcsdiagexpl_la_SOURCES = MCSdiagexplPlugin.cpp \
                              Converter.cpp \
                              BridgeRule.cpp \
                              BridgeRuleEntry.cpp \
@@ -18,5 +18,5 @@ AM_CPPFLAGS = \
         $(BOOST_CPPFLAGS) \
 	$(DLVHEX_CFLAGS)
 
-libdlvhexmcsequilibrium_la_LDFLAGS = -avoid-version -module
+libdlvhexmcsdiagexpl_la_LDFLAGS = -avoid-version -module
 

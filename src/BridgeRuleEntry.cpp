@@ -37,7 +37,7 @@
 #include <ostream>
 
 namespace dlvhex {
-  namespace mcsequilibrium {
+  namespace mcsdiagexpl {
 
    BridgeRuleEntry::BridgeRuleEntry(int id, std::string f, bool n)
     : contextid(id), fact(f), neg(n) {
@@ -53,5 +53,5 @@ namespace dlvhex {
      return out;
    }
 
-  } // namespace script
+  } // namespace mcsdiagexpl
 } // namespace dlvhex

@@ -37,11 +37,12 @@
 #include "dlvhex/globals.h"
 #include "dlvhex/ResultContainer.h"
 #include "EquilibriumPrintVisitor.h"
+#include "Timing.h"
 
 #include <iostream>
 
 namespace dlvhex {
-  namespace mcsequilibrium {
+  namespace mcsdiagexpl {
 
 EquilibriumOutputBuilder::EquilibriumOutputBuilder()
 { }
@@ -54,6 +55,7 @@ EquilibriumOutputBuilder::~EquilibriumOutputBuilder()
 void
 EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContainer& facts)
 {
+  (Timing::getInstance())->end();
   const ResultContainer::result_t& results = facts.getAnswerSets();
 
   if (!Globals::Instance()->getOption("Silent"))
@@ -77,7 +79,12 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 	  stream << std::endl;
 	}
     }
+
+  stream << std::endl;
+  stream << *Timing::getInstance();
+  //(Timing::getInstance())->printBench(stream);
+
 }
 
-}//namespace mcsequilibrium
+}//namespace mcsdiagexpl
 }//namespace dlvhex

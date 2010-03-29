@@ -29,8 +29,8 @@
  * 
  * @brief  Main Class of dlvhex-mcs-equilibrium-plugin
  */
-#ifndef _DLVHEX_MCSEQUILIBRIUM_MCSEQUILIBRIUMPLUGIN_H_
-#define _DLVHEX_MCSEQUILIBRIUM_MCSEQUILIBRIUMPLUGIN_H_
+#ifndef _DLVHEX_MCSDIAGEXPL_MCSEQUILIBRIUMPLUGIN_H_
+#define _DLVHEX_MCSDIAGEXPL_MCSEQUILIBRIUMPLUGIN_H_
 
 #include <dlvhex/ProgramCtx.h>
 #include "Converter.h"
@@ -39,26 +39,26 @@
 #include "BaseContextPlugin.h"
 
 namespace dlvhex {
-  namespace mcsequilibrium {
+  namespace mcsdiagexpl {
 	
-    class MCSequilibriumPlugin : public BaseContextPlugin {
+    class MCSdiagexplPlugin : public BaseContextPlugin {
 	private:
 	  Converter* mcseconverter;
 	  OutputBuilder* equilibriumOB;
-	  MCSequilibriumPlugin(const MCSequilibriumPlugin&);
+	  MCSdiagexplPlugin(const MCSdiagexplPlugin&);
 	  bool activatePlugin;
 	  AtomFunctionMap *afm;
 
 	public:
-	  MCSequilibriumPlugin();
-	  ~MCSequilibriumPlugin();
+	  MCSdiagexplPlugin();
+	  ~MCSdiagexplPlugin();
 	  virtual void setupProgramCtx(ProgramCtx& pc);
 	  virtual OutputBuilder* createOutputBuilder();
 	  virtual PluginConverter* createConverter();
 	  virtual void registerAtoms();
 	
-    }; // END class MCSequilibriumPlugin
-  } // END namespace mcsequilibrium
+    }; // END class MCSdiagexplPlugin
+  } // END namespace mcsdiagexpl
 } // END namespace dlvhex
 
-#endif // _DLVHEX_MCSEQUILIBRIUM_MCSEQUILIBRIUMPLUGIN_H_
+#endif // _DLVHEX_MCSDIAGEXPL_MCSEQUILIBRIUMPLUGIN_H_

@@ -29,15 +29,15 @@
  * 
  * @brief  BridgeRule element for Parsing the Input file
  */
-#ifndef _DLVHEX_MCSEQUILIBRIUM_BRIDGERULE_H_
-#define _DLVHEX_MCSEQUILIBRIUM_BRIDGERULE_H_
+#ifndef _DLVHEX_MCSDIAGEXPL_BRIDGERULE_H_
+#define _DLVHEX_MCSDIAGEXPL_BRIDGERULE_H_
 
 #include "BridgeRuleEntry.h"
 #include <vector>
 #include <string>
 
 namespace dlvhex {
-  namespace mcsequilibrium {
+  namespace mcsdiagexpl {
 
     class BridgeRule {
       public:
@@ -55,6 +55,6 @@ namespace dlvhex {
 	std::vector<BridgeRuleEntry> body;
 	bool fact;
     }; // END class BridgeRule
-  }  // END namespace mcsequilibrium
+  }  // END namespace mcsdiagexpl
 } // END namespace dlvhex
-#endif // _DLVHEX_MCSEQUILIBRIUM_BRIDGERULE_H_
+#endif // _DLVHEX_MCSDIAGEXPL_BRIDGERULE_H_

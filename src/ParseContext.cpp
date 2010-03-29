@@ -38,7 +38,7 @@
 
 
 namespace dlvhex {
-  namespace mcsequilibrium {
+  namespace mcsdiagexpl {
 
    ParseContext::ParseContext(int num, std::string e, std::string p)
      : contextnum(num), extatom(e), param(p) {
@@ -59,5 +59,5 @@ namespace dlvhex {
      return out;
    }
 
-  } // namespace mcsequilibrium
+  } // namespace mcsdiagexpl
 } // namespace dlvhex

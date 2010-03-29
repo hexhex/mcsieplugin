@@ -42,7 +42,7 @@
 //#define DEBUG
 
 namespace dlvhex {
-  namespace mcsequilibrium {
+  namespace mcsdiagexpl {
 ////////////////////////////////////////////////////////////////////////////
 // 
 //	PrintVisitorMethods
@@ -119,5 +119,5 @@ EquilibriumPrintVisitor::visit(AtomSet* const as)
   stream << ')';
 }//EquilibriumPrintVisitor::visit(AtomSet* const as)
 
-}//namespace mcsequilibrium
+}//namespace mcsdiagexpl
 }//namespace dlvhex

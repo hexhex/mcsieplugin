@@ -29,13 +29,13 @@
  * 
  * @brief  Base Context Plugin Element
  */
-#ifndef _DLVHEX_MCSEQUILIBRIUM_BASECONTEXTPLUGIN_H
-#define _DLVHEX_MCSEQUILIBRIUM_BASECONTEXTPLUGIN_H
+#ifndef _DLVHEX_MCSDIAGEXPL_BASECONTEXTPLUGIN_H
+#define _DLVHEX_MCSDIAGEXPL_BASECONTEXTPLUGIN_H
 
 #include <dlvhex/PluginInterface.h>
 
 namespace dlvhex {
-  namespace mcsequilibrium {
+  namespace mcsdiagexpl {
 
     class BaseContextPlugin : public PluginInterface {
       private:
@@ -45,7 +45,7 @@ namespace dlvhex {
         BaseContextPlugin() {};
 
 	template <class type> void registerAtom() {
-           boost::shared_ptr<dlvhex::mcsequilibrium::BaseContextAtom> atom(new type());
+           boost::shared_ptr<dlvhex::mcsdiagexpl::BaseContextAtom> atom(new type());
            (*a_int)[(atom.get())->getExtAtomName()] = atom;
 	};
 
@@ -58,6 +58,6 @@ namespace dlvhex {
 	  registerAtoms();
 	};
     };
-  } // namespace mcsequilibrium
+  } // namespace mcsdiagexpl
 } // namespace dlvhex
-#endif // _DLVHEX_MCSEQUILIBRIUM_GENERICCONTEXTATOM_H
+#endif // _DLVHEX_MCSDIAGEXPL_GENERICCONTEXTATOM_H

@@ -29,13 +29,13 @@
  * 
  * @brief  BridgeRuleEntry element as elements in BridgeRules
  */
-#ifndef _DLVHEX_MCSEQUILIBRIUM_BRIDGERULEENTRY_H_
-#define _DLVHEX_MCSEQUILIBRIUM_BRIDGERULEENTRY_H_
+#ifndef _DLVHEX_MCSDIAGEXPL_BRIDGERULEENTRY_H_
+#define _DLVHEX_MCSDIAGEXPL_BRIDGERULEENTRY_H_
 
 #include <string>
 
 namespace dlvhex {
-  namespace mcsequilibrium {
+  namespace mcsdiagexpl {
 
       class BridgeRuleEntry {
         private:
@@ -56,6 +56,6 @@ namespace dlvhex {
       std::ostream&
       operator<< (std::ostream&, const BridgeRuleEntry&);
 
-  }  // END namespace mcsequilibrium
+  }  // END namespace mcsdiagexpl
 } // END namespace dlvhex
-#endif // _DLVHEX_MCSEQUILIBRIUM_BRIDGERULEENTRY_H
+#endif // _DLVHEX_MCSDIAGEXPL_BRIDGERULEENTRY_H

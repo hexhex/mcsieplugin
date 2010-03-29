@@ -29,13 +29,13 @@
  * 
  * @brief  Context to use ASP Programs
  */
-#ifndef _DLVHEX_MCSEQUILIBRIUM_DLV_ASP_CONTEXTATOM_H
-#define _DLVHEX_MCSEQUILIBRIUM_DLV_ASP_CONTEXTATOM_H
+#ifndef _DLVHEX_MCSDIAGEXPL_DLV_ASP_CONTEXTATOM_H
+#define _DLVHEX_MCSDIAGEXPL_DLV_ASP_CONTEXTATOM_H
 
 #include "BaseContextAtom.h"
 
 namespace dlvhex {
-  namespace mcsequilibrium {
+  namespace mcsdiagexpl {
 
     class DLV_ASP_ContextAtom : public BaseContextAtom {
 
@@ -44,7 +44,7 @@ namespace dlvhex {
         void retrieve(const Query& query, Answer& answer) throw (PluginError);
     };
 
-  } // namespace script
+  } // namespace mcsdiagexpl
 } // namespace dlvhex
 
-#endif // _DLVHEX_MCSEQUILIBRIUM_DLV_ASP_CONTEXTATOM_H
+#endif // _DLVHEX_MCSDIAGEXPL_DLV_ASP_CONTEXTATOM_H

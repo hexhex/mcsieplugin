@@ -40,7 +40,7 @@
 
 
 namespace dlvhex {
-  namespace mcsequilibrium {
+  namespace mcsdiagexpl {
 
   BridgeRule::BridgeRule() {
      fact = false;
@@ -92,5 +92,5 @@ namespace dlvhex {
 	o << "b" << head << "." << std::endl;
     }
    }
-  } // namespace script
+  } // namespace mcsdiagexpl
 } // namespace dlvhex

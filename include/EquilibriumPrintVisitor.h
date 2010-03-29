@@ -29,13 +29,13 @@
  * 
  * @brief  PrintVisitor to go throught the Answersets and write as Equilibria
  */
-#ifndef _DLVHEX_MCSEQUILIBRIUM_EQUILIBRIUMPRINTVISITOR_H_
-#define _DLVHEX_MCSEQUILIBRIUM_EQUILIBRIUMPRINTVISITOR_H_
+#ifndef _DLVHEX_MCSDIAGEXPL_EQUILIBRIUMPRINTVISITOR_H_
+#define _DLVHEX_MCSDIAGEXPL_EQUILIBRIUMPRINTVISITOR_H_
 
 #include "dlvhex/PrintVisitor.h"
 
 namespace dlvhex {
-  namespace mcsequilibrium {
+  namespace mcsdiagexpl {
 
     class EquilibriumPrintVisitor : public RawPrintVisitor {
       public:
@@ -46,7 +46,7 @@ namespace dlvhex {
         virtual void
         visit(AtomSet* const);
     };
-  } // END namespace mcsequilibrium
+  } // END namespace mcsdiagexpl
 } // END namespace dlvhex
 
-#endif // _DLVHEX_MCSEQUILIBRIUM_EQUILIBRIUMPRINTVISITOR_H_
+#endif // _DLVHEX_MCSDIAGEXPL_EQUILIBRIUMPRINTVISITOR_H_
