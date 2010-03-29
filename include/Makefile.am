@@ -13,4 +13,5 @@ noinst_HEADERS = MCSequilibriumPlugin.h \
 		 BaseContextAtom.h \
 		 BaseContextPlugin.h \
 		 ContextInterfaceAtom.h \
-		 ContextInterfacePlugin.h
+		 ContextInterfacePlugin.h \
+		 Timing.h

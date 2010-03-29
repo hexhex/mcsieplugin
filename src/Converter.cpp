@@ -40,6 +40,7 @@
 #include "BridgeRuleEntry.h"
 
 #include <iostream>
+#include <sstream>
 
 namespace dlvhex {
   namespace mcsequilibrium {
