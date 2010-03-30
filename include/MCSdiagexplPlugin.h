@@ -33,21 +33,23 @@
 #define _DLVHEX_MCSDIAGEXPL_MCSEQUILIBRIUMPLUGIN_H_
 
 #include <dlvhex/ProgramCtx.h>
-#include "Converter.h"
+#include "QiConverter.h"
 #include "EquilibriumOutputBuilder.h"
 #include "DLV_ASP_ContextAtom.h"
 #include "BaseContextPlugin.h"
+#include "Timing.h"
 
 namespace dlvhex {
   namespace mcsdiagexpl {
 	
     class MCSdiagexplPlugin : public BaseContextPlugin {
 	private:
-	  Converter* mcseconverter;
+	  QiConverter* mcseconverter;
 	  OutputBuilder* equilibriumOB;
 	  MCSdiagexplPlugin(const MCSdiagexplPlugin&);
 	  bool activatePlugin;
 	  AtomFunctionMap *afm;
+	  bool bench;
 
 	public:
 	  MCSdiagexplPlugin();
@@ -56,6 +58,7 @@ namespace dlvhex {
 	  virtual OutputBuilder* createOutputBuilder();
 	  virtual PluginConverter* createConverter();
 	  virtual void registerAtoms();
+	  virtual void setOptions(bool doHelp, std::vector<std::string>& argv, std::ostream& out);
 	
     }; // END class MCSdiagexplPlugin
   } // END namespace mcsdiagexpl

@@ -4,6 +4,7 @@ plugin_LTLIBRARIES = libdlvhexmcsdiagexpl.la
 
 libdlvhexmcsdiagexpl_la_SOURCES = MCSdiagexplPlugin.cpp \
                              Converter.cpp \
+			     QiConverter.cpp \
                              BridgeRule.cpp \
                              BridgeRuleEntry.cpp \
                              ParseContext.cpp \

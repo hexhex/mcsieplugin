@@ -55,7 +55,9 @@ EquilibriumOutputBuilder::~EquilibriumOutputBuilder()
 void
 EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContainer& facts)
 {
-  (Timing::getInstance())->end();
+  if((Timing::getInstance())->isActive()) {
+	(Timing::getInstance())->end();
+  }
   const ResultContainer::result_t& results = facts.getAnswerSets();
 
   if (!Globals::Instance()->getOption("Silent"))
@@ -63,26 +65,28 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
       stream << std::endl;
     }
 
+  if (!results.empty()) {
+	for (ResultContainer::result_t::const_iterator rit = results.begin(); rit != results.end(); ++rit) {
+	      EquilibriumPrintVisitor epv(stream);
+	      (*rit)->accept(epv);
+	      stream << std::endl;
+
+	      if (!Globals::Instance()->getOption("Silent"))
+		{
+		  stream << std::endl;
+		}
+	    }
+  }
+
+  if((Timing::getInstance())->isActive()) {
+	stream << std::endl;
+	stream << *Timing::getInstance();
+  }
+
   if (results.empty())
     {
       return;
     }
-
-  for (ResultContainer::result_t::const_iterator rit = results.begin(); rit != results.end(); ++rit)
-    {
-      EquilibriumPrintVisitor epv(stream);
-      (*rit)->accept(epv);
-      stream << std::endl;
-
-      if (!Globals::Instance()->getOption("Silent"))
-	{
-	  stream << std::endl;
-	}
-    }
-
-  stream << std::endl;
-  stream << *Timing::getInstance();
-  //(Timing::getInstance())->printBench(stream);
 
 }
 

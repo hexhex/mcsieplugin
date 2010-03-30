@@ -40,8 +40,14 @@ namespace dlvhex {
 
     class BaseContextAtom : public PluginAtom {
 
+      private:
+        std::string atom_name;
+
+      protected:
+	int context_id;
+
       public:
-        BaseContextAtom(std::string name): atom_name(name) {
+        BaseContextAtom(std::string name): atom_name(name), context_id(-1) {
           addInputConstant();
           addInputPredicate();
           addInputPredicate();
@@ -73,6 +79,7 @@ namespace dlvhex {
         throw (PluginError) {
 
           int cid = query.getInputTuple()[0].getInt();
+	  context_id = cid;
 
           std::stringstream ass, bss, oss;
           ass << "a" << cid;
@@ -97,9 +104,6 @@ namespace dlvhex {
 
         }
 
-
-      private:
-        std::string atom_name;
     };
 
   } // namespace mcsdiagexpl

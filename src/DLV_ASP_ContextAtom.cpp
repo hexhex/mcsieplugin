@@ -73,7 +73,9 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
        std::cout << "--------------------------------------------" << std::endl;
   #endif
 
-  (Timing::getInstance())->start();
+  if((Timing::getInstance())->isActive()) {
+	(Timing::getInstance())->start(context_id);
+  }
 
   /////////////////////////////////////////////////////////////////
   //
@@ -185,6 +187,10 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
   // 2. Art ASPFileSolver
   //solver.solve(*pp, *atsp, answersets);
 
+  if((Timing::getInstance())->isActive()) {
+	(Timing::getInstance())->stop(context_id);
+  }
+
   #ifdef DEBUG
        ResultContainer* result = new ResultContainer();
    
@@ -200,8 +206,6 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
        cout << "are there Answersets?????? " << endl;
        cout << "Answerset size: " << answersets.size() << endl;
   #endif
-
-  (Timing::getInstance())->stop();
 
   if (answersets.size() > 0) {
     Tuple out;

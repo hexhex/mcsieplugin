@@ -34,6 +34,7 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "ACC_ContextAtom.h"
+#include <ostream>
 
 namespace dlvhex {
   namespace mcsdiagexpl {
@@ -60,10 +61,10 @@ namespace dlvhex {
       //
       /////////////////////////////////////////////////////////////////
 
-      (Timing::getInstance())->start();
-	std::cout << "ACC START cout" << std::endl;
+      //timep->start();
+	//std::cout << "ACC START cout" << std::endl;
       accset = acc(param,bset);
-      (Timing::getInstance())->stop();
+      //timep->stop();
 
       /////////////////////////////////////////////////////////////////
       //

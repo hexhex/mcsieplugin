@@ -40,8 +40,8 @@ namespace dlvhex {
   namespace mcsdiagexpl {
 
 MCSdiagexplPlugin::MCSdiagexplPlugin()
-    : activatePlugin(1), mcseconverter(new Converter()), equilibriumOB(new EquilibriumOutputBuilder()) {
-    (Timing::getInstance())->begin();
+    : activatePlugin(1), mcseconverter(new QiConverter()), equilibriumOB(new EquilibriumOutputBuilder()) {
+    //(Timing::getInstance())->begin();
 }
 
 
@@ -55,6 +55,9 @@ MCSdiagexplPlugin::~MCSdiagexplPlugin() {
 void
 MCSdiagexplPlugin::setupProgramCtx(dlvhex::ProgramCtx& pc) {
 	pc.setOutputBuilder(equilibriumOB);
+	if((Timing::getInstance())->isActive()) {
+		(Timing::getInstance())->begin();
+	}
 }
 
 OutputBuilder*
@@ -75,6 +78,51 @@ void
 MCSdiagexplPlugin::registerAtoms() {
    registerAtom<DLV_ASP_ContextAtom>();
 }
+
+	void 
+	MCSdiagexplPlugin::setOptions(bool doHelp, std::vector<std::string>& argv, std::ostream& out) {
+	    std::string::size_type o;
+	    std::vector<std::vector<std::string>::iterator> found;
+
+	    if (doHelp) {
+	       //      123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-
+	        out << "Diagnosis and Explanation calculation Plugin: " << std::endl << std::endl;
+	        out << " --explain={D, Dm, E, Em} " << std::endl;
+	        out << " --noprintopeq            " << std::endl;
+	        out << " --benchmark              " << std::endl;
+		out << std::endl;
+	        return;
+	    }
+
+	    for (std::vector<std::string>::iterator it = argv.begin();
+		it != argv.end(); ++it) {
+
+	        o = it->find("--explain=");
+	        if (o != std::string::npos) {
+			found.push_back(it);
+			continue;
+	        }
+
+	        o = it->find("--noprintopeq");
+	        if (o != std::string::npos) {
+			found.push_back(it);
+			continue;
+	        }
+
+	        o = it->find("--benchmark");
+	        if (o != std::string::npos) {
+			found.push_back(it);
+			bench=true;
+			(Timing::getInstance())->activate();
+			continue;
+	        }
+	    }
+
+	    for (std::vector<std::vector<std::string>::iterator>::const_iterator it =
+	         found.begin(); it != found.end(); ++it) {
+	        argv.erase(*it);
+	    }
+	}
 
     MCSdiagexplPlugin theMCSdiagexplPlugin;
 

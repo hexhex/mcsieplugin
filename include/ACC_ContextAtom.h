@@ -33,7 +33,6 @@
 #define _DLVHEX_MCSDIAGEXPL_ACC_CONTEXTATOM_H
 
 #include "BaseContextAtom.h"
-#include "Timing.h"
 
 namespace dlvhex {
   namespace mcsdiagexpl {
