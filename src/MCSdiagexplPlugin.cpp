@@ -35,6 +35,8 @@
 
 #include "MCSdiagexplPlugin.h"
 #include "Timing.h"
+#include "Global.h"
+
 
 namespace dlvhex {
   namespace mcsdiagexpl {
@@ -99,22 +101,37 @@ MCSdiagexplPlugin::registerAtoms() {
 
 	        o = it->find("--explain=");
 	        if (o != std::string::npos) {
-			found.push_back(it);
-			continue;
+	        	std::string expl = (it->substr(10));
+	        	bool f = false;
+	        	if (expl.compare("D") == 0) {
+	        		(Global::getInstance())->setDiag();
+	        		f = true;
+	        	}
+	        	if (expl.compare("E") == 0) {
+	        		(Global::getInstance())->setExp();
+	        		f = true;
+	        	}
+	        	if (expl[2] == 'm') {
+	        		(Global::getInstance())->setMin();
+	        		f = true;
+	        	}
+	        	if (f)
+	        		found.push_back(it);
+	        	continue;
 	        }
 
 	        o = it->find("--noprintopeq");
 	        if (o != std::string::npos) {
-			found.push_back(it);
-			continue;
+	        	found.push_back(it);
+	        	continue;
 	        }
 
 	        o = it->find("--benchmark");
 	        if (o != std::string::npos) {
-			found.push_back(it);
-			bench=true;
-			(Timing::getInstance())->activate();
-			continue;
+	        	found.push_back(it);
+	        	bench=true;
+	        	(Timing::getInstance())->activate();
+	        	continue;
 	        }
 	    }
 

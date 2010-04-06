@@ -38,6 +38,7 @@
 #include "dlvhex/ResultContainer.h"
 #include "EquilibriumPrintVisitor.h"
 #include "Timing.h"
+#include "Global.h"
 
 #include <iostream>
 
@@ -82,6 +83,14 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 	stream << std::endl;
 	stream << *Timing::getInstance();
   }
+
+if ((Global::getInstance())->isDiag())
+	stream << "Diagnose" << std::endl;
+if ((Global::getInstance())->isExp())
+	stream << "Explaination" << std::endl;
+if ((Global::getInstance())->isMin())
+	stream << "Minimal" << std::endl;
+
 
   if (results.empty())
     {

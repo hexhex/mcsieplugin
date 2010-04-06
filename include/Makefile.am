@@ -15,4 +15,5 @@ noinst_HEADERS = MCSdiagexplPlugin.h \
 		 BaseContextPlugin.h \
 		 ContextInterfaceAtom.h \
 		 ContextInterfacePlugin.h \
-		 Timing.h
+		 Timing.h \
+		 Global.h
