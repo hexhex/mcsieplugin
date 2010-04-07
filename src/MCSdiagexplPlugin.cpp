@@ -89,9 +89,9 @@ MCSdiagexplPlugin::registerAtoms() {
 	    if (doHelp) {
 	       //      123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-
 	        out << "Diagnosis and Explanation calculation Plugin: " << std::endl << std::endl;
-	        out << " --explain={D, Dm, E, Em} " << std::endl;
-	        out << " --noprintopeq            " << std::endl;
-	        out << " --benchmark              " << std::endl;
+	        out << " --explain={D, Dm, E, Em}  " << std::endl;
+	        out << " --noprintopeq             Do not print output-projected equilibria for diagnoses" << std::endl;
+	        out << " --benchmark               print time/call summary" << std::endl;
 		out << std::endl;
 	        return;
 	    }
@@ -111,8 +111,14 @@ MCSdiagexplPlugin::registerAtoms() {
 	        		(Global::getInstance())->setExp();
 	        		f = true;
 	        	}
-	        	if (expl[2] == 'm') {
+	        	if (expl.compare("Dm") == 0) {
 	        		(Global::getInstance())->setMin();
+	        		(Global::getInstance())->setDiag();
+	        		f = true;
+	        	}
+	        	if (expl.compare("Em") == 0) {
+	        		(Global::getInstance())->setMin();
+	        		(Global::getInstance())->setExp();
 	        		f = true;
 	        	}
 	        	if (f)
@@ -122,6 +128,7 @@ MCSdiagexplPlugin::registerAtoms() {
 
 	        o = it->find("--noprintopeq");
 	        if (o != std::string::npos) {
+			(Global::getInstance())->setnoprintopeq();
 	        	found.push_back(it);
 	        	continue;
 	        }

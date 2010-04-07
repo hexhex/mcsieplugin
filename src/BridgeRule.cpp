@@ -50,6 +50,12 @@ namespace dlvhex {
      fact = f;
    }
 
+
+   BridgeRule::BridgeRule(bool f, std::string i) {
+	fact = f;
+	id = i;
+   }
+
    void
    BridgeRule::setHeadRule(int id, std::string f) {
      head = BridgeRuleEntry(id,f);
@@ -65,8 +71,23 @@ namespace dlvhex {
    BridgeRule::writeProgram(std::ostream& o) {
      // write bridgerule in asp form
      std::list<int> ilist;
-     if (!fact) {
-	     o << "b" << head << " :- ";
+
+
+     // output diagnosis disjunction
+     o << "normal(" << head.ContextID() << ") v d1(" << head.ContextID() << ") v d2(" << head.ContextID() << ")." << std::endl;
+
+     // output d2 rule
+     o << "b" << head << " :- d2(" << head.ContextID() << ")." << std::endl;
+
+     // output d1 rule
+     o << "b" << head << " :- not d1(" << head.ContextID() << ")";
+
+
+     if( fact )
+       o << "." << std::endl;
+     else { // no fact, so body is emty
+       	     o << ", ";
+	     //o << "b" << head << " :- ";
 	     for (std::vector<BridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
 	       BridgeRuleEntry elem = *it;
 	       if (elem.Neg())
@@ -88,9 +109,7 @@ namespace dlvhex {
 	       o << "o" << *it << "(X) :- a" << *it << "(X)." << std::endl;
 	       o << "o" << *it << "(X) :- na" << *it << "(X)." << std::endl;
 	     }
-    } else {
-	o << "b" << head << "." << std::endl;
-    }
+     }
    }
   } // namespace mcsdiagexpl
 } // namespace dlvhex

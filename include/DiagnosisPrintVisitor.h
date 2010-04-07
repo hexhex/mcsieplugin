@@ -23,40 +23,30 @@
 
 
 /**
- * @file   BridgeRule.h
+ * @file   EquilibriumPrintVisitor.h
  * @author Markus Boegl
- * @date   Sun Jan 24 13:32:05 2010
+ * @date   Sun Jan 24 13:44:22 2010
  * 
- * @brief  BridgeRule element for Parsing the Input file
+ * @brief  PrintVisitor to go throught the Answersets and write as Equilibria
  */
-#ifndef _DLVHEX_MCSDIAGEXPL_BRIDGERULE_H_
-#define _DLVHEX_MCSDIAGEXPL_BRIDGERULE_H_
+#ifndef _DLVHEX_MCSDIAGEXPL_DIAGNOSISPRINTVISITOR_H_
+#define _DLVHEX_MCSDIAGEXPL_DIAGNOSISPRINTVISITOR_H_
 
-#include "BridgeRuleEntry.h"
-#include <vector>
-#include <string>
+#include "dlvhex/PrintVisitor.h"
 
 namespace dlvhex {
   namespace mcsdiagexpl {
 
-    class BridgeRule {
+    class DiagnosisPrintVisitor : public RawPrintVisitor {
       public:
-	BridgeRule(bool f);
-        BridgeRule();
-        BridgeRule(bool f, std::string id);
-        void setHeadRule(int id, std::string f);
-	void addBodyRule(int id, std::string f, bool n);
-	void writeProgram(std::ostream& o);
+        explicit
+        DiagnosisPrintVisitor(std::ostream&);
 
-        BridgeRuleEntry Head() const { return head; }
-        std::vector<BridgeRuleEntry> Body() const { return body; }
-
-      private:
-        BridgeRuleEntry head;
-	std::vector<BridgeRuleEntry> body;
-	bool fact;
-	std::string id;
-    }; // END class BridgeRule
-  }  // END namespace mcsdiagexpl
+        /// outputs the Equilibrium in '{(a,b,c), (cd,bx)}' form
+        virtual void
+        visit(AtomSet* const);
+    };
+  } // END namespace mcsdiagexpl
 } // END namespace dlvhex
-#endif // _DLVHEX_MCSDIAGEXPL_BRIDGERULE_H_
+
+#endif // _DLVHEX_MCSDIAGEXPL_DIAGNOSISPRINTVISITOR_H_

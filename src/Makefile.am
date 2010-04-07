@@ -12,6 +12,7 @@ libdlvhexmcsdiagexpl_la_SOURCES = MCSdiagexplPlugin.cpp \
 			     				DLV_ASP_ContextAtom.cpp \
                              	EquilibriumOutputBuilder.cpp \
 			     				EquilibriumPrintVisitor.cpp \
+			     				DiagnosisPrintVisitor.cpp \
 			     				Timing.cpp \
 			     				Global.cpp
 

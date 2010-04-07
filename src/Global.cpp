@@ -40,6 +40,17 @@ namespace dlvhex {
 		minimal = true;
 	}
 
+
+	void
+	Global::setnoprintopeq() {
+		noprintopeq = true;
+	}
+
+	bool
+	Global::isnoprintopeq() {
+		return noprintopeq;
+	}
+
 	bool
 	Global::isDiag() {
 		return diagnose;

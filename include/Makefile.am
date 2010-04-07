@@ -11,6 +11,7 @@ noinst_HEADERS = MCSdiagexplPlugin.h \
 		 DLV_ASP_ContextAtom.h \
                  EquilibriumOutputBuilder.h \
 		 EquilibriumPrintVisitor.h \
+		 DiagnosisPrintVisitor.h \
 		 BaseContextAtom.h \
 		 BaseContextPlugin.h \
 		 ContextInterfaceAtom.h \

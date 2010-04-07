@@ -33,13 +33,13 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#include "EquilibriumPrintVisitor.h"
+#include "DiagnosisPrintVisitor.h"
 
 #include "dlvhex/AtomSet.h"
 #include <iostream>
 #include <sstream>
 
-//#define DEBUG
+#define DEBUG
 
 namespace dlvhex {
   namespace mcsdiagexpl {
@@ -48,26 +48,23 @@ namespace dlvhex {
 //	PrintVisitorMethods
 //
 ////////////////////////////////////////////////////////////////////////////
-EquilibriumPrintVisitor::EquilibriumPrintVisitor(std::ostream& s)
+DiagnosisPrintVisitor::DiagnosisPrintVisitor(std::ostream& s)
 : RawPrintVisitor(s)
 { }
 
 void
-EquilibriumPrintVisitor::visit(AtomSet* const as)
+DiagnosisPrintVisitor::visit(AtomSet* const as)
 {
   // diagnosis output
-  //typedef std::map<std::string, int> DiagMap;
-  std::map<int, std::string> cmap;
-  std::multimap<int,std::string> outlist; 
+  typedef std::map<std::string, int> DiagMap;
+  DiagMap d1, d2;
   std::string pred;
-  int id=0;
 
   #ifdef DEBUG
     std::cerr << "Answerset: ";
 		::dlvhex::RawPrintVisitor dbgVisitor(std::cerr);
 		as->accept(dbgVisitor);
 		std::cerr << std::endl;
-    //stream << "D1 size: " << d1.size() << "  / D2 size: " << d2.size() << " / normal: " << normal.size() << std::endl;
   #endif
 
   //stream << '(';
@@ -91,40 +88,27 @@ EquilibriumPrintVisitor::visit(AtomSet* const as)
 	}
 
 	// process pred
-	if( pred[0] == 'o' or pred[0] == 'a' or pred[0] == 'b' ) {
-		std::stringstream s;
-		s << pred.substr(1,std::string::npos);
-		s >> id;
-
-		// if "a<i>", add belief to output container
-		if( pred[0] == 'a' ) {
-			outlist.insert(std::make_pair(id,arg));
-			cmap.insert(std::make_pair(id,""));
-		} else cmap.insert(std::make_pair(id,""));
+	if( pred == "d1" ) {
+		d1.insert(std::make_pair("r"+arg,0));
+	} else if( pred == "d2" ) {
+		d2.insert(std::make_pair("r"+arg,0));
 	}
     } // for-loop over AtomSet's
-	// display equilibrium
-	stream << "(";
-    	std::multimap<int,std::string>::iterator oit;
-    	std::pair<std::multimap<int,std::string>::iterator,std::multimap<int,std::string>::iterator> rangeit;
 
-	//stream << "cmapsize: " << cmap.size();
-	for(std::map<int, std::string>::const_iterator it = cmap.begin(); it != cmap.end(); ++it) {
-		if( it != cmap.begin() ) stream << ",";
-		stream << "{";
-		if( outlist.count(it->first) > 0 ) {
-			rangeit = outlist.equal_range(it->first);
-			for (oit = rangeit.first; oit != rangeit.second; ) {
-				stream << oit->second;
-				if (++oit != rangeit.second)
-				  stream << ",";
-			}
-		}
-		stream << "}";
+	// display diagnosis
+	stream << "({";
+	for(DiagMap::const_iterator it = d1.begin(); it != d1.end(); ++it) {
+		if( it != d1.begin() ) stream << ",";
+		stream << it->first;
 	}
-	stream << ')';
+	stream << "},{";
+	for(DiagMap::const_iterator it = d2.begin(); it != d2.end(); ++it) {
+		if( it != d2.begin() ) stream << ",";
+		stream << it->first;
+	}
+	stream << "})";
   } // if empty
-}//EquilibriumPrintVisitor::visit(AtomSet* const as)
+}//DiagnosisPrintVisitor::visit(AtomSet* const as)
 
 }//namespace mcsdiagexpl
 }//namespace dlvhex
