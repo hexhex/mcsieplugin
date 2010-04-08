@@ -73,8 +73,8 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
        std::cout << "--------------------------------------------" << std::endl;
   #endif
 
-  if((Timing::getInstance()).isActive()) {
-	(Timing::getInstance()).start(context_id);
+  if((Timing::getInstance())->isActive()) {
+	(Timing::getInstance())->start(context_id);
   }
 
   /////////////////////////////////////////////////////////////////
@@ -187,8 +187,8 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
   // 2. Art ASPFileSolver
   //solver.solve(*pp, *atsp, answersets);
 
-  if((Timing::getInstance()).isActive()) {
-	(Timing::getInstance()).stop(context_id);
+  if((Timing::getInstance())->isActive()) {
+	(Timing::getInstance())->stop(context_id);
   }
 
   #ifdef DEBUG

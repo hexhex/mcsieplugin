@@ -9,14 +9,18 @@
 namespace dlvhex {
   namespace mcsdiagexpl {
 
+	Timing* Timing::t = NULL;
+
 	Timing::Timing() {
 		started = false;
 		activated = false;
+		acc_info_map.clear();
 	}
 
-	Timing&
+	Timing*
 	Timing::getInstance() {
-		static Timing t;
+		if (t == NULL)
+			t = new Timing();
 		return t;
 	}
 
@@ -45,7 +49,15 @@ namespace dlvhex {
 
 	bool
 	Timing::start(int id) {	
-		acc_time_info curr = acc_info_map[id];
+		std::map<int, acc_time_info>::iterator it;
+		acc_time_info curr;
+		it = acc_info_map.find(id);
+		if (it == acc_info_map.end()) {
+			curr.count = 0;
+			curr.duration = time_duration(0,0,0,0);
+		} else {
+			curr = it->second;
+		}
 		#ifdef DEBUG
 		  std::cout << "ACC START ID: " << id << std::endl;
 		  std::cout << "CURR Count: " << curr.count << std::endl;
