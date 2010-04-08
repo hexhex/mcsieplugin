@@ -9,22 +9,14 @@
 namespace dlvhex {
   namespace mcsdiagexpl {
 
-	Timing* Timing::t = NULL;
-
 	Timing::Timing() {
 		started = false;
 		activated = false;
 	}
 
-	Timing::~Timing() {
-		
-	}
-
-	Timing*
+	Timing&
 	Timing::getInstance() {
-		if (t == NULL) {
-		  t = new Timing();
-		}
+		static Timing t;
 		return t;
 	}
 

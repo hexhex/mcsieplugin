@@ -60,8 +60,8 @@ EquilibriumOutputBuilder::~EquilibriumOutputBuilder()
 void
 EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContainer& facts)
 {
-  if((Timing::getInstance())->isActive()) {
-	(Timing::getInstance())->end();
+  if((Timing::getInstance()).isActive()) {
+	(Timing::getInstance()).end();
   }
 
   bool lb = false; //line break
@@ -233,9 +233,9 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 	} // END Minimal Diagnosis PRINTING
   }
 
-  if((Timing::getInstance())->isActive()) {
+  if((Timing::getInstance()).isActive()) {
 	stream << std::endl;
-	stream << *Timing::getInstance();
+	stream << Timing::getInstance();
   }
 
   if (results.empty())

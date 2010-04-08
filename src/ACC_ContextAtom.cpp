@@ -34,6 +34,7 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "ACC_ContextAtom.h"
+#include "Timing.h"
 #include <ostream>
 
 namespace dlvhex {
@@ -60,12 +61,17 @@ namespace dlvhex {
       // get accepted set of beliefsets
       //
       /////////////////////////////////////////////////////////////////
-
-      //timep->start();
-	//std::cout << "ACC START cout" << std::endl;
+#if 0
+      if((Timing::getInstance()).isActive()) {
+	(Timing::getInstance()).start(context_id);
+      }
+#endif
       accset = acc(param,bset);
-      //timep->stop();
-
+#if 0
+      if((Timing::getInstance()).isActive()) {
+	(Timing::getInstance()).stop(context_id);
+      }
+#endif
       /////////////////////////////////////////////////////////////////
       //
       // Iterate throw the accepted set's, 

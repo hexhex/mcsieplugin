@@ -15,10 +15,7 @@ namespace dlvhex {
     class Timing {
 
       public:
-	//Timing() : started(false), acc_count(0), null_duration(0,0,0) {};
-	Timing();
-	~Timing();
-	static Timing* getInstance();
+	static Timing& getInstance();
 	bool begin();
 	bool start(int id);
 	bool stop(int id);
@@ -29,7 +26,9 @@ namespace dlvhex {
 	std::ostream& getAccOutput(std::ostream&) const;
 
       private:
-	static Timing *t;
+	Timing();
+	Timing( const Timing& );
+
 	bool started, activated;
         ptime prg_start, prg_end;
         time_duration full_acc_duration, null_duration;

@@ -57,8 +57,8 @@ MCSdiagexplPlugin::~MCSdiagexplPlugin() {
 void
 MCSdiagexplPlugin::setupProgramCtx(dlvhex::ProgramCtx& pc) {
 	pc.setOutputBuilder(equilibriumOB);
-	if((Timing::getInstance())->isActive()) {
-		(Timing::getInstance())->begin();
+	if((Timing::getInstance()).isActive()) {
+		(Timing::getInstance()).begin();
 	}
 }
 
@@ -137,7 +137,7 @@ MCSdiagexplPlugin::registerAtoms() {
 	        if (o != std::string::npos) {
 	        	found.push_back(it);
 	        	bench=true;
-	        	(Timing::getInstance())->activate();
+	        	(Timing::getInstance()).activate();
 	        	continue;
 	        }
 	    }
