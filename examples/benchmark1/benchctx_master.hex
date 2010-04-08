@@ -2,5 +2,5 @@
 #context(1,"benchcontext1_context_acc1", " ").
 #context(2,"benchcontext1_context_acc2", "parameter").
 
-(1:a) :- (0:b).
-(2:c) :- (1:a).
+r1:(1:a) :- (0:b).
+r2:(2:c) :- (1:a).

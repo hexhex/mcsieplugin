@@ -50,15 +50,10 @@ namespace dlvhex {
      fact = f;
    }
 
-
-   BridgeRule::BridgeRule(bool f, std::string i) {
-	fact = f;
-	id = i;
-   }
-
    void
-   BridgeRule::setHeadRule(int id, std::string f) {
-     head = BridgeRuleEntry(id,f);
+   BridgeRule::setHeadRule(std::string rid, int cid, std::string f) {
+     ruleid = rid;
+     head = BridgeRuleEntry(cid,f);
    } // end of BridgeRule::setHeadRule
 
    void
@@ -74,13 +69,13 @@ namespace dlvhex {
 
 
      // output diagnosis disjunction
-     o << "normal(" << head.ContextID() << ") v d1(" << head.ContextID() << ") v d2(" << head.ContextID() << ")." << std::endl;
+     o << "normal(" << ruleid << ") v d1(" << ruleid << ") v d2(" << ruleid << ")." << std::endl;
 
      // output d2 rule
-     o << "b" << head << " :- d2(" << head.ContextID() << ")." << std::endl;
+     o << "b" << head << " :- d2(" << ruleid << ")." << std::endl;
 
      // output d1 rule
-     o << "b" << head << " :- not d1(" << head.ContextID() << ")";
+     o << "b" << head << " :- not d1(" << ruleid << ")";
 
 
      if( fact )

@@ -2,7 +2,7 @@
 #context(1,"dlv_asp_context_acc", "./benchmark2/dlvctx_ctx1.dlv").
 #context(2,"dlv_asp_context_acc", "./benchmark2/dlvctx_ctx2.dlv").
 
-(1:a) :- (0:b).
-(1:d) :- (1:d), (0:b).
-(2:c) :- (1:a).
-(2:c) :- (1:d).
+r1:(1:a) :- (0:b).
+r2:(1:d) :- (1:d), (0:b).
+r3:(2:c) :- (1:a).
+r4:(2:c) :- (1:d).

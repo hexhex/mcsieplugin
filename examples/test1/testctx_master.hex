@@ -4,9 +4,9 @@
 
 % ctx2 is a reasoning about birds, it says that they can fly unless they are
 % penguins
-(2:bird) :- (1:tweedy_is_penguin).
-(2:bird) :- (1:tweedy_is_dove).
-(2:penguin) :- (1:tweedy_is_penguin).
+r1: (2:bird) :- (1:tweedy_is_penguin).
+r2: (2:bird) :- (1:tweedy_is_dove).
+r3: (2:penguin) :- (1:tweedy_is_penguin).
 #context(2,"testcontext1_context_acc2", "./test1/dlvctx_ctx2.dlv").
 
 % ctx3 gives an advice to someone finding a bird on the floor, namely either to
@@ -14,9 +14,9 @@
 %
 % a guess is made in the bridge rules, the context "kills" the wrong guess,
 % using information from the bird classification context
-(3:rescue) :- not (3:do_nothing).
-(3:do_nothing) :- not (3:rescue).
-(3:needs_rescue) :- (2:can_fly).
+r4: (3:rescue) :- not (3:do_nothing).
+r5: (3:do_nothing) :- not (3:rescue).
+r6: (3:needs_rescue) :- (2:can_fly).
 #context(3,"testcontext1_context_acc3", "./test1/dlvctx_ctx3.dlv").
 
 % there should exist exactly the following three output-projected equilibria:

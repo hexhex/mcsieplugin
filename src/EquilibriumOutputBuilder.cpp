@@ -60,11 +60,13 @@ EquilibriumOutputBuilder::~EquilibriumOutputBuilder()
 void
 EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContainer& facts)
 {
-  bool lb = false; //line break
-
   if((Timing::getInstance())->isActive()) {
 	(Timing::getInstance())->end();
   }
+
+  bool lb = false; //line break
+  typedef std::list< boost::tuple<AtomSet,AtomSet,AnswerSetPtr> > ResultList;
+  ResultList minimalResults;
   const ResultContainer::result_t& results = facts.getAnswerSets();
 
   if (!Globals::Instance()->getOption("Silent"))
@@ -93,30 +95,100 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 			}
 		} else if ((Global::getInstance())->isDiag()) {
 			// Print Diagnosis
-			stream << "D";
 			if ((Global::getInstance())->isMin()) {
-			//calculate minimal Diagnosis
-				stream << "m";
-			}
-			stream << ":";
-			if (!(Global::getInstance())->isnoprintopeq()) {
-			// print diagnosis and equilibria
-				stream << "EQ: ";
-			} else {
-			// print only diagnosis
-				stream << " ";
-			}
-			DiagnosisPrintVisitor dpv(stream);
-			(*rit)->accept(dpv);
+			///////////////////////////////////
+			//  calculate minimal diagnosis  //
+			//  NO direct printing           //
+			///////////////////////////////////
+				#ifdef DEBUG
+				    RawPrintVisitor rpv(stream);
+				    stream << " looking at result set ";
+				    //(*rit)->accept(rpv);
+				    d1.accept(rpv);
+				    stream << "/";
+				    d2.accept(rpv);
+				    stream << std::endl;
+				#endif
 
-			if (!(Global::getInstance())->isnoprintopeq()) {
-			// print diagnosis and equilibria
-				EquilibriumPrintVisitor epv(stream);
-				stream << ":";
-				(*rit)->accept(epv);
-				stream << std::endl << "D1 size: " << d1.size() << "  / D2 size: " << d2.size() << " / normal: " << normal.size() << std::endl;
-			}
-			lb = true;
+				bool minimal = false;
+				bool skipIt = false;
+				ResultList::iterator mit = minimalResults.begin();
+				while(mit != minimalResults.end()) {
+				      #ifdef DEBUG
+					      RawPrintVisitor rpv(stream);
+					      stream << "   comparing with minimal result ";
+					      mit->get<0>().accept(rpv);
+					      stream << "/";
+					      mit->get<1>().accept(rpv);
+				      #endif
+
+				      if( d1.difference(mit->get<0>()).empty()
+					  && d2.difference(mit->get<1>()).empty() ) {
+					// d1 is contained in the tuples first parameter
+					// and d2 is contained in the tuples second parameter
+					minimal = true;
+					if( mit == minimalResults.begin() ) {
+					  minimalResults.erase(mit);
+					  mit = minimalResults.begin();
+					} else {
+					  ResultList::iterator dit = mit;
+					  mit++;
+					  minimalResults.erase(dit);
+					}
+				      } else if( mit->get<0>().difference(d1).empty()
+				  	&& mit->get<1>().difference(d2).empty() ) {
+					// the tuples first parameter is contained in d1
+					// and the tuples second parameter is contained in d2
+					skipIt = true;
+					mit++;
+				      }
+				      else {
+					mit++;
+				      }
+
+				      #ifdef DEBUG
+					      stream << " skipIt=" << skipIt << " minimal=" << minimal << std::endl;
+				      #endif
+				      //assert( (mit->get<0>() == d1 && mit->get<1>() == d2) || "this should not happen");
+				} // END while mit != minimalResults.end()
+				// we cannot have a minimal answer set which should be skipped
+				assert(!(minimal && skipIt));
+				if( !skipIt ) {
+				      #ifdef DEBUG
+				      	stream << " -> adding resultset to minimal ones: ";
+				        RawPrintVisitor rpv(stream);
+				        (*rit)->accept(rpv);
+				        stream << std::endl;
+				      #endif
+				      minimalResults.push_back(boost::make_tuple(d1,d2,*rit));
+				}
+			///////////////////////////////////
+			//   E N D   Minimal Diagnosis   //
+			///////////////////////////////////
+			} else {
+			///////////////////////////////////
+			//  NO minimal diagnosis         //
+			///////////////////////////////////
+				stream << "D:";
+				if (!(Global::getInstance())->isnoprintopeq()) {
+				// print diagnosis and equilibria
+					stream << "EQ: ";
+				} else {
+				// print only diagnosis
+					stream << " ";
+				}
+
+				DiagnosisPrintVisitor dpv(stream);
+				(*rit)->accept(dpv);
+
+				if (!(Global::getInstance())->isnoprintopeq()) {
+				// print diagnosis and equilibria
+					EquilibriumPrintVisitor epv(stream);
+					stream << ":";
+					(*rit)->accept(epv);
+				}
+				lb = true;
+			} //end else not Minimal Diagnosis
 		} else if ((Global::getInstance())->isExp()) {
 			// Print Explanation
 			stream << "E";
@@ -131,132 +203,40 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 			if (lb) stream << std::endl;
 		}
 		lb = false;
-	}
+	} // end for over results
+	if ((Global::getInstance())->isDiag() && (Global::getInstance())->isMin()) {
+	  for(ResultList::const_iterator rit = minimalResults.begin(); rit != minimalResults.end(); ++rit) {
+		stream << "Dm:";
+		if (!(Global::getInstance())->isnoprintopeq()) {
+		// print diagnosis and equilibria
+			stream << "EQ: ";
+		} else {
+		// print only diagnosis
+			stream << " ";
+		}
+
+		DiagnosisPrintVisitor dpv(stream);
+		rit->get<2>()->accept(dpv);
+
+		if (!(Global::getInstance())->isnoprintopeq()) {
+		// print diagnosis and equilibria
+			EquilibriumPrintVisitor epv(stream);
+			stream << ":";
+			rit->get<2>()->accept(epv);
+		}
+		stream << std::endl;
+
+		if (!Globals::Instance()->getOption("Silent")) {
+			stream << std::endl;
+		}
+	  } // end for over minimalResults
+	} // END Minimal Diagnosis PRINTING
   }
-
-  //stream << "Resultlist size: " << results.size() << std::endl;
-
-/////////////////////////////////////////////////////////
-#if 0
-  if (!Globals::Instance()->getOption("Silent"))
-    {
-      stream << "Subset-minimal ones:" << std::endl;
-    }
-
-  // output minimal diagnoses/equilibria
-  // store minimal into filtered list of atomsets
-  typedef std::list< boost::tuple<AtomSet,AtomSet,AnswerSetPtr> > ResultList;
-  ResultList minimalResults;
-  for (ResultContainer::result_t::const_iterator rit = results.begin(); rit != results.end(); ++rit)
-  {
-    AtomSet d1, d2;
-    (*rit)->matchPredicate("d1", d1);
-    (*rit)->matchPredicate("d2", d2);
-    stream << "D1 size: " << d1.size() << "  / D2 size: " << d2.size() << std::endl;
-
-    #ifdef DEBUG
-    RawPrintVisitor rpv(stream);
-    stream << " looking at result set ";
-    //(*rit)->accept(rpv);
-    d1.accept(rpv);
-    stream << "/";
-    d2.accept(rpv);
-    stream << std::endl;
-    #endif
-
-    bool minimal = false;
-    bool skipIt = false;
-    ResultList::iterator mit = minimalResults.begin();
-    while(mit != minimalResults.end())
-    {
-      #ifdef DEBUG
-      RawPrintVisitor rpv(stream);
-      stream << "   comparing with minimal result ";
-      mit->get<0>().accept(rpv);
-      stream << "/";
-      mit->get<1>().accept(rpv);
-      #endif
-
-      if( d1.difference(mit->get<0>()).empty()
-	  && d2.difference(mit->get<1>()).empty() )
-      {
-	// d1 is contained in the tuples first parameter
-	// and d2 is contained in the tuples second parameter
-	minimal = true;
-	if( mit == minimalResults.begin() )
-	{
-	  minimalResults.erase(mit);
-	  mit = minimalResults.begin();
-	}
-	else
-	{
-	  ResultList::iterator dit = mit;
-	  mit++;
-	  minimalResults.erase(dit);
-	}
-      }
-      else if( mit->get<0>().difference(d1).empty()
-  	&& mit->get<1>().difference(d2).empty() )
-      {
-	// the tuples first parameter is contained in d1
-	// and the tuples second parameter is contained in d2
-	skipIt = true;
-	mit++;
-      }
-      else
-      {
-	mit++;
-      }
-
-      #ifdef DEBUG
-      stream << " skipIt=" << skipIt << " minimal=" << minimal << std::endl;
-      #endif
-      //assert( (mit->get<0>() == d1 && mit->get<1>() == d2) || "this should not happen");
-    }
-    // we cannot have a minimal answer set which should be skipped
-    assert(!(minimal && skipIt));
-    if( !skipIt )
-    {
-      #ifdef DEBUG
-      stream << " -> adding resultset to minimal ones: ";
-      RawPrintVisitor rpv(stream);
-      (*rit)->accept(rpv);
-      stream << std::endl;
-      #endif
-      minimalResults.push_back(boost::make_tuple(d1,d2,*rit));
-    }
-  }
-
-  for(ResultList::const_iterator rit = minimalResults.begin();
-      rit != minimalResults.end(); ++rit)
-  {
-    EquilibriumPrintVisitor epv(stream);
-    rit->get<2>()->accept(epv);
-    stream << std::endl;
-
-    if (!Globals::Instance()->getOption("Silent"))
-    {
-      stream << std::endl;
-    }
-  }
-#endif
-/////////////////////////////////////////////////////////
 
   if((Timing::getInstance())->isActive()) {
 	stream << std::endl;
 	stream << *Timing::getInstance();
   }
-
-if ((Global::getInstance())->isDiag())
-	stream << "Diagnose" << std::endl;
-if ((Global::getInstance())->isExp())
-	stream << "Explaination" << std::endl;
-if ((Global::getInstance())->isMin())
-	stream << "Minimal" << std::endl;
-
-if ((Global::getInstance())->isnoprintopeq())
-	stream << "noprintopeq" << std::endl;
-
 
   if (results.empty())
     {

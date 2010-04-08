@@ -39,7 +39,7 @@
 #include <iostream>
 #include <sstream>
 
-#define DEBUG
+//#define DEBUG
 
 namespace dlvhex {
   namespace mcsdiagexpl {
@@ -89,9 +89,9 @@ DiagnosisPrintVisitor::visit(AtomSet* const as)
 
 	// process pred
 	if( pred == "d1" ) {
-		d1.insert(std::make_pair("r"+arg,0));
+		d1.insert(std::make_pair(arg,0));
 	} else if( pred == "d2" ) {
-		d2.insert(std::make_pair("r"+arg,0));
+		d2.insert(std::make_pair(arg,0));
 	}
     } // for-loop over AtomSet's
 

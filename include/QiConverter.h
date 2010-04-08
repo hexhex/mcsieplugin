@@ -33,7 +33,7 @@
 #define _DLVHEX_MCSDIAGEXPL_QICONVERTER_H_
 
 #include <dlvhex/PluginInterface.h>
-#include "ParserDriver.h"
+#include "QiParserDriver.h"
 #include "BridgeRule.h"
 #include "ParseContext.h"
 
@@ -43,9 +43,9 @@ namespace dlvhex {
     class QiConverter : public PluginConverter {
       public:
 	QiConverter();
-	typedef boost::spirit::node_val_data_factory<> factory_t;
+	typedef boost::spirit::classic::node_val_data_factory<> factory_t;
 	typedef const char* iterator_t;
-	typedef boost::spirit::tree_match<iterator_t, factory_t>::node_t node_t;
+	typedef boost::spirit::classic::tree_match<iterator_t, factory_t>::node_t node_t;
 
 	virtual void convert(std::istream& i, std::ostream& o);
       private:
@@ -54,7 +54,7 @@ namespace dlvhex {
 	void convertParseTreeToDLVProgram(node_t& node, std::ostream& o);
 	void convertBridgeRule(node_t& at, BridgeRule& brule);
 	void convertBridgeRuleFact(node_t& at, BridgeRule& brule);
-	void convertBridgeRuleElem(node_t& at, int& id, std::string& fact);
+	void convertBridgeRuleElem(node_t& at, std::string& ruleid, int& contextid, std::string& fact);
 	void convertContext(node_t& at, ParseContext& context);
     }; // END class QiConverter
   }  // END namespace mcsdiagexpl

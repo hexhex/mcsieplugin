@@ -43,8 +43,7 @@ namespace dlvhex {
       public:
 	BridgeRule(bool f);
         BridgeRule();
-        BridgeRule(bool f, std::string id);
-        void setHeadRule(int id, std::string f);
+        void setHeadRule(std::string rid, int cid, std::string f);
 	void addBodyRule(int id, std::string f, bool n);
 	void writeProgram(std::ostream& o);
 
@@ -55,7 +54,7 @@ namespace dlvhex {
         BridgeRuleEntry head;
 	std::vector<BridgeRuleEntry> body;
 	bool fact;
-	std::string id;
+	std::string ruleid;
     }; // END class BridgeRule
   }  // END namespace mcsdiagexpl
 } // END namespace dlvhex

@@ -1,9 +1,8 @@
 AUTOMAKE_OPTIONS = gnu
 
 noinst_HEADERS = MCSdiagexplPlugin.h \
-                 Converter.h \
                  QiConverter.h \
-		 ParserDriver.h \
+		 QiParserDriver.h \
 		 BridgeRule.h \
 		 BridgeRuleEntry.h \
 		 ParseContext.h \
