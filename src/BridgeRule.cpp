@@ -34,6 +34,7 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "BridgeRule.h"
+#include "Global.h"
 
 #include <ostream>
 #include <list>
@@ -67,21 +68,27 @@ namespace dlvhex {
      // write bridgerule in asp form
      std::list<int> ilist;
 
+     if ((Global::getInstance())->isDiag() || (Global::getInstance())->isExp()) {
+     // Only print equilibria
+       // output diagnosis disjunction
+       o << "normal(" << ruleid << ") v d1(" << ruleid << ") v d2(" << ruleid << ")." << std::endl;
+       // output d2 rule
+       o << "b" << head << " :- d2(" << ruleid << ")." << std::endl;
+       // output d1 rule
+       o << "b" << head << " :- not d1(" << ruleid << ")";
+       if (fact)
+	o << "." << std::endl;
+       else o << ", ";
+     } else {
+	o << "b" << head;
+       if (fact)
+	o << "." << std::endl;
+       else o << " :- ";
+     }
 
-     // output diagnosis disjunction
-     o << "normal(" << ruleid << ") v d1(" << ruleid << ") v d2(" << ruleid << ")." << std::endl;
 
-     // output d2 rule
-     o << "b" << head << " :- d2(" << ruleid << ")." << std::endl;
-
-     // output d1 rule
-     o << "b" << head << " :- not d1(" << ruleid << ")";
-
-
-     if( fact )
-       o << "." << std::endl;
-     else { // no fact, so body is emty
-       	     o << ", ";
+     if( !fact ) { // no fact, so body is emty
+       	     //o << ", ";
 	     //o << "b" << head << " :- ";
 	     for (std::vector<BridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
 	       BridgeRuleEntry elem = *it;

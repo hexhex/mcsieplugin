@@ -42,12 +42,14 @@
 #include "Global.h"
 
 #include <boost/tuple/tuple.hpp>
+#include <boost/tuple/tuple_comparison.hpp>
 #include <iostream>
 
 //#define DEBUG
 
 namespace dlvhex {
   namespace mcsdiagexpl {
+
 
 EquilibriumOutputBuilder::EquilibriumOutputBuilder()
 { }
@@ -56,6 +58,60 @@ EquilibriumOutputBuilder::EquilibriumOutputBuilder()
 EquilibriumOutputBuilder::~EquilibriumOutputBuilder()
 { }
 
+bool same_AtomSet (boost::tuple<AtomSet,AtomSet,AnswerSetPtr> first, boost::tuple<AtomSet,AtomSet,AnswerSetPtr> second)
+{ 
+#if 0
+	bool ret = false;
+	std::cout << "============================================" << std::endl;
+	std::cout << "Vergleiche D1" << std::endl;
+	std::cout << "-------------" << std::endl;
+	for (AtomSet::const_iterator ai = first.get<0>().begin(), 
+		bi = second.get<0>().begin(); 
+		(ai != first.get<0>().end()) ||
+		(bi != second.get<0>().end());) {
+
+		if (ai != first.get<0>().end()) {
+      			std::cout << *ai;
+			ai++;
+		}
+		std::cout << '\t';
+		if (bi != second.get<0>().end()) {
+			std::cout << *bi;
+			bi++;
+		}
+		std::cout << std::endl;
+    	}
+
+	std::cout << "------------------------------------" << std::endl;
+	std::cout << "Vergleiche D2" << std::endl;
+	std::cout << "-------------" << std::endl;
+	for (AtomSet::const_iterator ai = first.get<1>().begin(), 
+		bi = second.get<1>().begin(); 
+		(ai != first.get<1>().end()) ||
+		(bi != second.get<1>().end());) {
+
+		if (ai != first.get<1>().end()) {
+      			std::cout << *ai;
+			ai++;
+		}
+		std::cout << '\t';
+		if (bi != second.get<1>().end()) {
+			std::cout << *bi;
+			bi++;
+		}
+		std::cout << std::endl;
+    	}
+	std::cout << "first: " << first.get<0>().size() << " zu " << second.get<0>().size() << " : ";
+	if (first.get<0>() == second.get<0>()) {
+		std::cout << "D1 are equal | ";
+	} else std::cout << "D1 are NOT equal | ";
+	if (first.get<1>() == second.get<1>()) {
+		std::cout << "D2 are equal";
+	} else std::cout << "D2 are NOT equal";
+	std::cout << std::endl;
+#endif
+	return ( (first.get<0>() == second.get<0>()) && (first.get<1>() == second.get<1>())); 
+}
 
 void
 EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContainer& facts)
@@ -88,11 +144,11 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 		if (!(Global::getInstance())->isDiag() && !(Global::getInstance())->isExp()) {
 			// Only print equilibria
 			EquilibriumPrintVisitor epv(stream);
-			if ((d1.size() == 0) && (d2.size() == 0) && (normal.size() > 0)) {
+			//if ((d1.size() == 0) && (d2.size() == 0) && (normal.size() > 0)) {
 				stream << "EQ: ";
 				(*rit)->accept(epv);
 				lb = true;
-			}
+			//}
 		} else if ((Global::getInstance())->isDiag()) {
 			// Print Diagnosis
 			if ((Global::getInstance())->isMin()) {
@@ -169,6 +225,8 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 			///////////////////////////////////
 			//  NO minimal diagnosis         //
 			///////////////////////////////////
+			    if (!(Global::getInstance())->isnoprintopeq()) {
+			    // print diagnosis and equilibria
 				stream << "D:";
 				if (!(Global::getInstance())->isnoprintopeq()) {
 				// print diagnosis and equilibria
@@ -181,13 +239,19 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 				DiagnosisPrintVisitor dpv(stream);
 				(*rit)->accept(dpv);
 
-				if (!(Global::getInstance())->isnoprintopeq()) {
-				// print diagnosis and equilibria
-					EquilibriumPrintVisitor epv(stream);
-					stream << ":";
-					(*rit)->accept(epv);
-				}
+				
+				EquilibriumPrintVisitor epv(stream);
+				stream << ":";
+				(*rit)->accept(epv);
 				lb = true;
+			    } else {
+			    ///////////////////////////////////////////////////////////////
+			    //  For Printing only Diagnosis without Equilibria we filter //
+			    //  out duplicate Diagnosis, for that we use the             //
+			    //  minimalResults List and filter before printing           //
+			    ///////////////////////////////////////////////////////////////
+				minimalResults.push_back(boost::make_tuple(d1,d2,*rit));
+			    }
 			} //end else not Minimal Diagnosis
 		} else if ((Global::getInstance())->isExp()) {
 			// Print Explanation
@@ -204,7 +268,12 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 		}
 		lb = false;
 	} // end for over results
+
 	if ((Global::getInstance())->isDiag() && (Global::getInstance())->isMin()) {
+	///////////////////////////////////
+	//  Printing minimal diagnosis   //
+	//  with or without equilibria   //
+	///////////////////////////////////
 	  for(ResultList::const_iterator rit = minimalResults.begin(); rit != minimalResults.end(); ++rit) {
 		stream << "Dm:";
 		if (!(Global::getInstance())->isnoprintopeq()) {
@@ -229,9 +298,30 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 		if (!Globals::Instance()->getOption("Silent")) {
 			stream << std::endl;
 		}
-	  } // end for over minimalResults
-	} // END Minimal Diagnosis PRINTING
-  }
+	    } //end for
+	///////////////////////////////////
+	//  E N D                        //
+	//  Printing minimal diagnosis   //
+	//  with or without equilibria   //
+	///////////////////////////////////
+	} else if ((Global::getInstance())->isDiag() && !(Global::getInstance())->isMin() && (Global::getInstance())->isnoprintopeq()) {
+	/////////////////////////////////////////////
+	//  Printing diagnosis without equilibria  //
+	//  for that we erase duplicates           //
+	/////////////////////////////////////////////
+	    minimalResults.sort();
+	    minimalResults.unique(same_AtomSet);
+	    for(ResultList::const_iterator rit = minimalResults.begin(); rit != minimalResults.end(); ++rit) {
+		stream << "D: ";
+		DiagnosisPrintVisitor dpv(stream);
+		rit->get<2>()->accept(dpv);
+		stream << std::endl;
+		if (!Globals::Instance()->getOption("Silent")) {
+			stream << std::endl;
+		}
+	    } // end for iterate minimalResults
+	} // END else if Printing diagnosis without equilibria
+  } // if result !emty
 
   if((Timing::getInstance())->isActive()) {
 	stream << std::endl;
@@ -239,10 +329,7 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
   }
 
   if (results.empty())
-    {
-      return;
-    }
-
+    return;
 }
 
 }//namespace mcsdiagexpl
