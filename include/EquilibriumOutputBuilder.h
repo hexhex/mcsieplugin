@@ -33,11 +33,19 @@
 #define _DLVHEX_MCSDIAGEXPL_EQUILIBRIUMOUTPUTBUILDER_H_
 
 #include "dlvhex/OutputBuilder.h"
+#include <boost/tuple/tuple.hpp>
+#include <boost/tuple/tuple_comparison.hpp>
+
 
 namespace dlvhex {
   namespace mcsdiagexpl {
 
+  typedef std::list< boost::tuple<AtomSet,AtomSet,AnswerSetPtr> > ResultList;
+
   class EquilibriumOutputBuilder : public OutputBuilder {
+
+    private:
+      bool checkAddMinimalResult(ResultList& rs, AtomSet& d1, AtomSet& d2);
 
     public:
       /// Dtor

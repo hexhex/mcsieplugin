@@ -41,8 +41,6 @@
 #include "Timing.h"
 #include "Global.h"
 
-#include <boost/tuple/tuple.hpp>
-#include <boost/tuple/tuple_comparison.hpp>
 #include <iostream>
 
 //#define DEBUG
@@ -113,6 +111,62 @@ bool same_AtomSet (boost::tuple<AtomSet,AtomSet,AnswerSetPtr> first, boost::tupl
 	return ( (first.get<0>() == second.get<0>()) && (first.get<1>() == second.get<1>())); 
 }
 
+bool
+EquilibriumOutputBuilder::checkAddMinimalResult(ResultList& mrl, AtomSet& d1, AtomSet& d2) {
+  bool minimal = false;
+  bool skipIt = false;
+  ResultList::iterator mit = mrl.begin();
+  while(mit != mrl.end()) {
+      #ifdef DEBUG
+	      RawPrintVisitor rpv(stream);
+	      stream << "   comparing with minimal result ";
+	      mit->get<0>().accept(rpv);
+	      stream << "/";
+	      mit->get<1>().accept(rpv);
+      #endif
+
+      if( d1.difference(mit->get<0>()).empty()
+	  && d2.difference(mit->get<1>()).empty() ) {
+	// d1 is contained in the tuples first parameter
+	// and d2 is contained in the tuples second parameter
+	minimal = true;
+	if( mit == mrl.begin() ) {
+	  mrl.erase(mit);
+	  mit = mrl.begin();
+	} else {
+	  ResultList::iterator dit = mit;
+	  mit++;
+	  mrl.erase(dit);
+	}
+      } else if( mit->get<0>().difference(d1).empty()
+  	&& mit->get<1>().difference(d2).empty() ) {
+	// the tuples first parameter is contained in d1
+	// and the tuples second parameter is contained in d2
+	skipIt = true;
+	mit++;
+      }
+      else {
+	mit++;
+      }
+      #ifdef DEBUG
+	      stream << " skipIt=" << skipIt << " minimal=" << minimal << std::endl;
+      #endif
+      //assert( (mit->get<0>() == d1 && mit->get<1>() == d2) || "this should not happen");
+  } // END while mit != minimalResults.end()
+  // we cannot have a minimal answer set which should be skipped
+  assert(!(minimal && skipIt));
+  if( !skipIt ) {
+      #ifdef DEBUG
+      	stream << " -> adding resultset to minimal ones: ";
+        RawPrintVisitor rpv(stream);
+        (*rit)->accept(rpv);
+        stream << std::endl;
+      #endif
+      return true;
+  }
+  return false;
+}
+
 void
 EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContainer& facts)
 {
@@ -121,7 +175,6 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
   }
 
   bool lb = false; //line break
-  typedef std::list< boost::tuple<AtomSet,AtomSet,AnswerSetPtr> > ResultList;
   ResultList minimalResults;
   const ResultContainer::result_t& results = facts.getAnswerSets();
 
@@ -165,59 +218,9 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 				    d2.accept(rpv);
 				    stream << std::endl;
 				#endif
-
-				bool minimal = false;
-				bool skipIt = false;
-				ResultList::iterator mit = minimalResults.begin();
-				while(mit != minimalResults.end()) {
-				      #ifdef DEBUG
-					      RawPrintVisitor rpv(stream);
-					      stream << "   comparing with minimal result ";
-					      mit->get<0>().accept(rpv);
-					      stream << "/";
-					      mit->get<1>().accept(rpv);
-				      #endif
-
-				      if( d1.difference(mit->get<0>()).empty()
-					  && d2.difference(mit->get<1>()).empty() ) {
-					// d1 is contained in the tuples first parameter
-					// and d2 is contained in the tuples second parameter
-					minimal = true;
-					if( mit == minimalResults.begin() ) {
-					  minimalResults.erase(mit);
-					  mit = minimalResults.begin();
-					} else {
-					  ResultList::iterator dit = mit;
-					  mit++;
-					  minimalResults.erase(dit);
-					}
-				      } else if( mit->get<0>().difference(d1).empty()
-				  	&& mit->get<1>().difference(d2).empty() ) {
-					// the tuples first parameter is contained in d1
-					// and the tuples second parameter is contained in d2
-					skipIt = true;
-					mit++;
-				      }
-				      else {
-					mit++;
-				      }
-
-				      #ifdef DEBUG
-					      stream << " skipIt=" << skipIt << " minimal=" << minimal << std::endl;
-				      #endif
-				      //assert( (mit->get<0>() == d1 && mit->get<1>() == d2) || "this should not happen");
-				} // END while mit != minimalResults.end()
-				// we cannot have a minimal answer set which should be skipped
-				assert(!(minimal && skipIt));
-				if( !skipIt ) {
-				      #ifdef DEBUG
-				      	stream << " -> adding resultset to minimal ones: ";
-				        RawPrintVisitor rpv(stream);
-				        (*rit)->accept(rpv);
-				        stream << std::endl;
-				      #endif
-				      minimalResults.push_back(boost::make_tuple(d1,d2,*rit));
-				}
+				if (checkAddMinimalResult(minimalResults,d1,d2))
+					minimalResults.push_back(boost::make_tuple(d1,d2,*rit));
+				// call add
 			///////////////////////////////////
 			//   E N D   Minimal Diagnosis   //
 			///////////////////////////////////
@@ -254,13 +257,14 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 			    }
 			} //end else not Minimal Diagnosis
 		} else if ((Global::getInstance())->isExp()) {
-			// Print Explanation
-			stream << "E";
+			// for calculate Explanation
+			// first calculate Minimal Diagnosis
+			if (checkAddMinimalResult(minimalResults,d1,d2))
+					minimalResults.push_back(boost::make_tuple(d1,d2,*rit));
+
 			if ((Global::getInstance())->isMin()) {
 			//calculate minimal Explanation
-				stream << "m";
 			}
-			stream << ": ";
 		}
 		if (lb) stream << std::endl;
 		if (!Globals::Instance()->getOption("Silent")) {
@@ -268,6 +272,20 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 		}
 		lb = false;
 	} // end for over results
+
+	if ((Global::getInstance())->isExp()) {
+	  if ((Global::getInstance())->isMin()) {
+		AtomSet min_expl;
+	  	for(ResultList::const_iterator rit = minimalResults.begin(); rit != minimalResults.end(); ++rit) {
+			min_expl.insert(rit->get<0>());
+			min_expl.insert(rit->get<1>());
+		}
+		DiagnosisPrintVisitor dpv(stream);
+		stream << "Em: ";
+		min_expl.accept(dpv);
+		stream << std::endl;
+	  }
+	}
 
 	if ((Global::getInstance())->isDiag() && (Global::getInstance())->isMin()) {
 	///////////////////////////////////
