@@ -58,56 +58,6 @@ EquilibriumOutputBuilder::~EquilibriumOutputBuilder()
 
 bool same_AtomSet (boost::tuple<AtomSet,AtomSet,AnswerSetPtr> first, boost::tuple<AtomSet,AtomSet,AnswerSetPtr> second)
 { 
-#if 0
-	bool ret = false;
-	std::cout << "============================================" << std::endl;
-	std::cout << "Vergleiche D1" << std::endl;
-	std::cout << "-------------" << std::endl;
-	for (AtomSet::const_iterator ai = first.get<0>().begin(), 
-		bi = second.get<0>().begin(); 
-		(ai != first.get<0>().end()) ||
-		(bi != second.get<0>().end());) {
-
-		if (ai != first.get<0>().end()) {
-      			std::cout << *ai;
-			ai++;
-		}
-		std::cout << '\t';
-		if (bi != second.get<0>().end()) {
-			std::cout << *bi;
-			bi++;
-		}
-		std::cout << std::endl;
-    	}
-
-	std::cout << "------------------------------------" << std::endl;
-	std::cout << "Vergleiche D2" << std::endl;
-	std::cout << "-------------" << std::endl;
-	for (AtomSet::const_iterator ai = first.get<1>().begin(), 
-		bi = second.get<1>().begin(); 
-		(ai != first.get<1>().end()) ||
-		(bi != second.get<1>().end());) {
-
-		if (ai != first.get<1>().end()) {
-      			std::cout << *ai;
-			ai++;
-		}
-		std::cout << '\t';
-		if (bi != second.get<1>().end()) {
-			std::cout << *bi;
-			bi++;
-		}
-		std::cout << std::endl;
-    	}
-	std::cout << "first: " << first.get<0>().size() << " zu " << second.get<0>().size() << " : ";
-	if (first.get<0>() == second.get<0>()) {
-		std::cout << "D1 are equal | ";
-	} else std::cout << "D1 are NOT equal | ";
-	if (first.get<1>() == second.get<1>()) {
-		std::cout << "D2 are equal";
-	} else std::cout << "D2 are NOT equal";
-	std::cout << std::endl;
-#endif
 	return ( (first.get<0>() == second.get<0>()) && (first.get<1>() == second.get<1>())); 
 }
 
@@ -118,10 +68,10 @@ EquilibriumOutputBuilder::checkAddMinimalResult(ResultList& mrl, AtomSet& d1, At
   ResultList::iterator mit = mrl.begin();
   while(mit != mrl.end()) {
       #ifdef DEBUG
-	      RawPrintVisitor rpv(stream);
-	      stream << "   comparing with minimal result ";
+	      RawPrintVisitor rpv(std::cout);
+	      std::cout << "   comparing with minimal result ";
 	      mit->get<0>().accept(rpv);
-	      stream << "/";
+	      std::cout << "/";
 	      mit->get<1>().accept(rpv);
       #endif
 
@@ -149,19 +99,13 @@ EquilibriumOutputBuilder::checkAddMinimalResult(ResultList& mrl, AtomSet& d1, At
 	mit++;
       }
       #ifdef DEBUG
-	      stream << " skipIt=" << skipIt << " minimal=" << minimal << std::endl;
+	      std::cout << " skipIt=" << skipIt << " minimal=" << minimal << std::endl;
       #endif
       //assert( (mit->get<0>() == d1 && mit->get<1>() == d2) || "this should not happen");
   } // END while mit != minimalResults.end()
   // we cannot have a minimal answer set which should be skipped
   assert(!(minimal && skipIt));
   if( !skipIt ) {
-      #ifdef DEBUG
-      	stream << " -> adding resultset to minimal ones: ";
-        RawPrintVisitor rpv(stream);
-        (*rit)->accept(rpv);
-        stream << std::endl;
-      #endif
       return true;
   }
   return false;
@@ -218,8 +162,15 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 				    d2.accept(rpv);
 				    stream << std::endl;
 				#endif
-				if (checkAddMinimalResult(minimalResults,d1,d2))
+				if (checkAddMinimalResult(minimalResults,d1,d2)) {
 					minimalResults.push_back(boost::make_tuple(d1,d2,*rit));
+			      #ifdef DEBUG
+			      	stream << " -> adding resultset to minimal ones: ";
+			        RawPrintVisitor rpv(stream);
+			        (*rit)->accept(rpv);
+			        stream << std::endl;
+			      #endif
+				}
 				// call add
 			///////////////////////////////////
 			//   E N D   Minimal Diagnosis   //
@@ -259,8 +210,25 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 		} else if ((Global::getInstance())->isExp()) {
 			// for calculate Explanation
 			// first calculate Minimal Diagnosis
-			if (checkAddMinimalResult(minimalResults,d1,d2))
-					minimalResults.push_back(boost::make_tuple(d1,d2,*rit));
+				#ifdef DEBUG
+				    RawPrintVisitor rpv(stream);
+				    stream << " looking at result set ";
+				    //(*rit)->accept(rpv);
+				    d1.accept(rpv);
+				    stream << "/";
+				    d2.accept(rpv);
+				    stream << std::endl;
+				#endif
+			if (checkAddMinimalResult(minimalResults,d1,d2)) {
+				minimalResults.push_back(boost::make_tuple(d1,d2,*rit));
+
+			      #ifdef DEBUG
+			      	stream << " -> adding resultset to minimal ones: ";
+			        RawPrintVisitor rpv(stream);
+			        (*rit)->accept(rpv);
+			        stream << std::endl;
+			      #endif
+			}
 
 			if ((Global::getInstance())->isMin()) {
 			//calculate minimal Explanation
