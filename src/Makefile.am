@@ -1,8 +1,9 @@
 AUTOMAKE_OPTIONS = gnu
 
+lib_LTLIBRARIES = libldlvhexmcsdiagexpl.la
 plugin_LTLIBRARIES = libdlvhexmcsdiagexpl.la
 
-libdlvhexmcsdiagexpl_la_SOURCES = MCSdiagexplPlugin.cpp \
+libldlvhexmcsdiagexpl_la_SOURCES = MCSdiagexplPlugin.cpp \
 			     				QiConverter.cpp \
                              	BridgeRule.cpp \
                              	BridgeRuleEntry.cpp \
@@ -20,5 +21,7 @@ AM_CPPFLAGS = \
         $(BOOST_CPPFLAGS) \
 	$(DLVHEX_CFLAGS)
 
+libdlvhexmcsdiagexpl_la_SOURCES = 
+libdlvhexmcsdiagexpl_la_LIBADD = -lldlvhexmcsdiagexpl
 libdlvhexmcsdiagexpl_la_LDFLAGS = -avoid-version -module
 
