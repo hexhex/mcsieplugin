@@ -53,7 +53,7 @@ EquilibriumPrintVisitor::EquilibriumPrintVisitor(std::ostream& s)
 { }
 
 void
-EquilibriumPrintVisitor::visit(AtomSet* const as)
+EquilibriumPrintVisitor::visit(const AtomSet* const as)
 {
   // diagnosis output
   //typedef std::map<std::string, int> DiagMap;

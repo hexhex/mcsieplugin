@@ -53,7 +53,7 @@ DiagnosisPrintVisitor::DiagnosisPrintVisitor(std::ostream& s)
 { }
 
 void
-DiagnosisPrintVisitor::visit(AtomSet* const as)
+DiagnosisPrintVisitor::visit(const AtomSet* const as)
 {
   // diagnosis output
   typedef std::map<std::string, int> DiagMap;

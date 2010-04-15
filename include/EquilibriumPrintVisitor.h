@@ -44,7 +44,7 @@ namespace dlvhex {
 
         /// outputs the Equilibrium in '{(a,b,c), (cd,bx)}' form
         virtual void
-        visit(AtomSet* const);
+        visit(const AtomSet* const);
     };
   } // END namespace mcsdiagexpl
 } // END namespace dlvhex

@@ -75,3 +75,4 @@ namespace dlvhex {
 } // END namespace dlvhex
 
 #endif /*_DLVHEX_MCSDIAGEXPL_TIMING_H_*/
+// vim:ts=8:
