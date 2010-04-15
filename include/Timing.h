@@ -20,6 +20,7 @@ namespace dlvhex {
 	bool start(int id);
 	bool stop(int id);
 	bool end();
+	bool stopPostProc();
 	void activate();
 	bool isActive();
 	time_duration getFullPrgDuration() const;
@@ -31,7 +32,7 @@ namespace dlvhex {
 	Timing( const Timing& );
 
 	bool started, activated;
-        ptime prg_start, prg_end;
+        ptime prg_start, prg_end, post_end;
         time_duration full_acc_duration, null_duration;
 
 	struct acc_time_info {

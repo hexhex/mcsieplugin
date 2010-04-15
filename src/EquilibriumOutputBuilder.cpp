@@ -310,6 +310,7 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
   } // if result !emty
 
   if((Timing::getInstance())->isActive()) {
+	(Timing::getInstance())->stopPostProc();
 	stream << std::endl;
 	stream << *Timing::getInstance();
   }

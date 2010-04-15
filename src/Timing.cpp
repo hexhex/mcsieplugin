@@ -39,9 +39,6 @@ namespace dlvhex {
 		if (!started) {
 			prg_start = microsec_clock::local_time();
 			started=true;
-			#ifdef DEBUG
-			  std::cout << "PROGRAM BEGIN TIME: " << prg_start << std::endl;
-			#endif
 			return true;
 		}
 		return false;
@@ -58,10 +55,6 @@ namespace dlvhex {
 		} else {
 			curr = it->second;
 		}
-		#ifdef DEBUG
-		  std::cout << "ACC START ID: " << id << std::endl;
-		  std::cout << "CURR Count: " << curr.count << std::endl;
-		#endif
 		if (curr.count >= 0) {
 			curr.count *= -1;
 			curr.count -= 1;
@@ -75,10 +68,6 @@ namespace dlvhex {
 	bool
 	Timing::stop(int id) {
 		acc_time_info curr = acc_info_map[id];
-		#ifdef DEBUG
-		  std::cout << "ACC END ID: " << id << std::endl;
-		  std::cout << "CURR Count: " << curr.count << std::endl;
-		#endif
 		if (curr.count < 0) {
 			curr.count *= -1;
 			ptime now = microsec_clock::local_time();
@@ -94,11 +83,18 @@ namespace dlvhex {
 	Timing::end() {
 		if (started) {
 			prg_end = microsec_clock::local_time();
-			#ifdef DEBUG
-			  std::cout << "PROGRAM END TIME: " << prg_end << std::endl;
-			#endif
 			if (prg_start < prg_end)
 				return true;
+		}
+		return false;
+	}
+
+
+	bool
+	Timing::stopPostProc() {
+		if (started) {
+			post_end = microsec_clock::local_time();
+			return true;
 		}
 		return false;
 	}
@@ -116,6 +112,7 @@ namespace dlvhex {
 		//std::ostream& out;
 		std::string dString;
 		time_duration full_all_acc_duration = time_duration(0,0,0);
+		time_duration post_duration = post_end - prg_end;
 		//for loop in contexts
 		for (std::map<int, acc_time_info>::const_iterator it = acc_info_map.begin(); it != acc_info_map.end(); it++) {
 			acc_time_info curr = (*it).second;
@@ -159,6 +156,12 @@ namespace dlvhex {
 
 		} //end loop
 
+		#ifdef DEBUG
+			out << " ===================================================================== " << std::endl;
+			out << "| Time for Postprocessing: " << post_duration;
+			for (int i = 0; i<27; out << " ", i++);
+			out << " |" << std::endl;
+		#endif
 		out << " ===================================================================== " << std::endl;
 		out << "| Total time for all ACC Functions | Total time for Program           |" << std::endl;
 		out << "|----------------------------------|----------------------------------|" << std::endl;
