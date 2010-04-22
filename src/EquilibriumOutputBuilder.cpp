@@ -40,6 +40,12 @@
 #include "DiagnosisPrintVisitor.h"
 #include "Timing.h"
 #include "Global.h"
+#include "dlvhex/DLVProcess.h"
+#include "dlvhex/AtomSet.h"
+#include "dlvhex/Program.h"
+#include "dlvhex/HexParserDriver.h"
+#include "dlvhex/ASPSolver.h"
+#include "dlvhex/TextOutputBuilder.h"
 
 #include <iostream>
 
@@ -109,6 +115,87 @@ EquilibriumOutputBuilder::checkAddMinimalResult(ResultList& mrl, AtomSet& d1, At
       return true;
   }
   return false;
+}
+
+std::vector<AtomSet> 
+EquilibriumOutputBuilder::getExplaination(ResultList& minRes) {
+  DLVProcess dlv;
+  dlv.addOption("-facts");
+  std::vector<AtomSet> as;
+  AtomSet d1,d2,normal;
+  Term e1 = Term("e1");
+  Term e2 = Term("e2");
+  Term rule = Term("rule");
+  // Rules of Programm
+  RuleHead_t h;
+  RuleBody_t b;
+  Program idb;
+  /// stores the facts of the program
+  AtomSet edb;
+  Rule *r_guess = new Rule(h,b);
+  r_guess->addHead(AtomPtr(new Atom(Tuple(1, Term("e1(R)")))));
+  r_guess->addHead(AtomPtr(new Atom(Tuple(1, Term("ne1(R)")))));
+  r_guess->addBody(new Literal(AtomPtr(new Atom("rule(R)")), false));
+// e1(R) v ne1(R) :- rule(R).
+// e2(R) v ne2(R) :- rule(R).
+  idb.addRule(r_guess);
+
+  r_guess = new Rule(h,b);
+  r_guess->addHead(AtomPtr(new Atom(Tuple(1, Term("e2(R)")))));
+  r_guess->addHead(AtomPtr(new Atom(Tuple(1, Term("ne2(R)")))));
+  r_guess->addBody(new Literal(AtomPtr(new Atom("rule(R)")), false));
+  idb.addRule(r_guess);
+
+  std::auto_ptr<BaseASPSolver> solver(dlv.createSolver());
+  h.clear();
+  b.clear();
+  for(ResultList::const_iterator rit = minRes.begin(); rit != minRes.end(); ++rit) {
+	h.clear();
+	Rule *r = new Rule(h,b);
+	//(rit->get<0>()).matchPredicate("d1",d1);
+	d1 = rit->get<0>();
+	for (AtomSet::const_iterator asit = d1.begin(); asit != d1.end(); ++asit) {
+	  Atom a1 = *asit;
+	  a1.setPredicate(e1);
+	  r->addHead(AtomPtr(new Atom(a1)));
+	  a1.setPredicate(rule);
+	  edb.insert(AtomPtr(new Atom(a1)));
+	}
+	d2 = rit->get<1>();
+	for (AtomSet::const_iterator asit = d2.begin(); asit != d2.end(); ++asit) {
+	  Atom a2 = *asit;
+	  a2.setPredicate(e2);
+	  r->addHead(AtomPtr(new Atom(a2)));
+	  a2.setPredicate(rule);
+	  edb.insert(AtomPtr(new Atom(a2)));
+	}
+	idb.addRule(r);
+	(rit->get<2>())->matchPredicate("normal", normal);
+	for (AtomSet::const_iterator asit = normal.begin(); asit != normal.end(); ++asit) {
+	  Atom a2 = *asit;
+	  a2.setPredicate(rule);
+	  edb.insert(AtomPtr(new Atom(a2)));
+	}
+  }
+//#ifdef DEBUG
+    std::cout << "Start solving dlv program: " << std::endl;
+    const Rule *r;
+    int i=0;
+    for (Program::const_iterator progit = idb.begin(); progit != idb.end(); ++i, ++progit) {
+      r=*(progit);
+      std::cout << *r;
+    }
+
+    //cout << (*edb).getArgument(1).getSring();
+    for (AtomSet::const_iterator ai = edb.begin(); ai != edb.end(); ++ai) {
+      std::cout << *ai << std::endl;
+    }
+    std::cout << "solve ==========================" << std::endl;
+//#endif
+  //solver->solve(idb, edb, as);
+  if (as.size() > 0)
+	std::cout << "there are ansersets";
+  return as;
 }
 
 void
@@ -229,10 +316,6 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 			        stream << std::endl;
 			      #endif
 			}
-
-			if ((Global::getInstance())->isMin()) {
-			//calculate minimal Explanation
-			}
 		}
 		if (lb) stream << std::endl;
 		if (!Globals::Instance()->getOption("Silent")) {
@@ -242,6 +325,13 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 	} // end for over results
 
 	if ((Global::getInstance())->isExp()) {
+	///////////////////////////////////
+	//  get Explanations out of      //
+	//  minimal Diagnosis            //
+	///////////////////////////////////
+	  std::vector<AtomSet> expl = getExplaination(minimalResults);
+
+#if 0
 	  if ((Global::getInstance())->isMin()) {
 		AtomSet min_expl;
 	  	for(ResultList::const_iterator rit = minimalResults.begin(); rit != minimalResults.end(); ++rit) {
@@ -253,6 +343,7 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 		min_expl.accept(dpv);
 		stream << std::endl;
 	  }
+#endif
 	}
 
 	if ((Global::getInstance())->isDiag() && (Global::getInstance())->isMin()) {

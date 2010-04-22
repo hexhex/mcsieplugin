@@ -35,6 +35,7 @@
 #include "dlvhex/OutputBuilder.h"
 #include <boost/tuple/tuple.hpp>
 #include <boost/tuple/tuple_comparison.hpp>
+#include "dlvhex/AtomSet.h"
 
 
 namespace dlvhex {
@@ -46,6 +47,7 @@ namespace dlvhex {
 
     private:
       bool checkAddMinimalResult(ResultList& rs, AtomSet& d1, AtomSet& d2);
+      std::vector<AtomSet> getExplaination(ResultList& minRes);
 
     public:
       /// Dtor
