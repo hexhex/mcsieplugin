@@ -1,5 +1,3 @@
-AUTOMAKE_OPTIONS = gnu
-
 plugin_LTLIBRARIES = libdlvhexmcsequilibrium.la
 
 libdlvhexmcsequilibrium_la_SOURCES = MCSequilibriumPlugin.cpp \
