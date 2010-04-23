@@ -1,5 +1,3 @@
-AUTOMAKE_OPTIONS = gnu
-
 noinst_HEADERS = MCSequilibriumPlugin.h \
                  Converter.h \
 		 ParserDriver.h \
