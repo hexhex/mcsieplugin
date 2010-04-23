@@ -1,5 +1,3 @@
-AUTOMAKE_OPTIONS = gnu
-
 EXTRA_DIST = mcsequilibriumtests.test
 
 plugin_LTLIBRARIES = 	libdlvhexmcstestcontext1.la\
@@ -18,9 +16,9 @@ plugin_LTLIBRARIES = 	libdlvhexmcstestcontext1.la\
 			libdlvhexmcsbenchmark11.la
 
 AM_CPPFLAGS = \
- 	-I$(top_srcdir)/include \
+	-I$(top_srcdir)/include \
         $(BOOST_CPPFLAGS) \
- 	$(DLVHEX_CFLAGS)
+	$(DLVHEX_CFLAGS)
 
 libdlvhexmcstestcontext1_la_SOURCES = ./test1/TestContext1.cpp
 libdlvhexmcstestcontext1_la_LDFLAGS = -avoid-version -module

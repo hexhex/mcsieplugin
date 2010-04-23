@@ -1,5 +1,3 @@
-AUTOMAKE_OPTIONS = gnu
-
 noinst_HEADERS = MCSdiagexplPlugin.h \
                  QiConverter.h \
 		 QiParserDriver.h \

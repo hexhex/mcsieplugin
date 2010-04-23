@@ -1,5 +1,3 @@
-AUTOMAKE_OPTIONS = gnu
-
 # run the test script
 TESTS = run-dlvhex-tests.sh
 

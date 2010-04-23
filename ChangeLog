@@ -1,1 +1,7 @@
+2010-04-23  Thomas Krennwallner  <tkren@kr.tuwien.ac.at>
+
+	* testsuite/Makefile.am (AUTOMAKE_OPTIONS): Remove.
+	* src/Makefile.am: Likewise.
+	* include/Makefile.am: Likewise.
+	* examples/Makefile.am: Likewise.
 
