@@ -88,9 +88,9 @@ DiagnosisPrintVisitor::visit(const AtomSet* const as)
 	}
 
 	// process pred
-	if( pred == "d1" ) {
+	if( pred == "d1" || pred == "e1") {
 		d1.insert(std::make_pair(arg,0));
-	} else if( pred == "d2" ) {
+	} else if( pred == "d2" || pred == "e2") {
 		d2.insert(std::make_pair(arg,0));
 	}
     } // for-loop over AtomSet's

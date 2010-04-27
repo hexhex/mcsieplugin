@@ -48,6 +48,8 @@
 #include "dlvhex/TextOutputBuilder.h"
 
 #include <iostream>
+#include <sstream>
+#include <string>
 
 //#define DEBUG
 
@@ -119,82 +121,89 @@ EquilibriumOutputBuilder::checkAddMinimalResult(ResultList& mrl, AtomSet& d1, At
 
 std::vector<AtomSet> 
 EquilibriumOutputBuilder::getExplaination(ResultList& minRes) {
+  std::stringstream ss;
   DLVProcess dlv;
   dlv.addOption("-facts");
+  //dlv.addOption("-filter=e1,e2");
   std::vector<AtomSet> as;
+  HexParserDriver driver;
+  Program prog;
+  AtomSet asfact;
   AtomSet d1,d2,normal;
   Term e1 = Term("e1");
   Term e2 = Term("e2");
   Term rule = Term("rule");
-  // Rules of Programm
-  RuleHead_t h;
-  RuleBody_t b;
-  Program idb;
-  /// stores the facts of the program
-  AtomSet edb;
-  Rule *r_guess = new Rule(h,b);
-  r_guess->addHead(AtomPtr(new Atom(Tuple(1, Term("e1(R)")))));
-  r_guess->addHead(AtomPtr(new Atom(Tuple(1, Term("ne1(R)")))));
-  r_guess->addBody(new Literal(AtomPtr(new Atom("rule(R)")), false));
-// e1(R) v ne1(R) :- rule(R).
-// e2(R) v ne2(R) :- rule(R).
-  idb.addRule(r_guess);
 
-  r_guess = new Rule(h,b);
-  r_guess->addHead(AtomPtr(new Atom(Tuple(1, Term("e2(R)")))));
-  r_guess->addHead(AtomPtr(new Atom(Tuple(1, Term("ne2(R)")))));
-  r_guess->addBody(new Literal(AtomPtr(new Atom("rule(R)")), false));
-  idb.addRule(r_guess);
+  ss << "e1(R) v ne1(R) :- rule(R)." << std::endl;
+  ss << "e2(R) v ne2(R) :- rule(R)." << std::endl;
 
   std::auto_ptr<BaseASPSolver> solver(dlv.createSolver());
-  h.clear();
-  b.clear();
+  std::stringstream rulestream, guessstream;
   for(ResultList::const_iterator rit = minRes.begin(); rit != minRes.end(); ++rit) {
-	h.clear();
-	Rule *r = new Rule(h,b);
-	//(rit->get<0>()).matchPredicate("d1",d1);
 	d1 = rit->get<0>();
 	for (AtomSet::const_iterator asit = d1.begin(); asit != d1.end(); ++asit) {
 	  Atom a1 = *asit;
 	  a1.setPredicate(e1);
-	  r->addHead(AtomPtr(new Atom(a1)));
+	  if (asit != d1.begin())
+		guessstream << " v ";
+	  guessstream << a1;
 	  a1.setPredicate(rule);
-	  edb.insert(AtomPtr(new Atom(a1)));
+	  rulestream << a1 << "." << std::endl;
 	}
 	d2 = rit->get<1>();
 	for (AtomSet::const_iterator asit = d2.begin(); asit != d2.end(); ++asit) {
 	  Atom a2 = *asit;
 	  a2.setPredicate(e2);
-	  r->addHead(AtomPtr(new Atom(a2)));
+	  if (asit != d2.begin())
+		guessstream << " v ";
+	  guessstream << a2;
 	  a2.setPredicate(rule);
-	  edb.insert(AtomPtr(new Atom(a2)));
+          rulestream << a2 << "." << std::endl;
 	}
-	idb.addRule(r);
 	(rit->get<2>())->matchPredicate("normal", normal);
 	for (AtomSet::const_iterator asit = normal.begin(); asit != normal.end(); ++asit) {
 	  Atom a2 = *asit;
 	  a2.setPredicate(rule);
-	  edb.insert(AtomPtr(new Atom(a2)));
+          rulestream << a2 << "." << std::endl;
 	}
+	guessstream << "." << std::endl;
   }
-//#ifdef DEBUG
+  ss << rulestream.str() << guessstream.str();
+#ifdef DEBUG
+  std::cout << "Programm: " << std::endl;
+  std::cout << ss.str() << std::endl;
+#endif
+
+  driver.parse(ss, prog, asfact);
+  solver->solve(prog, asfact, as);
+
+#ifdef DEBUG
     std::cout << "Start solving dlv program: " << std::endl;
     const Rule *r;
     int i=0;
-    for (Program::const_iterator progit = idb.begin(); progit != idb.end(); ++i, ++progit) {
+    for (Program::const_iterator progit = prog.begin(); progit != prog.end(); ++i, ++progit) {
       r=*(progit);
       std::cout << *r;
     }
 
     //cout << (*edb).getArgument(1).getSring();
-    for (AtomSet::const_iterator ai = edb.begin(); ai != edb.end(); ++ai) {
+    for (AtomSet::const_iterator ai = asfact.begin(); ai != asfact.end(); ++ai) {
       std::cout << *ai << std::endl;
     }
     std::cout << "solve ==========================" << std::endl;
-//#endif
-  //solver->solve(idb, edb, as);
-  if (as.size() > 0)
-	std::cout << "there are ansersets";
+
+  if (as.size() > 0) {
+       std::cout << "there are answersets" << std::endl;
+       ResultContainer* result = new ResultContainer();
+   
+       for (std::vector<AtomSet>::const_iterator asit = as.begin(); asit!=as.end(); ++asit) {
+         result->addSet(*asit);
+       }
+   
+       OutputBuilder *outputbuilder = new TextOutputBuilder();
+       result->print(std::cout, outputbuilder);
+  }
+  #endif
   return as;
 }
 
@@ -206,7 +215,7 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
   }
 
   bool lb = false; //line break
-  ResultList minimalResults;
+  ResultList minimalResults,minimalExpl;
   const ResultContainer::result_t& results = facts.getAnswerSets();
 
   if (!Globals::Instance()->getOption("Silent"))
@@ -229,7 +238,7 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 			// Only print equilibria
 			EquilibriumPrintVisitor epv(stream);
 			//if ((d1.size() == 0) && (d2.size() == 0) && (normal.size() > 0)) {
-				stream << "EQ: ";
+				stream << "EQ:";
 				(*rit)->accept(epv);
 				lb = true;
 			//}
@@ -271,10 +280,7 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 				stream << "D:";
 				if (!(Global::getInstance())->isnoprintopeq()) {
 				// print diagnosis and equilibria
-					stream << "EQ: ";
-				} else {
-				// print only diagnosis
-					stream << " ";
+					stream << "EQ:";
 				}
 
 				DiagnosisPrintVisitor dpv(stream);
@@ -330,20 +336,42 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 	//  minimal Diagnosis            //
 	///////////////////////////////////
 	  std::vector<AtomSet> expl = getExplaination(minimalResults);
-
-#if 0
-	  if ((Global::getInstance())->isMin()) {
-		AtomSet min_expl;
-	  	for(ResultList::const_iterator rit = minimalResults.begin(); rit != minimalResults.end(); ++rit) {
-			min_expl.insert(rit->get<0>());
-			min_expl.insert(rit->get<1>());
+	  if (expl.size() > 0) {
+	    ResultContainer* explrc = new ResultContainer();
+	    for (std::vector<AtomSet>::const_iterator asit = expl.begin(); asit!=expl.end(); ++asit) {
+		explrc->addSet(*asit);
+	    }//end for
+	    const ResultContainer::result_t& explres = explrc->getAnswerSets();
+	    for (ResultContainer::result_t::const_iterator rit = explres.begin(); rit != explres.end(); ++rit) {
+		AtomSet e1,e2;
+		(*rit)->matchPredicate("e1", e1);
+		(*rit)->matchPredicate("e2", e2);
+	        if ((Global::getInstance())->isMin()) {
+		  if (checkAddMinimalResult(minimalExpl,e1,e2)) {
+			minimalExpl.push_back(boost::make_tuple(e1,e2,*rit));
+		  }//end if checkAddMinimalResult
+	        } else {
+			stream << "E:";
+			DiagnosisPrintVisitor dpv(stream);
+			(*rit)->accept(dpv);
+			stream << std::endl;
+			if (!Globals::Instance()->getOption("Silent")) {
+				stream << std::endl;
+			}
 		}
+	    }//end for ResultContainer
+	    for(ResultList::const_iterator rit = minimalExpl.begin(); rit != minimalExpl.end(); ++rit) {
+		stream << "Em:";
+		
 		DiagnosisPrintVisitor dpv(stream);
-		stream << "Em: ";
-		min_expl.accept(dpv);
+		rit->get<2>()->accept(dpv);
 		stream << std::endl;
-	  }
-#endif
+
+		if (!Globals::Instance()->getOption("Silent")) {
+			stream << std::endl;
+		}
+	    } //end for
+	  }//end if expl.size() > 0 
 	}
 
 	if ((Global::getInstance())->isDiag() && (Global::getInstance())->isMin()) {
@@ -355,10 +383,7 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 		stream << "Dm:";
 		if (!(Global::getInstance())->isnoprintopeq()) {
 		// print diagnosis and equilibria
-			stream << "EQ: ";
-		} else {
-		// print only diagnosis
-			stream << " ";
+			stream << "EQ:";
 		}
 
 		DiagnosisPrintVisitor dpv(stream);
@@ -389,7 +414,7 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 	    minimalResults.sort();
 	    minimalResults.unique(same_AtomSet);
 	    for(ResultList::const_iterator rit = minimalResults.begin(); rit != minimalResults.end(); ++rit) {
-		stream << "D: ";
+		stream << "D:";
 		DiagnosisPrintVisitor dpv(stream);
 		rit->get<2>()->accept(dpv);
 		stream << std::endl;

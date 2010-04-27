@@ -26,6 +26,7 @@ namespace dlvhex {
 			bool isExp();
 			bool isMin();
 			bool isnoprintopeq();
+			bool isSet();
 
 	  private:
 			static Global *g;

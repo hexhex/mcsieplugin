@@ -27,17 +27,20 @@ namespace dlvhex {
 
 	void
 	Global::setDiag(){
+		explaination = false;
 		diagnose = true;
 	}
 
 	void
 	Global::setExp(){
+		diagnose=false;
 		explaination = true;
 	}
 
 	void
 	Global::setMin() {
-		minimal = true;
+		if (diagnose || explaination)
+			minimal = true;
 	}
 
 
@@ -64,6 +67,11 @@ namespace dlvhex {
 	bool
 	Global::isMin() {
 		return minimal;
+	}
+
+	bool
+	Global::isSet() {
+		return diagnose || explaination || minimal;
 	}
 
   }

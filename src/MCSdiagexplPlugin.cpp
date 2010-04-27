@@ -101,6 +101,7 @@ MCSdiagexplPlugin::registerAtoms() {
 
 	        o = it->find("--explain=");
 	        if (o != std::string::npos) {
+		  if (!(Global::getInstance())->isSet()) {
 	        	std::string expl = (it->substr(10));
 	        	bool f = false;
 	        	if (expl.compare("D") == 0) {
@@ -112,18 +113,19 @@ MCSdiagexplPlugin::registerAtoms() {
 	        		f = true;
 	        	}
 	        	if (expl.compare("Dm") == 0) {
-	        		(Global::getInstance())->setMin();
 	        		(Global::getInstance())->setDiag();
+	        		(Global::getInstance())->setMin();
 	        		f = true;
 	        	}
 	        	if (expl.compare("Em") == 0) {
-	        		(Global::getInstance())->setMin();
 	        		(Global::getInstance())->setExp();
+	        		(Global::getInstance())->setMin();
 	        		f = true;
 	        	}
 	        	if (f)
 	        		found.push_back(it);
-	        	continue;
+		  }
+	          continue;
 	        }
 
 	        o = it->find("--noprintopeq");
