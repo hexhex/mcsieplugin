@@ -53,7 +53,7 @@ do
 
 	if cmp -s $TMPFILE $ANSWERSETS
 	then
-	    echo PASS: $HEXPROGRAM
+	    echo PASS: $HEXPROGRAM $ANSWERSETS
 	else
 
 	    # and now check which answersets differ

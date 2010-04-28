@@ -166,7 +166,8 @@ EquilibriumOutputBuilder::getExplaination(ResultList& minRes) {
 	  a2.setPredicate(rule);
           rulestream << a2 << "." << std::endl;
 	}
-	guessstream << "." << std::endl;
+	if ((guessstream.str()).size() > 0)
+		guessstream << "." << std::endl;
   }
   ss << rulestream.str() << guessstream.str();
 #ifdef DEBUG
@@ -362,7 +363,7 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 	//  with or without equilibria   //
 	///////////////////////////////////
 	} 
-	if ((Global::getInstance())->isminDiag() && (Global::getInstance())->isnoprintopeq()) {
+	if ((Global::getInstance())->isDiag() && (Global::getInstance())->isnoprintopeq()) {
 	/////////////////////////////////////////////
 	//  Printing diagnosis without equilibria  //
 	//  for that we erase duplicates           //
