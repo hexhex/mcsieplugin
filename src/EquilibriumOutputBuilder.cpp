@@ -214,8 +214,7 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 	(Timing::getInstance())->end();
   }
 
-  bool lb = false; //line break
-  ResultList minimalResults,minimalExpl;
+  ResultList minimalResults, minimalExpl, diagnose;
   const ResultContainer::result_t& results = facts.getAnswerSets();
 
   if (!Globals::Instance()->getOption("Silent"))
@@ -234,103 +233,58 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 		(*rit)->matchPredicate("d2", d2);
 		(*rit)->matchPredicate("normal", normal);
 
-		if (!(Global::getInstance())->isDiag() && !(Global::getInstance())->isExp()) {
+		if (!(Global::getInstance())->isSet()) {
 			// Only print equilibria
 			EquilibriumPrintVisitor epv(stream);
 			//if ((d1.size() == 0) && (d2.size() == 0) && (normal.size() > 0)) {
-				stream << "EQ:";
-				(*rit)->accept(epv);
-				lb = true;
-			//}
-		} else if ((Global::getInstance())->isDiag()) {
-			// Print Diagnosis
-			if ((Global::getInstance())->isMin()) {
-			///////////////////////////////////
-			//  calculate minimal diagnosis  //
-			//  NO direct printing           //
-			///////////////////////////////////
-				#ifdef DEBUG
-				    RawPrintVisitor rpv(stream);
-				    stream << " looking at result set ";
-				    //(*rit)->accept(rpv);
-				    d1.accept(rpv);
-				    stream << "/";
-				    d2.accept(rpv);
-				    stream << std::endl;
-				#endif
-				if (checkAddMinimalResult(minimalResults,d1,d2)) {
-					minimalResults.push_back(boost::make_tuple(d1,d2,*rit));
-			      #ifdef DEBUG
-			      	stream << " -> adding resultset to minimal ones: ";
-			        RawPrintVisitor rpv(stream);
-			        (*rit)->accept(rpv);
-			        stream << std::endl;
-			      #endif
-				}
-				// call add
-			///////////////////////////////////
-			//   E N D   Minimal Diagnosis   //
-			///////////////////////////////////
-			} else {
-			///////////////////////////////////
-			//  NO minimal diagnosis         //
-			///////////////////////////////////
-			    if (!(Global::getInstance())->isnoprintopeq()) {
+			stream << "EQ:";
+			(*rit)->accept(epv);
+			stream << std::endl;
+			if (!Globals::Instance()->getOption("Silent"))
+				stream << std::endl;
+		} else {
+		////////////////////////
+		//  --explain is set  //
+		////////////////////////
+		  if ((Global::getInstance())->isDiag()) {
+			if (!(Global::getInstance())->isnoprintopeq()) {
+			  // print diagnosis and equilibria
+			  stream << "D:";
+			  if (!(Global::getInstance())->isnoprintopeq()) {
 			    // print diagnosis and equilibria
-				stream << "D:";
-				if (!(Global::getInstance())->isnoprintopeq()) {
-				// print diagnosis and equilibria
-					stream << "EQ:";
-				}
+			    stream << "EQ:";
+			  }
 
-				DiagnosisPrintVisitor dpv(stream);
-				(*rit)->accept(dpv);
+			  DiagnosisPrintVisitor dpv(stream);
+			  (*rit)->accept(dpv);
 
-				
-				EquilibriumPrintVisitor epv(stream);
-				stream << ":";
-				(*rit)->accept(epv);
-				lb = true;
-			    } else {
-			    ///////////////////////////////////////////////////////////////
-			    //  For Printing only Diagnosis without Equilibria we filter //
-			    //  out duplicate Diagnosis, for that we use the             //
-			    //  minimalResults List and filter before printing           //
-			    ///////////////////////////////////////////////////////////////
-				minimalResults.push_back(boost::make_tuple(d1,d2,*rit));
-			    }
-			} //end else not Minimal Diagnosis
-		} else if ((Global::getInstance())->isExp()) {
-			// for calculate Explanation
-			// first calculate Minimal Diagnosis
-				#ifdef DEBUG
-				    RawPrintVisitor rpv(stream);
-				    stream << " looking at result set ";
-				    //(*rit)->accept(rpv);
-				    d1.accept(rpv);
-				    stream << "/";
-				    d2.accept(rpv);
-				    stream << std::endl;
-				#endif
-			if (checkAddMinimalResult(minimalResults,d1,d2)) {
-				minimalResults.push_back(boost::make_tuple(d1,d2,*rit));
-
-			      #ifdef DEBUG
-			      	stream << " -> adding resultset to minimal ones: ";
-			        RawPrintVisitor rpv(stream);
-			        (*rit)->accept(rpv);
-			        stream << std::endl;
-			      #endif
+			  EquilibriumPrintVisitor epv(stream);
+			  stream << ":";
+			  (*rit)->accept(epv);
+			  stream << std::endl;
+			  if (!Globals::Instance()->getOption("Silent"))
+				stream << std::endl;
+			} else {
+			  ///////////////////////////////////////////////////////////////
+			  //  For Printing only Diagnosis without Equilibria we filter //
+			  //  out duplicate Diagnosis, for that we use the             //
+			  //  minimalResults List and filter before printing           //
+			  ///////////////////////////////////////////////////////////////
+			  diagnose.push_back(boost::make_tuple(d1,d2,*rit));
 			}
-		}
-		if (lb) stream << std::endl;
-		if (!Globals::Instance()->getOption("Silent")) {
-			if (lb) stream << std::endl;
-		}
-		lb = false;
+		  } // end if Diagnose
+		  if ((Global::getInstance())->isminDiag()) {
+		    if (checkAddMinimalResult(minimalResults,d1,d2))
+				minimalResults.push_back(boost::make_tuple(d1,d2,*rit));
+		  } // end if Minimal Diagnose
+		  if (((Global::getInstance())->isExp() || (Global::getInstance())->isminExp()) && !(Global::getInstance())->isminDiag()) {
+		    if (checkAddMinimalResult(minimalResults,d1,d2))
+				minimalResults.push_back(boost::make_tuple(d1,d2,*rit));
+		  } // end if Explanation or minimal Explanation
+		} // end else --explain is set
 	} // end for over results
 
-	if ((Global::getInstance())->isExp()) {
+	if ((Global::getInstance())->isExp() || (Global::getInstance())->isminExp()) {
 	///////////////////////////////////
 	//  get Explanations out of      //
 	//  minimal Diagnosis            //
@@ -346,11 +300,12 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 		AtomSet e1,e2;
 		(*rit)->matchPredicate("e1", e1);
 		(*rit)->matchPredicate("e2", e2);
-	        if ((Global::getInstance())->isMin()) {
+	        if ((Global::getInstance())->isminExp()) {
 		  if (checkAddMinimalResult(minimalExpl,e1,e2)) {
 			minimalExpl.push_back(boost::make_tuple(e1,e2,*rit));
 		  }//end if checkAddMinimalResult
-	        } else {
+	        }// if isminExp
+		if ((Global::getInstance())->isExp()) {
 			stream << "E:";
 			DiagnosisPrintVisitor dpv(stream);
 			(*rit)->accept(dpv);
@@ -358,23 +313,23 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 			if (!Globals::Instance()->getOption("Silent")) {
 				stream << std::endl;
 			}
-		}
+		}// if isExp
 	    }//end for ResultContainer
-	    for(ResultList::const_iterator rit = minimalExpl.begin(); rit != minimalExpl.end(); ++rit) {
-		stream << "Em:";
-		
-		DiagnosisPrintVisitor dpv(stream);
-		rit->get<2>()->accept(dpv);
-		stream << std::endl;
-
-		if (!Globals::Instance()->getOption("Silent")) {
+	    if ((Global::getInstance())->isminExp()) {
+		for(ResultList::const_iterator rit = minimalExpl.begin(); rit != minimalExpl.end(); ++rit) {
+		  stream << "Em:";
+		  DiagnosisPrintVisitor dpv(stream);
+		  rit->get<2>()->accept(dpv);
+		  stream << std::endl;
+		  if (!Globals::Instance()->getOption("Silent")) {
 			stream << std::endl;
-		}
-	    } //end for
+		  }
+		} //end for
+	    }// end if isminExp
 	  }//end if expl.size() > 0 
 	}
 
-	if ((Global::getInstance())->isDiag() && (Global::getInstance())->isMin()) {
+	if ((Global::getInstance())->isminDiag()) {
 	///////////////////////////////////
 	//  Printing minimal diagnosis   //
 	//  with or without equilibria   //
@@ -406,14 +361,15 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 	//  Printing minimal diagnosis   //
 	//  with or without equilibria   //
 	///////////////////////////////////
-	} else if ((Global::getInstance())->isDiag() && !(Global::getInstance())->isMin() && (Global::getInstance())->isnoprintopeq()) {
+	} 
+	if ((Global::getInstance())->isminDiag() && (Global::getInstance())->isnoprintopeq()) {
 	/////////////////////////////////////////////
 	//  Printing diagnosis without equilibria  //
 	//  for that we erase duplicates           //
 	/////////////////////////////////////////////
-	    minimalResults.sort();
-	    minimalResults.unique(same_AtomSet);
-	    for(ResultList::const_iterator rit = minimalResults.begin(); rit != minimalResults.end(); ++rit) {
+	    diagnose.sort();
+	    diagnose.unique(same_AtomSet);
+	    for(ResultList::const_iterator rit = diagnose.begin(); rit != diagnose.end(); ++rit) {
 		stream << "D:";
 		DiagnosisPrintVisitor dpv(stream);
 		rit->get<2>()->accept(dpv);

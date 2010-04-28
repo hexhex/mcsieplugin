@@ -36,6 +36,7 @@
 #include "MCSdiagexplPlugin.h"
 #include "Timing.h"
 #include "Global.h"
+#include <boost/algorithm/string.hpp>
 
 
 namespace dlvhex {
@@ -101,31 +102,33 @@ MCSdiagexplPlugin::registerAtoms() {
 
 	        o = it->find("--explain=");
 	        if (o != std::string::npos) {
-		  if (!(Global::getInstance())->isSet()) {
-	        	std::string expl = (it->substr(10));
-	        	bool f = false;
-	        	if (expl.compare("D") == 0) {
+		  std::string expl = (it->substr(10));
+	          bool f = false;
+		  std::vector<std::string> strs;
+		  boost::split(strs, expl, boost::is_any_of(","));
+		  for (std::vector<std::string>::const_iterator vit = strs.begin(); vit != strs.end(); ++vit) {
+	        	if ((*vit).compare("D") == 0) {
 	        		(Global::getInstance())->setDiag();
 	        		f = true;
 	        	}
-	        	if (expl.compare("E") == 0) {
+	        	if ((*vit).compare("E") == 0) {
 	        		(Global::getInstance())->setExp();
 	        		f = true;
 	        	}
-	        	if (expl.compare("Dm") == 0) {
-	        		(Global::getInstance())->setDiag();
-	        		(Global::getInstance())->setMin();
+	        	if ((*vit).compare("Dm") == 0) {
+	        		(Global::getInstance())->setminDiag();
+	        		//(Global::getInstance())->setMin();
 	        		f = true;
 	        	}
-	        	if (expl.compare("Em") == 0) {
-	        		(Global::getInstance())->setExp();
-	        		(Global::getInstance())->setMin();
+	        	if ((*vit).compare("Em") == 0) {
+	        		(Global::getInstance())->setminExp();
+	        		//(Global::getInstance())->setMin();
 	        		f = true;
 	        	}
-	        	if (f)
-	        		found.push_back(it);
 		  }
-	          continue;
+	          if (f)
+	            found.push_back(it);
+		  continue;
 	        }
 
 	        o = it->find("--noprintopeq");

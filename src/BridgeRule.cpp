@@ -68,7 +68,7 @@ namespace dlvhex {
      // write bridgerule in asp form
      std::list<int> ilist;
 
-     if ((Global::getInstance())->isDiag() || (Global::getInstance())->isExp()) {
+     if ((Global::getInstance())->isSet()) {
      // Only print equilibria
        // output diagnosis disjunction
        o << "normal(" << ruleid << ") v d1(" << ruleid << ") v d2(" << ruleid << ")." << std::endl;

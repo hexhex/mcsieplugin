@@ -15,22 +15,25 @@ namespace dlvhex {
   namespace mcsdiagexpl {
 	  class Global {
 	  public:
-			Global() : diagnose(false), explaination(false), minimal(false), noprintopeq(false) {};
+			Global() : diagnose(false), explaination(false), mindiag(false), minexpl(false), noprintopeq(false) {};
 			~Global() {};
 			static Global* getInstance();
+			void init();
 			void setDiag();
+			void setminDiag();
 			void setExp();
-			void setMin();
+			void setminExp();
 			void setnoprintopeq();
 			bool isDiag();
+			bool isminDiag();
 			bool isExp();
-			bool isMin();
+			bool isminExp();
 			bool isnoprintopeq();
 			bool isSet();
 
 	  private:
 			static Global *g;
-			bool diagnose, explaination, minimal, noprintopeq;
+			bool diagnose, explaination, mindiag, minexpl, noprintopeq;
 	  };
   }
 }

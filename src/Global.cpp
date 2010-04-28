@@ -21,28 +21,35 @@ namespace dlvhex {
 	Global::getInstance() {
 		if (g == NULL) {
 		  g = new Global();
+		  //g->init();
 		}
 		return g;
 	}
 
 	void
+	Global::init(){
+		explaination = mindiag = minexpl = noprintopeq = diagnose = false;
+	}
+
+	void
 	Global::setDiag(){
-		explaination = false;
 		diagnose = true;
 	}
 
 	void
+	Global::setminDiag(){
+		mindiag = true;
+	}
+
+	void
 	Global::setExp(){
-		diagnose=false;
 		explaination = true;
 	}
 
 	void
-	Global::setMin() {
-		if (diagnose || explaination)
-			minimal = true;
+	Global::setminExp(){
+		minexpl = true;
 	}
-
 
 	void
 	Global::setnoprintopeq() {
@@ -60,18 +67,23 @@ namespace dlvhex {
 	}
 
 	bool
+	Global::isminDiag() {
+		return mindiag;
+	}
+
+	bool
 	Global::isExp() {
 		return explaination;
 	}
 
 	bool
-	Global::isMin() {
-		return minimal;
+	Global::isminExp() {
+		return minexpl;
 	}
 
 	bool
 	Global::isSet() {
-		return diagnose || explaination || minimal;
+		return explaination || diagnose || minexpl || mindiag;
 	}
 
   }
