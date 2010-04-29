@@ -141,6 +141,7 @@ EquilibriumOutputBuilder::getExplaination(ResultList& minRes) {
   std::stringstream rulestream, guessstream;
   for(ResultList::const_iterator rit = minRes.begin(); rit != minRes.end(); ++rit) {
 	d1 = rit->get<0>();
+	d2 = rit->get<1>();
 	for (AtomSet::const_iterator asit = d1.begin(); asit != d1.end(); ++asit) {
 	  Atom a1 = *asit;
 	  a1.setPredicate(e1);
@@ -150,7 +151,13 @@ EquilibriumOutputBuilder::getExplaination(ResultList& minRes) {
 	  a1.setPredicate(rule);
 	  rulestream << a1 << "." << std::endl;
 	}
-	d2 = rit->get<1>();
+        if( !d1.empty() )
+        {
+          if( !d2.empty() )
+            guessstream << " v " << std::endl;
+          else
+            guessstream << "." << std::endl;
+        }
 	for (AtomSet::const_iterator asit = d2.begin(); asit != d2.end(); ++asit) {
 	  Atom a2 = *asit;
 	  a2.setPredicate(e2);
@@ -160,14 +167,15 @@ EquilibriumOutputBuilder::getExplaination(ResultList& minRes) {
 	  a2.setPredicate(rule);
           rulestream << a2 << "." << std::endl;
 	}
+        if( !d2.empty() )
+          guessstream << "." << std::endl;
+
 	(rit->get<2>())->matchPredicate("normal", normal);
 	for (AtomSet::const_iterator asit = normal.begin(); asit != normal.end(); ++asit) {
 	  Atom a2 = *asit;
 	  a2.setPredicate(rule);
           rulestream << a2 << "." << std::endl;
 	}
-	if ((guessstream.str()).size() > 0)
-		guessstream << "." << std::endl;
   }
   ss << rulestream.str() << guessstream.str();
 #ifdef DEBUG
