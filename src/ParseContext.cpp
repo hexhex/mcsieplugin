@@ -34,6 +34,7 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "ParseContext.h"
+#include "Global.h"
 #include <ostream>
 
 
@@ -50,12 +51,49 @@ namespace dlvhex {
 
    std::ostream&
    operator<< (std::ostream& out, const ParseContext& context) {
-     out << ":- not &" << context.ExtAtom() 
-       << "[" << context.ContextNum()
-       << ",a" << context.ContextNum()
-       << ",b" << context.ContextNum() 
-       << ",o" << context.ContextNum()
-       << ",\"" << context.Param() << "\"]()." << std::endl;
+     const int cn = context.ContextNum();
+
+     if( Global::getInstance()->isKR2010rewriting() )
+     {
+       // guess outputs
+       out << "a" << cn << "(X) v na" << cn << "(X) :- o" << cn << "(X)." << std::endl;
+
+       // check context with constraint
+       out << ":- not &" << context.ExtAtom()
+           << "[" << cn << ",a" << cn << ",b" << cn << ",o" << cn << ","
+           << "\"" << context.Param() << "\"]()." << std::endl; 
+     }
+     else
+     {
+       // guess input and output beliefs (after previous context has been finished)
+
+       // inputs
+       out << "b" << cn << "(X) v nb" << cn << "(X) :- i" << cn << "(X)";
+       out << ", ok(" << (cn-1) << ")";
+       out << "." << std::endl;
+
+       // outputs
+       out << "a" << cn << "(X) v na" << cn << "(X) :- o" << cn << "(X)";
+       out << ", ok(" << (cn-1) << ")";
+       out << "." << std::endl;
+
+       // context check
+       out << "ok(" << cn << ") :- &" << context.ExtAtom() 
+         << "[" << context.ContextNum()
+         << ",a" << context.ContextNum()
+         << ",b" << context.ContextNum() 
+         << ",o" << context.ContextNum()
+         << ",\"" << context.Param() << "\"]()";
+       out << ", ok(" << (cn-1) << ")";
+       out << "." << std::endl;
+
+       // require that context check is successful
+       out << ":- not ok(" << cn << ")." << std::endl;
+
+       // verify guessed output with output calculated via bridge rules (if all contexts are ok)
+       out << ":- c" << cn << "(X), not b" << cn << "(X), ok(all)." << std::endl;
+       out << ":- not c" << cn << "(X), b" << cn << "(X), ok(all)." << std::endl;
+     }
      return out;
    }
 

@@ -1,4 +1,4 @@
-AC_PREREQ(2.63)
+AC_PREREQ(2.61)
 
 AC_INIT([dlvhex-mcs-equilibrium-plugin],[0.1.0],[e0625252@student.tuwien.ac.at])
 
@@ -40,13 +40,14 @@ AC_CHECK_HEADERS([sys/param.h])
 AC_HEADER_STDBOOL
 AC_C_CONST
 
+AC_PROG_LIBTOOL
 # Checks for library functions.
-_LT_SET_OPTION([LT_INIT],[dlopen])
-AC_DIAGNOSE([obsolete],[AC_LIBTOOL_DLOPEN: Remove this warning and the call to _LT_SET_OPTION when you
-put the `dlopen' option into LT_INIT's first parameter.])
+#_LT_SET_OPTION([LT_INIT],[dlopen])
+#AC_DIAGNOSE([obsolete],[AC_LIBTOOL_DLOPEN: Remove this warning and the call to _LT_SET_OPTION when you
+#put the `dlopen' option into LT_INIT's first parameter.])
 
 AC_DISABLE_STATIC # we don't need a static lbrary
-LT_INIT
+#LT_INIT
 
 #
 # check for other libraries here

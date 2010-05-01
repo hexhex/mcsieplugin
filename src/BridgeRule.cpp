@@ -68,50 +68,77 @@ namespace dlvhex {
      // write bridgerule in asp form
      std::list<int> ilist;
 
-     if ((Global::getInstance())->isSet()) {
-     // Only print equilibria
-       // output diagnosis disjunction
-       o << "normal(" << ruleid << ") v d1(" << ruleid << ") v d2(" << ruleid << ")." << std::endl;
-       // output d2 rule
-       o << "b" << head << " :- d2(" << ruleid << ")." << std::endl;
-       // output d1 rule
-       o << "b" << head << " :- not d1(" << ruleid << ")";
-       if (fact)
-	o << "." << std::endl;
-       else o << ", ";
-     } else {
-	o << "b" << head;
-       if (fact)
-	o << "." << std::endl;
-       else o << " :- ";
+     // mark outputs: OUT_i via "o<i>(belief)"
+     for (std::vector<BridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
+       const BridgeRuleEntry& elem = *it;
+       o << "o" << elem << "." << std::endl;
      }
 
+     if ((Global::getInstance())->isKR2010rewriting())
+     {
+       if ((Global::getInstance())->isSet()) {
+       // Only print equilibria
+         // output diagnosis disjunction
+         o << "normal(" << ruleid << ") v d1(" << ruleid << ") v d2(" << ruleid << ")." << std::endl;
+         // output d2 rule
+         o << "b" << head << " :- d2(" << ruleid << ")." << std::endl;
+         // output d1 rule
+         o << "b" << head << " :- not d1(" << ruleid << ")";
+         if (fact)
+           o << "." << std::endl;
+         else
+           o << ", ";
+       } else {
+         o << "b" << head;
+         if (fact)
+           o << "." << std::endl;
+         else
+           o << " :- ";
+       }
+     }
+     else
+     {
+       // mark inputs: IN_i via "i<i>(belief)"
+       o << "i" << head << "." << std::endl;
 
-     if( !fact ) { // no fact, so body is emty
-       	     //o << ", ";
-	     //o << "b" << head << " :- ";
-	     for (std::vector<BridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
-	       BridgeRuleEntry elem = *it;
-	       if (elem.Neg())
-		 o << "n";
-	       o << "a" << elem;
-	       if (it+1 != body.end())
-		 o << ", ";
-	       else
-		 o << "." << std::endl;
-	     }
-	     for (std::vector<BridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
-	       BridgeRuleEntry elem = *it;
-	       o << "a" << elem << " v na" << elem << "." << std::endl;
-	       ilist.push_back(elem.ContextID());
-	     }
-	     ilist.unique();
-	     ilist.sort();
-	     for (std::list<int>::iterator it = ilist.begin(); it != ilist.end(); ++it) {
-	       o << "o" << *it << "(X) :- a" << *it << "(X)." << std::endl;
-	       o << "o" << *it << "(X) :- na" << *it << "(X)." << std::endl;
-	     }
+       // BR evaluation (and diagnosis guessing) (after all contexts ok, indicated by ok(all))
+       if ((Global::getInstance())->isSet())
+       {
+         // diagnosis guessing
+         o << "normal(" << ruleid << ") v d1(" << ruleid << ") v d2(" << ruleid << ") :- ok(all)." << std::endl;
+         // d2 rule
+         o << "c" << head << " :- d2(" << ruleid << "), ok(all)." << std::endl;
+         // d1 rule
+         o << "c" << head << " :- not d1(" << ruleid << "), ok(all)";
+         if (fact)
+           o << "." << std::endl;
+         else
+           o << ", ";
+       }
+       else
+       {
+         // else only print equilibria
+         o << "c" << head;
+         if (fact)
+           o << "." << std::endl;
+         else
+           o << " :- ";
+       }
+     }
+
+     // output bridge rule body
+     for (std::vector<BridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
+       const BridgeRuleEntry& elem = *it;
+       if (elem.Neg())
+         o << "n";
+       o << "a" << elem;
+       if (it+1 != body.end())
+         o << ", ";
+       else
+         o << "." << std::endl;
      }
    }
   } // namespace mcsdiagexpl
 } // namespace dlvhex
+
+// vim:ts=8:

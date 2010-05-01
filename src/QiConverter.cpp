@@ -38,6 +38,7 @@
 #include "QiConverter.h"
 #include "dlvhex/SpiritDebugging.h"
 #include "BridgeRuleEntry.h"
+#include "Global.h"
 
 #include <iostream>
 #include <sstream>
@@ -224,10 +225,21 @@ namespace dlvhex {
 	BridgeRule elem = *it;
 	elem.writeProgram(o);
      }//end for-loop print bridgerules
+     int maxctx = 0;
      for (std::vector<ParseContext>::iterator it = context.begin(); it != context.end(); ++it) {
 	ParseContext elem = *it;
 	o << elem;
+        if( elem.ContextNum() > maxctx )
+          maxctx = elem.ContextNum();
      }//end for-loop print context
+
+     if( !Global::getInstance()->isKR2010rewriting() )
+     {
+       // zeroe'th context is ok by default
+       o << "ok(0)." << std::endl;
+       // all contexts are ok if the last one is ok
+       o << "ok(all) :- ok(" << maxctx << ")." << std::endl;
+     }
    } // end convertParseTreeToDLVProgram
 
    void
@@ -265,3 +277,5 @@ namespace dlvhex {
 
   } // namespace mcsdiagexpl
 } // namespace dlvhex
+
+// vim:ts=8:

@@ -142,6 +142,8 @@ EquilibriumOutputBuilder::getExplaination(ResultList& minRes) {
   for(ResultList::const_iterator rit = minRes.begin(); rit != minRes.end(); ++rit) {
 	d1 = rit->get<0>();
 	d2 = rit->get<1>();
+
+        // handle d1
 	for (AtomSet::const_iterator asit = d1.begin(); asit != d1.end(); ++asit) {
 	  Atom a1 = *asit;
 	  a1.setPredicate(e1);
@@ -158,6 +160,8 @@ EquilibriumOutputBuilder::getExplaination(ResultList& minRes) {
           else
             guessstream << "." << std::endl;
         }
+
+        // handle d2
 	for (AtomSet::const_iterator asit = d2.begin(); asit != d2.end(); ++asit) {
 	  Atom a2 = *asit;
 	  a2.setPredicate(e2);
@@ -170,6 +174,7 @@ EquilibriumOutputBuilder::getExplaination(ResultList& minRes) {
         if( !d2.empty() )
           guessstream << "." << std::endl;
 
+        // handle normal
 	(rit->get<2>())->matchPredicate("normal", normal);
 	for (AtomSet::const_iterator asit = normal.begin(); asit != normal.end(); ++asit) {
 	  Atom a2 = *asit;
@@ -178,10 +183,11 @@ EquilibriumOutputBuilder::getExplaination(ResultList& minRes) {
 	}
   }
   ss << rulestream.str() << guessstream.str();
-#ifdef DEBUG
-  std::cout << "Programm: " << std::endl;
-  std::cout << ss.str() << std::endl;
-#endif
+  if( Globals::Instance()->doVerbose(Globals::DUMP_REWRITTEN_PROGRAM) )
+  {
+    std::cerr << "Program for calculating Explanations from Diagnoses: " << std::endl;
+    std::cerr << ss.str() << std::endl;
+  }
 
   driver.parse(ss, prog, asfact);
   solver->solve(prog, asfact, as);
@@ -402,3 +408,4 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 
 }//namespace mcsdiagexpl
 }//namespace dlvhex
+// vim:ts=8:

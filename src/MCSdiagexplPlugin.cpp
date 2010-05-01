@@ -93,6 +93,8 @@ MCSdiagexplPlugin::registerAtoms() {
 	        out << " --explain={D, Dm, E, Em}  " << std::endl;
 	        out << " --noprintopeq             Do not print output-projected equilibria for diagnoses" << std::endl;
 	        out << " --benchmark               print time/call summary" << std::endl;
+	        out << " --useKR2010rewriting      use (nearly always) slower rewriting technique" << std::endl
+              << "                           (as published in KR2010)" << std::endl;
 		out << std::endl;
 	        return;
 	    }
@@ -145,6 +147,13 @@ MCSdiagexplPlugin::registerAtoms() {
 	        	(Timing::getInstance())->activate();
 	        	continue;
 	        }
+
+	        o = it->find("--useKR2010rewriting");
+	        if (o != std::string::npos) {
+			Global::getInstance()->setKR2010rewriting();
+	        	found.push_back(it);
+	        	continue;
+	        }
 	    }
 
 	    for (std::vector<std::vector<std::string>::iterator>::const_iterator it =
@@ -168,3 +177,4 @@ PLUGINIMPORTFUNCTION() {
 
   return &dlvhex::mcsdiagexpl::theMCSdiagexplPlugin;
 }
+// vim:ts=8:
