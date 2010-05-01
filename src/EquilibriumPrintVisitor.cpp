@@ -91,7 +91,7 @@ EquilibriumPrintVisitor::visit(const AtomSet* const as)
 	}
 
 	// process pred
-	if( pred[0] == 'o' or pred[0] == 'a' or pred[0] == 'b' ) {
+	if( (pred[0] == 'o' and pred[1] != 'k') or pred[0] == 'a' or pred[0] == 'b' ) {
 		std::stringstream s;
 		s << pred.substr(1,std::string::npos);
 		s >> id;
