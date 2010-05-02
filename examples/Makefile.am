@@ -1,6 +1,8 @@
 EXTRA_DIST = mcsequilibriumtests.test
 
-plugin_LTLIBRARIES = 	libdlvhexmcstestcontext1.la\
+plugin_LTLIBRARIES = \
+			libdlvhexmcsmedexample.la\
+			libdlvhexmcstestcontext1.la\
 			libdlvhexmcstestcontext2.la\
 			libdlvhexmcstestcontext3.la\
 			libdlvhexmcsbenchmark1.la\
@@ -19,6 +21,10 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
         $(BOOST_CPPFLAGS) \
 	$(DLVHEX_CFLAGS)
+
+libdlvhexmcsmedexample_la_SOURCES = ./medExample/Context3.cpp
+libdlvhexmcsmedexample_la_LDFLAGS = -avoid-version -module
+libdlvhexmcsmedexample_la_LIBADD = -L$(top_builddir)/src/ -lldlvhexmcsdiagexpl
 
 libdlvhexmcstestcontext1_la_SOURCES = ./test1/TestContext1.cpp
 libdlvhexmcstestcontext1_la_LDFLAGS = -avoid-version -module
