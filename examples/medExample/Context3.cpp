@@ -43,9 +43,8 @@ Context3::acc(
 		const std::set<std::string>& input)
 {
   std::set<std::set<std::string> > ret;
-  std::set<std::string> s;
 	// accept all input
-	s.insert(input.begin(), input.end());
+  std::set<std::string> s(input.begin(),input.end());
   if( input.count("pneumonia") == 1 && input.count("marker") == 1 )
 	{
 		// additionally accept atyppneumonia
