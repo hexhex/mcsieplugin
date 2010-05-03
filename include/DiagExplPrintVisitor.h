@@ -29,20 +29,20 @@
  * 
  * @brief  PrintVisitor to go throught the Answersets and write as Equilibria
  */
-#ifndef _DLVHEX_MCSDIAGEXPL_DIAGNOSISPRINTVISITOR_H_
-#define _DLVHEX_MCSDIAGEXPL_DIAGNOSISPRINTVISITOR_H_
+#ifndef _DLVHEX_MCSDIAGEXPL_DIAGEXPLPRINTVISITOR_H_
+#define _DLVHEX_MCSDIAGEXPL_DIAGEXPLPRINTVISITOR_H_
 
 #include "dlvhex/PrintVisitor.h"
 
 namespace dlvhex {
   namespace mcsdiagexpl {
 
-    class DiagnosisPrintVisitor : public RawPrintVisitor {
+    class DiagExplPrintVisitor : public RawPrintVisitor {
       public:
         explicit
-        DiagnosisPrintVisitor(std::ostream&);
+        DiagExplPrintVisitor(std::ostream&);
 
-        /// outputs the Equilibrium in '{(a,b,c), (cd,bx)}' form
+        /// outputs the Diagnosis or Explanations in '({r1,r2},{r3,r4})' form
         virtual void
         visit(const AtomSet* const);
     };

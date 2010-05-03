@@ -23,14 +23,15 @@
 
 
 /**
- * @file   EquilibriumOutputBuilder.h
+ * @file   OutputRewriter.h
  * @author Markus Boegl
  * @date   Sun Jan 24 13:40:51 2010
  * 
- * @brief  OutputBuilder to write the Answersets as Equilibria
+ * @brief  OutputRewriter to extract diagnosis, output projected equilibria,
+ *         calculate explanations and print them
  */
-#ifndef _DLVHEX_MCSDIAGEXPL_EQUILIBRIUMOUTPUTBUILDER_H_
-#define _DLVHEX_MCSDIAGEXPL_EQUILIBRIUMOUTPUTBUILDER_H_
+#ifndef _DLVHEX_MCSDIAGEXPL_OUTPUTREWRITER_H_
+#define _DLVHEX_MCSDIAGEXPL_OUTPUTREWRITER_H_
 
 #include "dlvhex/OutputBuilder.h"
 #include <boost/tuple/tuple.hpp>
@@ -43,7 +44,7 @@ namespace dlvhex {
 
   typedef std::list< boost::tuple<AtomSet,AtomSet,AnswerSetPtr> > ResultList;
 
-  class EquilibriumOutputBuilder : public OutputBuilder {
+  class OutputRewriter : public OutputBuilder {
 
     private:
       bool checkAddMinimalResult(ResultList& rs, AtomSet& d1, AtomSet& d2);
@@ -52,10 +53,10 @@ namespace dlvhex {
     public:
       /// Dtor
       virtual
-      ~EquilibriumOutputBuilder();
+      ~OutputRewriter() {};
 
       /// Ctor
-      EquilibriumOutputBuilder();
+      OutputRewriter() {};
 
       virtual void
       buildResult(std::ostream&, const ResultContainer&);
@@ -64,4 +65,4 @@ namespace dlvhex {
   } // END namespace mcsdiagexpl
 } // END namespace dlvhex
 
-#endif // _DLVHEX_MCSDIAGEXPL_EQUILIBRIUMOUTPUTBUILDER_H_
+#endif // _DLVHEX_MCSDIAGEXPL_OUTPUTREWRITER_H_

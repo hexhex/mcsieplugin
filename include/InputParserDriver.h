@@ -29,8 +29,8 @@
  * 
  * @brief  Defines Grammer of the Input File
  */
-#ifndef _DLVHEX_MCSDIAGEXPL_PARSERDRIVER_H_
-#define _DLVHEX_MCSDIAGEXPL_PARSERDRIVER_H_
+#ifndef _DLVHEX_MCSDIAGEXPL_INPUTPARSERDRIVER_H_
+#define _DLVHEX_MCSDIAGEXPL_INPUTPARSERDRIVER_H_
 
 #include <boost/spirit/include/classic_core.hpp>
 #include <boost/spirit/include/classic_chset.hpp>

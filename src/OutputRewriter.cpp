@@ -23,7 +23,7 @@
 
 
 /**
- * @file   EquilibriumOutputBuilder.cpp
+ * @file   OutputRewriter.cpp
  * @author Markus Boegl
  * @date   Sun Jan 24 13:40:01 2010
  * 
@@ -33,15 +33,14 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#include "EquilibriumOutputBuilder.h"
+#include "OutputRewriter.h"
 #include "dlvhex/globals.h"
 #include "dlvhex/ResultContainer.h"
 #include "EquilibriumPrintVisitor.h"
-#include "DiagnosisPrintVisitor.h"
+#include "DiagExplPrintVisitor.h"
 #include "Timing.h"
 #include "Global.h"
 #include "dlvhex/DLVProcess.h"
-#include "dlvhex/AtomSet.h"
 #include "dlvhex/Program.h"
 #include "dlvhex/HexParserDriver.h"
 #include "dlvhex/ASPSolver.h"
@@ -56,21 +55,13 @@
 namespace dlvhex {
   namespace mcsdiagexpl {
 
-
-EquilibriumOutputBuilder::EquilibriumOutputBuilder()
-{ }
-
-
-EquilibriumOutputBuilder::~EquilibriumOutputBuilder()
-{ }
-
 bool same_AtomSet (boost::tuple<AtomSet,AtomSet,AnswerSetPtr> first, boost::tuple<AtomSet,AtomSet,AnswerSetPtr> second)
 { 
 	return ( (first.get<0>() == second.get<0>()) && (first.get<1>() == second.get<1>())); 
 }
 
 bool
-EquilibriumOutputBuilder::checkAddMinimalResult(ResultList& mrl, AtomSet& d1, AtomSet& d2) {
+OutputRewriter::checkAddMinimalResult(ResultList& mrl, AtomSet& d1, AtomSet& d2) {
   bool minimal = false;
   bool skipIt = false;
   ResultList::iterator mit = mrl.begin();
@@ -120,11 +111,10 @@ EquilibriumOutputBuilder::checkAddMinimalResult(ResultList& mrl, AtomSet& d1, At
 }
 
 std::vector<AtomSet> 
-EquilibriumOutputBuilder::getExplaination(ResultList& minRes) {
+OutputRewriter::getExplaination(ResultList& minRes) {
   std::stringstream ss;
   DLVProcess dlv;
   dlv.addOption("-facts");
-  //dlv.addOption("-filter=e1,e2");
   std::vector<AtomSet> as;
   HexParserDriver driver;
   Program prog;
@@ -192,39 +182,15 @@ EquilibriumOutputBuilder::getExplaination(ResultList& minRes) {
   driver.parse(ss, prog, asfact);
   solver->solve(prog, asfact, as);
 
-#ifdef DEBUG
-    std::cout << "Start solving dlv program: " << std::endl;
-    const Rule *r;
-    int i=0;
-    for (Program::const_iterator progit = prog.begin(); progit != prog.end(); ++i, ++progit) {
-      r=*(progit);
-      std::cout << *r;
-    }
-
-    //cout << (*edb).getArgument(1).getSring();
-    for (AtomSet::const_iterator ai = asfact.begin(); ai != asfact.end(); ++ai) {
-      std::cout << *ai << std::endl;
-    }
-    std::cout << "solve ==========================" << std::endl;
-
-  if (as.size() > 0) {
-       std::cout << "there are answersets" << std::endl;
-       ResultContainer* result = new ResultContainer();
-   
-       for (std::vector<AtomSet>::const_iterator asit = as.begin(); asit!=as.end(); ++asit) {
-         result->addSet(*asit);
-       }
-   
-       OutputBuilder *outputbuilder = new TextOutputBuilder();
-       result->print(std::cout, outputbuilder);
-  }
-  #endif
   return as;
 }
 
 void
-EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContainer& facts)
+OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
 {
+  EquilibriumPrintVisitor epv(stream);
+  DiagExplPrintVisitor dpv(stream);
+
   if((Timing::getInstance())->isActive()) {
 	(Timing::getInstance())->end();
   }
@@ -237,10 +203,6 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
       stream << std::endl;
     }
 
-  #ifdef DEBUG
-	stream << "result size: " << results.size() << std::endl;
-  #endif
-
   if (!results.empty()) {
 	for (ResultContainer::result_t::const_iterator rit = results.begin(); rit != results.end(); ++rit) {
 		AtomSet d1, d2, normal;
@@ -250,8 +212,6 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 
 		if (!(Global::getInstance())->isSet()) {
 			// Only print equilibria
-			EquilibriumPrintVisitor epv(stream);
-			//if ((d1.size() == 0) && (d2.size() == 0) && (normal.size() > 0)) {
 			stream << "EQ:";
 			(*rit)->accept(epv);
 			stream << std::endl;
@@ -269,11 +229,7 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 			    // print diagnosis and equilibria
 			    stream << "EQ:";
 			  }
-
-			  DiagnosisPrintVisitor dpv(stream);
 			  (*rit)->accept(dpv);
-
-			  EquilibriumPrintVisitor epv(stream);
 			  stream << ":";
 			  (*rit)->accept(epv);
 			  stream << std::endl;
@@ -283,7 +239,7 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 			  ///////////////////////////////////////////////////////////////
 			  //  For Printing only Diagnosis without Equilibria we filter //
 			  //  out duplicate Diagnosis, for that we use the             //
-			  //  minimalResults List and filter before printing           //
+			  //  diagnose List and filter before printing                 //
 			  ///////////////////////////////////////////////////////////////
 			  diagnose.push_back(boost::make_tuple(d1,d2,*rit));
 			}
@@ -322,7 +278,6 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 	        }// if isminExp
 		if ((Global::getInstance())->isExp()) {
 			stream << "E:";
-			DiagnosisPrintVisitor dpv(stream);
 			(*rit)->accept(dpv);
 			stream << std::endl;
 			if (!Globals::Instance()->getOption("Silent")) {
@@ -333,7 +288,6 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 	    if ((Global::getInstance())->isminExp()) {
 		for(ResultList::const_iterator rit = minimalExpl.begin(); rit != minimalExpl.end(); ++rit) {
 		  stream << "Em:";
-		  DiagnosisPrintVisitor dpv(stream);
 		  rit->get<2>()->accept(dpv);
 		  stream << std::endl;
 		  if (!Globals::Instance()->getOption("Silent")) {
@@ -356,12 +310,10 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 			stream << "EQ:";
 		}
 
-		DiagnosisPrintVisitor dpv(stream);
 		rit->get<2>()->accept(dpv);
 
 		if (!(Global::getInstance())->isnoprintopeq()) {
 		// print diagnosis and equilibria
-			EquilibriumPrintVisitor epv(stream);
 			stream << ":";
 			rit->get<2>()->accept(epv);
 		}
@@ -386,7 +338,6 @@ EquilibriumOutputBuilder::buildResult(std::ostream& stream, const ResultContaine
 	    diagnose.unique(same_AtomSet);
 	    for(ResultList::const_iterator rit = diagnose.begin(); rit != diagnose.end(); ++rit) {
 		stream << "D:";
-		DiagnosisPrintVisitor dpv(stream);
 		rit->get<2>()->accept(dpv);
 		stream << std::endl;
 		if (!Globals::Instance()->getOption("Silent")) {

@@ -35,9 +35,10 @@
 
 //#define DEBUG
 
-#include "Converter.h"
+#include "InputConverter.h"
 #include "dlvhex/SpiritDebugging.h"
 #include "BridgeRuleEntry.h"
+#include "Global.h"
 
 #include <iostream>
 #include <sstream>
@@ -45,15 +46,19 @@
 namespace dlvhex {
   namespace mcsdiagexpl {
 
-   Converter::Converter() {}
-
    void
-   Converter::convertBridgeRuleElem(node_t& at, int& id, std::string& fact) {
+   InputConverter::convertBridgeRuleElem(node_t& at, std::string& ruleid, int& contextid, std::string& fact) {
         node_t* n = &at;
 	node_t::tree_iterator it = at.children.begin();
 	node_t& bat = *it;
+	//std::cout << "bat children size: " << std::string(bat.value.begin(), bat.value.end()) << std::endl;
+	if (bat.value.id() == MCSdescriptionGrammar::RuleID) {
+		ruleid = std::string(bat.value.begin(), bat.value.end());
+		++it;
+		bat = *it;
+	} else ruleid = std::string("");
 	assert(bat.value.id() == MCSdescriptionGrammar::RuleNum);
-        id = atoi(std::string(bat.value.begin(), bat.value.end()).c_str());
+        contextid = atoi(std::string(bat.value.begin(), bat.value.end()).c_str());
 	++it;
 	bat = *it;
 	assert(bat.value.id() == MCSdescriptionGrammar::Fact);
@@ -61,23 +66,23 @@ namespace dlvhex {
    } // end convertBridgeRuleElem
 
    void
-   Converter::convertBridgeRuleFact(node_t& at, BridgeRule& brule) {
-     int id;
-     std::string f;
+   InputConverter::convertBridgeRuleFact(node_t& at, BridgeRule& brule) {
+     int cid;
+     std::string f,rid;
      if (at.value.id() == MCSdescriptionGrammar::RuleHeadElem) {
          #ifdef DEBUG
            printSpiritPT(std::cout, at, "HeadElem");
          #endif
-         assert(at.children.size()==2);
-	 convertBridgeRuleElem(at,id,f);
-	brule.setHeadRule(id,f);
+         assert(at.children.size() == 3);
+	 convertBridgeRuleElem(at,rid,cid,f);
+	 brule.setHeadRule(rid,cid,f);
      }//end if-rule bridgeruleheadelem
    }// End MCSequilibriumConverter::convertBridgeRule()
 
    void
-   Converter::convertBridgeRule(node_t& at, BridgeRule& brule) {
-     int id;
-     std::string f;
+   InputConverter::convertBridgeRule(node_t& at, BridgeRule& brule) {
+     int cid;
+     std::string f, rid;
      for (node_t::tree_iterator ait = at.children.begin(); ait != at.children.end(); ++ait) {
        node_t& bat = *ait;
        ////////////////////////////////////////////
@@ -87,9 +92,9 @@ namespace dlvhex {
          #ifdef DEBUG
            printSpiritPT(std::cout, bat, "HeadElem");
          #endif
-         assert(bat.children.size()==2);
-	 convertBridgeRuleElem(bat,id,f);
-	 brule.setHeadRule(id,f);
+         assert(bat.children.size()==3);
+	 convertBridgeRuleElem(bat,rid,cid,f);
+	 brule.setHeadRule(rid,cid,f);
        }//end if-rule bridgeruleheadelem
        ////////////////////////////////////////////
        // there are more than 1 rule in the body //
@@ -102,16 +107,16 @@ namespace dlvhex {
                printSpiritPT(std::cout, bbeat, "RuleBodyElem");
              #endif
              assert(bbeat.children.size()==2);
-             convertBridgeRuleElem(bbeat,id,f);
-	     brule.addBodyRule(id,f,false);
+             convertBridgeRuleElem(bbeat,rid,cid,f);
+	     brule.addBodyRule(cid,f,false);
            }//end if-rule for RuleElem in BridgeRuleBody
            if (bbeat.value.id() == MCSdescriptionGrammar::NegRuleElem) {
 	     #if 0
                printSpiritPT(std::cout, bbeat, "NegatedRuleBodyElem");
 	     #endif
              assert(bbeat.children.size()==2);
-             convertBridgeRuleElem(bbeat,id,f);
-	     brule.addBodyRule(id,f,true);
+             convertBridgeRuleElem(bbeat,rid,cid,f);
+	     brule.addBodyRule(cid,f,true);
            }//end if-rule for negated RuleElem in BridgeRuleBody
          }// end for-loop over RuleBodyElems
        }//end if-rule RuleBodyElems
@@ -124,22 +129,22 @@ namespace dlvhex {
            printSpiritPT(std::cout, bat, "RuleBodyElem");
          #endif
          assert(bat.children.size()==2);
-         convertBridgeRuleElem(bat,id,f);
-	 brule.addBodyRule(id,f,false);
+         convertBridgeRuleElem(bat,rid,cid,f);
+	 brule.addBodyRule(cid,f,false);
        }//end if-rule for RuleElem in BridgeRuleBody
        if (bat.value.id() == MCSdescriptionGrammar::NegRuleElem) {
 	 #if 0
            printSpiritPT(std::cout, bat, "NegatedRuleBodyElem");
 	 #endif
          assert(bat.children.size()==2);
-         convertBridgeRuleElem(bat,id,f);
-	 brule.addBodyRule(id,f,true);
+         convertBridgeRuleElem(bat,rid,cid,f);
+	 brule.addBodyRule(cid,f,true);
        }//end if-rule for negated RuleElem in BridgeRuleBody
      } //end for-loop over bridgerules
    }// End MCSequilibriumConverter::convertBridgeRule()
 
    void
-   Converter::convertContext(node_t& at, ParseContext& context) {
+   InputConverter::convertContext(node_t& at, ParseContext& context) {
      int id;
      std::string extatom;
      std::string param;
@@ -161,7 +166,7 @@ namespace dlvhex {
    }// END MCSequilibriumConverter::convertContext
 
    void
-   Converter::convertParseTreeToDLVProgram(node_t& node, std::ostream& o) {
+   InputConverter::convertParseTreeToDLVProgram(node_t& node, std::ostream& o) {
      if (!(node.value.id() == MCSdescriptionGrammar::Root)) {
        throw PluginError("MCS Equilibrium Plugin: Inputfile syntax error!");
      }
@@ -172,7 +177,7 @@ namespace dlvhex {
        it != node.children.end(); ++it) {
        node_t& at = *it;
        #ifdef DEBUG
-	std::cout << "ParseTree id: " << MCSdescriptionGrammar::BridgeRuleFact << std::endl;
+	std::cout << "Val ID: " << MCSdescriptionGrammar::RuleID << std::endl;
        #endif
        if (at.value.id() == MCSdescriptionGrammar::BridgeRule) {
 	 #ifdef DEBUG
@@ -218,14 +223,25 @@ namespace dlvhex {
 	BridgeRule elem = *it;
 	elem.writeProgram(o);
      }//end for-loop print bridgerules
+     int maxctx = 0;
      for (std::vector<ParseContext>::iterator it = context.begin(); it != context.end(); ++it) {
 	ParseContext elem = *it;
 	o << elem;
+        if( elem.ContextNum() > maxctx )
+          maxctx = elem.ContextNum();
      }//end for-loop print context
+
+     if( !Global::getInstance()->isKR2010rewriting() )
+     {
+       // zeroe'th context is ok by default
+       o << "ok(0)." << std::endl;
+       // all contexts are ok if the last one is ok
+       o << "ok(all) :- ok(" << maxctx << ")." << std::endl;
+     }
    } // end convertParseTreeToDLVProgram
 
    void
-   Converter::convert(std::istream& i, std::ostream& o) {
+   InputConverter::convert(std::istream& i, std::ostream& o) {
      MCSdescriptionGrammar mcsdgram;
      std::ostringstream buf;
      buf << i.rdbuf();
@@ -234,8 +250,8 @@ namespace dlvhex {
      iterator_t it_begin = input.c_str();
      iterator_t it_end = input.c_str() + input.size();
 
-     boost::spirit::tree_parse_info<iterator_t, factory_t> info = 
-       boost::spirit::ast_parse<factory_t>(it_begin, it_end, mcsdgram, boost::spirit::space_p);
+     boost::spirit::classic::tree_parse_info<iterator_t, factory_t> info = 
+       boost::spirit::classic::ast_parse<factory_t>(it_begin, it_end, mcsdgram, boost::spirit::classic::space_p);
 
      if (!info.full) {
        throw PluginError("MCS Equilibrium Plugin: Inputfile syntax error!");
@@ -259,3 +275,5 @@ namespace dlvhex {
 
   } // namespace mcsdiagexpl
 } // namespace dlvhex
+
+// vim:ts=8:

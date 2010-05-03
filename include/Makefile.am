@@ -1,14 +1,14 @@
 noinst_HEADERS = MCSdiagexplPlugin.h \
-                 QiConverter.h \
-		 QiParserDriver.h \
+                 InputConverter.h \
+		 InputParserDriver.h \
 		 BridgeRule.h \
 		 BridgeRuleEntry.h \
 		 ParseContext.h \
 		 ACC_ContextAtom.h \
 		 DLV_ASP_ContextAtom.h \
-                 EquilibriumOutputBuilder.h \
+                 OutputRewriter.h \
 		 EquilibriumPrintVisitor.h \
-		 DiagnosisPrintVisitor.h \
+		 DiagExplPrintVisitor.h \
 		 BaseContextAtom.h \
 		 BaseContextPlugin.h \
 		 ContextInterfaceAtom.h \

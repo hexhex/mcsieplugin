@@ -1,17 +1,17 @@
 lib_LTLIBRARIES = libldlvhexmcsdiagexpl.la
 plugin_LTLIBRARIES = libdlvhexmcsdiagexpl.la
 
-libldlvhexmcsdiagexpl_la_SOURCES = QiConverter.cpp \
-	                      	BridgeRule.cpp \
-	                       	BridgeRuleEntry.cpp \
-	                       	ParseContext.cpp \
-			     				ACC_ContextAtom.cpp \
-			     				DLV_ASP_ContextAtom.cpp \
-	      	                     	EquilibriumOutputBuilder.cpp \
-			     				EquilibriumPrintVisitor.cpp \
-			     				DiagnosisPrintVisitor.cpp \
-			     				Timing.cpp \
-			     				Global.cpp
+libldlvhexmcsdiagexpl_la_SOURCES = InputConverter.cpp \
+                                   BridgeRule.cpp \
+                                   BridgeRuleEntry.cpp \
+                                   ParseContext.cpp \
+                                   ACC_ContextAtom.cpp \
+                                   DLV_ASP_ContextAtom.cpp \
+                                   OutputRewriter.cpp \
+                                   EquilibriumPrintVisitor.cpp \
+                                   DiagExplPrintVisitor.cpp \
+                                   Timing.cpp \
+                                   Global.cpp
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \

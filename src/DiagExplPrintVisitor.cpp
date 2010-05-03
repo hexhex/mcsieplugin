@@ -33,7 +33,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#include "DiagnosisPrintVisitor.h"
+#include "DiagExplPrintVisitor.h"
 
 #include "dlvhex/AtomSet.h"
 #include <iostream>
@@ -48,12 +48,12 @@ namespace dlvhex {
 //	PrintVisitorMethods
 //
 ////////////////////////////////////////////////////////////////////////////
-DiagnosisPrintVisitor::DiagnosisPrintVisitor(std::ostream& s)
+DiagExplPrintVisitor::DiagExplPrintVisitor(std::ostream& s)
 : RawPrintVisitor(s)
 { }
 
 void
-DiagnosisPrintVisitor::visit(const AtomSet* const as)
+DiagExplPrintVisitor::visit(const AtomSet* const as)
 {
   // diagnosis output
   typedef std::map<std::string, int> DiagMap;

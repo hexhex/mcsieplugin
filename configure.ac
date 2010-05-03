@@ -1,6 +1,6 @@
 AC_PREREQ(2.61)
 
-AC_INIT([dlvhex-mcs-equilibrium-plugin],[0.1.0],[e0625252@student.tuwien.ac.at])
+AC_INIT([dlvhex-mcsie-plugin],[0.1.0],[markus.boegl@student.tuwien.ac.at])
 
 AC_CONFIG_SRCDIR([src/MCSdiagexplPlugin.cpp])
 
@@ -11,9 +11,9 @@ MAJOR=`echo $PACKAGE_VERSION | sed "s/^\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1
 MINOR=`echo $PACKAGE_VERSION | sed "s/^\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/"`
 MICRO=`echo $PACKAGE_VERSION | sed "s/^\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/"`
 
-AC_DEFINE_UNQUOTED([MCSDIAGEXPLPLUGIN_MAJOR], [$MAJOR], [Major version number of the mcs-equilibrium-plugin])
-AC_DEFINE_UNQUOTED([MCSDIAGEXPLPLUGIN_MINOR], [$MINOR], [Minor version number of the mcs-equilibrium-plugin])
-AC_DEFINE_UNQUOTED([MCSDIAGEXPLPLUGIN_MICRO], [$MICRO], [Micro version number of the mcs-equilibrium-plugin])
+AC_DEFINE_UNQUOTED([MCSDIAGEXPLPLUGIN_MAJOR], [$MAJOR], [Major version number of the mcsie-plugin])
+AC_DEFINE_UNQUOTED([MCSDIAGEXPLPLUGIN_MINOR], [$MINOR], [Minor version number of the mcsie-plugin])
+AC_DEFINE_UNQUOTED([MCSDIAGEXPLPLUGIN_MICRO], [$MICRO], [Micro version number of the mcsie-plugin])
 
 
 AM_INIT_AUTOMAKE

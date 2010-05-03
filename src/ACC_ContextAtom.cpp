@@ -61,17 +61,15 @@ namespace dlvhex {
       // get accepted set of beliefsets
       //
       /////////////////////////////////////////////////////////////////
-#if 1
+
       if((Timing::getInstance())->isActive()) {
 	(Timing::getInstance())->start(context_id);
       }
-#endif
       accset = acc(param,bset);
-#if 1
+
       if((Timing::getInstance())->isActive()) {
 	(Timing::getInstance())->stop(context_id);
       }
-#endif
       /////////////////////////////////////////////////////////////////
       //
       // Iterate throw the accepted set's, 

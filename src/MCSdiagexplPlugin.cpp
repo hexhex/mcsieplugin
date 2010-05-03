@@ -43,7 +43,7 @@ namespace dlvhex {
   namespace mcsdiagexpl {
 
 MCSdiagexplPlugin::MCSdiagexplPlugin()
-    : activatePlugin(1), mcseconverter(new QiConverter()), equilibriumOB(new EquilibriumOutputBuilder()) {
+    : activatePlugin(1), mcseconverter(new InputConverter()), equilibriumOB(new OutputRewriter()) {
     //(Timing::getInstance())->begin();
 }
 

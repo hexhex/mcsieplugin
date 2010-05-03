@@ -33,8 +33,8 @@
 #define _DLVHEX_MCSDIAGEXPL_MCSEQUILIBRIUMPLUGIN_H_
 
 #include <dlvhex/ProgramCtx.h>
-#include "QiConverter.h"
-#include "EquilibriumOutputBuilder.h"
+#include "InputConverter.h"
+#include "OutputRewriter.h"
 #include "DLV_ASP_ContextAtom.h"
 #include "BaseContextPlugin.h"
 #include "Timing.h"
@@ -44,7 +44,7 @@ namespace dlvhex {
 	
     class MCSdiagexplPlugin : public BaseContextPlugin {
 	private:
-	  QiConverter* mcseconverter;
+	  InputConverter* mcseconverter;
 	  OutputBuilder* equilibriumOB;
 	  MCSdiagexplPlugin(const MCSdiagexplPlugin&);
 	  bool activatePlugin;
