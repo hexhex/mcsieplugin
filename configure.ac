@@ -59,7 +59,7 @@ AC_DISABLE_STATIC # we don't need a static lbrary
 PKG_CHECK_MODULES([DLVHEX], [dlvhex >= 1.7])
 
 # checking for boost libs
-BOOST_REQUIRE([1.37.0])
+BOOST_REQUIRE([1.41.0])
 BOOST_SMART_PTR
 BOOST_STRING_ALGO
 BOOST_TOKENIZER
