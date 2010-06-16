@@ -31,15 +31,14 @@ ntests=0
 cd $EXAMPLES
 
 echo ============ dlvhex tests start ============
+#echo $EXAMPLES
+#echo $PARAMETERS
 
 for t in $(find -name '*.test' -type f)
 do
     while read HEXPROGRAM ANSWERSETS ADDPARM
     do
 	let ntests++
-
-	#HEXPROGRAM=$TESTDIR/$HEXPROGRAM
-	#ANSWERSETS=$TESTDIR/$ANSWERSETS
 
 	if [ ! -f $HEXPROGRAM ] || [ ! -f $ANSWERSETS ]; then
 	    test ! -f $HEXPROGRAM && echo WARN: Could not find program file $HEXPROGRAM
