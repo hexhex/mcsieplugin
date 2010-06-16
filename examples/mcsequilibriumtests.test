@@ -166,3 +166,6 @@
 ./benchmark11/benchctx_master.hex ./benchmark11/em.out --explain=Em
 ./benchmark11/benchctx_master.hex ./benchmark11/ddmeem_opeq.out --explain=D,Dm,E,Em
 ./benchmark11/benchctx_master.hex ./benchmark11/ddm.out --explain=D,Dm --noprintopeq
+./medExample/master.hex ./medExample/dmem_opeq.out --explain=Dm,Em
+./medExample/master_cppcontext3.hex ./medExample/dmem_opeq.out --explain=Dm,Em
+./independent_inc1/master.hex ./independent_inc1/dmem_opeq.out --explain=Dm,Em
