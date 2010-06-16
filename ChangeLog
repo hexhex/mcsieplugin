@@ -1,3 +1,14 @@
+2010-06-16  Peter Schueller <ps@kr.tuwien.ac.at>
+
+	* testsuite/Makefile.am: Fixing absolute vs. relative paths.
+	* testsuite/run-dlvhex-tests.sh: Likewise.
+
+	* examples/Makefile.am: Distributing all files required for testing.
+
+	* examples/mcsequilibriumtests.test: Registered new testcases.
+	* examples/medExample/dmem_opeq.out: Likewise.
+	* examples/independent_inc1/dmem_opeq.out: Likewise.
+
 2010-06-15  Thomas Krennwallner  <tkren@kr.tuwien.ac.at>
 
 	* configure.ac (BOOST_REQUIRE): Require boost >= 1.41.
