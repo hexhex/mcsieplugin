@@ -47,7 +47,6 @@ namespace dlvhex {
 	  InputConverter* mcseconverter;
 	  OutputBuilder* equilibriumOB;
 	  MCSdiagexplPlugin(const MCSdiagexplPlugin&);
-	  bool activatePlugin;
 	  AtomFunctionMap *afm;
 	  bool bench;
 

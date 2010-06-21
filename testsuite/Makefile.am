@@ -6,4 +6,4 @@ EXTRA_DIST = run-dlvhex-tests.sh diagexpl_comp.py
 # some variables for the test-script
 DLVHEX_ABS_TOP_BUILDDIR = `readlink -f $(top_builddir)`
 DLVHEX_ABS_TOP_SRCDIR = `readlink -f $(top_srcdir)`
-TESTS_ENVIRONMENT = EXAMPLES=$(DLVHEX_ABS_TOP_SRCDIR)/examples DLVHEX=dlvhex PARAMETERS="-s --plugindir=$(DLVHEX_ABS_TOP_BUILDDIR)/src:$(DLVHEX_ABS_TOP_BUILDDIR)/examples --useKR2010rewriting"
+TESTS_ENVIRONMENT = EXAMPLES=$(DLVHEX_ABS_TOP_SRCDIR)/examples DLVHEX=dlvhex PARAMETERS="-s --plugindir=$(DLVHEX_ABS_TOP_BUILDDIR)/src:$(DLVHEX_ABS_TOP_BUILDDIR)/examples"

@@ -15,7 +15,7 @@ namespace dlvhex {
   namespace mcsdiagexpl {
 	  class Global {
 	  public:
-			Global() : diagnose(false), explaination(false), mindiag(false), minexpl(false), noprintopeq(false), kr2010rewriting(false) {};
+			Global() : diagnose(false), explanation(false), mindiag(false), minexpl(false), noprintopeq(false), kr2010rewriting(false), rewritingEnabled(false) {};
 			~Global() {};
 			static Global* getInstance();
 			void init();
@@ -25,6 +25,7 @@ namespace dlvhex {
 			void setminExp();
 			void setnoprintopeq();
 			void setKR2010rewriting();
+			void setRewritingEnabled(bool value=true);
 			bool isDiag();
 			bool isminDiag();
 			bool isExp();
@@ -32,10 +33,11 @@ namespace dlvhex {
 			bool isnoprintopeq();
 			bool isSet();
 			bool isKR2010rewriting();
+			bool isRewritingEnabled();
 
 	  private:
 			static Global *g;
-			bool diagnose, explaination, mindiag, minexpl, noprintopeq, kr2010rewriting;
+			bool diagnose, explanation, mindiag, minexpl, noprintopeq, kr2010rewriting, rewritingEnabled;
 	  };
   }
 }

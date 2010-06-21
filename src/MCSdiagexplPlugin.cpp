@@ -43,7 +43,7 @@ namespace dlvhex {
   namespace mcsdiagexpl {
 
 MCSdiagexplPlugin::MCSdiagexplPlugin()
-    : activatePlugin(1), mcseconverter(new InputConverter()), equilibriumOB(new OutputRewriter()) {
+    : mcseconverter(new InputConverter()), equilibriumOB(new OutputRewriter()) {
     //(Timing::getInstance())->begin();
 }
 
@@ -65,16 +65,24 @@ MCSdiagexplPlugin::setupProgramCtx(dlvhex::ProgramCtx& pc) {
 
 OutputBuilder*
 MCSdiagexplPlugin::createOutputBuilder() {
-   return equilibriumOB;
+    if( Global::getInstance()->isRewritingEnabled() )
+      return equilibriumOB;
+    else
+    {
+      // this is not deleted in destructor,
+      // so if we don't pass it to dlvhex we have to delete it ourselves
+      delete equilibriumOB;
+      return 0;
+    }
 }
 
 
 PluginConverter*
 MCSdiagexplPlugin::createConverter() {
-    if (!this->activatePlugin) {
-        return 0;
-    }
-    return mcseconverter;
+    if( Global::getInstance()->isRewritingEnabled() )
+      return mcseconverter;
+    else
+      return 0;
 }
 
 void 
@@ -89,12 +97,13 @@ MCSdiagexplPlugin::registerAtoms() {
 
 	    if (doHelp) {
 	       //      123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-
-	        out << "Diagnosis and Explanation calculation Plugin: " << std::endl << std::endl;
-	        out << " --explain={D, Dm, E, Em}  " << std::endl;
-	        out << " --noprintopeq             Do not print output-projected equilibria for diagnoses" << std::endl;
-	        out << " --benchmark               print time/call summary" << std::endl;
-	        out << " --useKR2010rewriting      use (nearly always) slower rewriting technique" << std::endl
-              << "                           (as published in KR2010)" << std::endl;
+	        out << "MCS-Inconsistency Explainer (Diagnosis and Explanation) Plugin: " << std::endl << std::endl;
+	        out << " --ieenable              Enable input/output rewriting (external atoms always enabled)" << std::endl;
+	        out << " --ieexplain={D,Dm,E,Em} " << std::endl;
+	        out << " --ienoprintopeq         Do not print output-projected equilibria for diagnoses" << std::endl;
+	        out << " --iebenchmark           print time/call summary" << std::endl;
+	        out << " --ieuseKR2010rewriting  use (nearly always) slower rewriting technique" << std::endl
+              << "                                 (as published in KR2010)" << std::endl;
 		out << std::endl;
 	        return;
 	    }
@@ -102,9 +111,9 @@ MCSdiagexplPlugin::registerAtoms() {
 	    for (std::vector<std::string>::iterator it = argv.begin();
 		it != argv.end(); ++it) {
 
-	        o = it->find("--explain=");
+	        o = it->find("--ieexplain=");
 	        if (o != std::string::npos) {
-		  std::string expl = (it->substr(10));
+		  std::string expl = (it->substr(12));
 	          bool f = false;
 		  std::vector<std::string> strs;
 		  boost::split(strs, expl, boost::is_any_of(","));
@@ -133,14 +142,14 @@ MCSdiagexplPlugin::registerAtoms() {
 		  continue;
 	        }
 
-	        o = it->find("--noprintopeq");
+	        o = it->find("--ienoprintopeq");
 	        if (o != std::string::npos) {
 			(Global::getInstance())->setnoprintopeq();
 	        	found.push_back(it);
 	        	continue;
 	        }
 
-	        o = it->find("--benchmark");
+	        o = it->find("--iebenchmark");
 	        if (o != std::string::npos) {
 	        	found.push_back(it);
 	        	bench=true;
@@ -148,9 +157,16 @@ MCSdiagexplPlugin::registerAtoms() {
 	        	continue;
 	        }
 
-	        o = it->find("--useKR2010rewriting");
+	        o = it->find("--ieuseKR2010rewriting");
 	        if (o != std::string::npos) {
 			Global::getInstance()->setKR2010rewriting();
+	        	found.push_back(it);
+	        	continue;
+	        }
+
+	        o = it->find("--ieenable");
+	        if (o != std::string::npos) {
+			Global::getInstance()->setRewritingEnabled();
 	        	found.push_back(it);
 	        	continue;
 	        }
