@@ -1,3 +1,9 @@
+2010-06-23  Peter Schueller <ps@kr.tuwien.ac.at>
+
+	* src/EquilibriumPrintVisitor.cpp: Fixing equilibrium output bug
+	(contexts without output beliefs were missing in some cases).
+	* src/ParseContext.cpp: Likewise.
+
 2010-06-21  Peter Schueller <ps@kr.tuwien.ac.at>
 
 	* include/Global.h: Added commandline option for enabling rewriters,

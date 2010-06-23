@@ -91,26 +91,39 @@ EquilibriumPrintVisitor::visit(const AtomSet* const as)
 	}
 
 	// process pred
-	if( (pred[0] == 'o' and pred[1] != 'k') or pred[0] == 'a' or pred[0] == 'b' ) {
-		std::stringstream s;
-		s << pred.substr(1,std::string::npos);
-		s >> id;
+	if( pred[0] == 'a' or pred[0] == 'b') {
+          std::stringstream s;
+          s << pred.substr(1,std::string::npos);
+          s >> id;
 
-		// if "a<i>", add belief to output container
-		if( pred[0] == 'a' ) {
-			outlist.insert(std::make_pair(id,arg));
-			cmap.insert(std::make_pair(id,""));
-		} else cmap.insert(std::make_pair(id,""));
+          // if "a<i>", add belief to output container
+          if( pred[0] == 'a' && id > 0 )
+          {
+                  outlist.insert(std::make_pair(id,arg));
+                  cmap.insert(std::make_pair(id,""));
+          }
 	}
+
+        if( pred == "ctx" )
+        {
+          std::stringstream s;
+          s << arg;
+          s >> id;
+          assert(id != 0);
+          cmap.insert(std::make_pair(id,""));
+        }
     } // for-loop over AtomSet's
+
 	// display equilibrium
 	stream << "(";
     	std::multimap<int,std::string>::iterator oit;
     	std::pair<std::multimap<int,std::string>::iterator,std::multimap<int,std::string>::iterator> rangeit;
 
 	//stream << "cmapsize: " << cmap.size();
-	for(std::map<int, std::string>::const_iterator it = cmap.begin(); it != cmap.end(); ++it) {
-		if( it != cmap.begin() ) stream << ",";
+	for(std::map<int, std::string>::const_iterator it = cmap.begin();
+            it != cmap.end(); ++it) {
+		if( it != cmap.begin() )
+                  stream << ",";
 		stream << "{";
 		if( outlist.count(it->first) > 0 ) {
 			rangeit = outlist.equal_range(it->first);
@@ -123,8 +136,10 @@ EquilibriumPrintVisitor::visit(const AtomSet* const as)
 		stream << "}";
 	}
 	stream << ')';
+
   } // if empty
 }//EquilibriumPrintVisitor::visit(AtomSet* const as)
 
 }//namespace mcsdiagexpl
 }//namespace dlvhex
+// vim:ts=8:

@@ -62,6 +62,9 @@ namespace dlvhex {
        out << ":- not &" << context.ExtAtom()
            << "[" << cn << ",a" << cn << ",b" << cn << ",o" << cn << ","
            << "\"" << context.Param() << "\"]()." << std::endl; 
+
+       // mark context as existing
+       out << "ctx(" << cn << ")." << std::endl;
      }
      else
      {
@@ -93,6 +96,9 @@ namespace dlvhex {
        // verify guessed output with output calculated via bridge rules (if all contexts are ok)
        out << ":- c" << cn << "(X), not b" << cn << "(X), ok(all)." << std::endl;
        out << ":- not c" << cn << "(X), b" << cn << "(X), ok(all)." << std::endl;
+
+       // mark context as existing
+       out << "ctx(" << cn << ")." << std::endl;
      }
      return out;
    }
