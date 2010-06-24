@@ -57,10 +57,13 @@ MCSdiagexplPlugin::~MCSdiagexplPlugin() {
 
 void
 MCSdiagexplPlugin::setupProgramCtx(dlvhex::ProgramCtx& pc) {
+    if( Global::getInstance()->isRewritingEnabled() )
+    {
 	pc.setOutputBuilder(equilibriumOB);
 	if((Timing::getInstance())->isActive()) {
 		(Timing::getInstance())->begin();
 	}
+    }
 }
 
 OutputBuilder*
