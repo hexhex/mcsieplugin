@@ -1,3 +1,14 @@
+2010-06-24  Peter Schueller <ps@kr.tuwien.ac.at>
+
+	* src/Makefile.am: added so-version for library which is used by plugin
+	and additional context plugins.
+	* examples/Makefile.am: Not installing test libraries, but making them
+	dlopen-able modules.
+	* src/MCSdiagexplPlugin.cpp: Not enabling output rewriter if plugin not
+	enabled.
+	* include/InputParserDriver.h: Added possibility for parser debugging.
+	* configure.ac: Version number for release.
+
 2010-06-23  Peter Schueller <ps@kr.tuwien.ac.at>
 
 	* src/EquilibriumPrintVisitor.cpp: Fixing equilibrium output bug
