@@ -12,6 +12,11 @@ libldlvhexmcsdiagexpl_la_SOURCES = InputConverter.cpp \
                                    DiagExplPrintVisitor.cpp \
                                    Timing.cpp \
                                    Global.cpp
+# for more information on `-version-info' see
+# <http://www.gnu.org/software/libtool/manual.html#Versioning>, and
+# the USENIX paper `Library Interface Versioning in Solaris and Linux'
+# <http://www.usenix.org/publications/library/proceedings/als00/2000papers/papers/full_papers/browndavid/browndavid.pdf>
+libldlvhexmcsdiagexpl_la_LDFLAGS = -version-info 1:0:0
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
