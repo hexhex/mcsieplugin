@@ -32,11 +32,18 @@
 #ifndef _DLVHEX_MCSDIAGEXPL_INPUTPARSERDRIVER_H_
 #define _DLVHEX_MCSDIAGEXPL_INPUTPARSERDRIVER_H_
 
+#undef BOOST_SPIRIT_DEBUG
+
+#ifdef BOOST_SPIRIT_DEBUG
+# define BOOST_SPIRIT_DEBUG_OUT std::cerr
+#endif
+
 #include <boost/spirit/include/classic_core.hpp>
 #include <boost/spirit/include/classic_chset.hpp>
 #include <boost/spirit/include/classic_confix.hpp>
 #include <boost/spirit/include/classic_parse_tree.hpp>
 #include <boost/spirit/include/classic_ast.hpp>
+
 
 namespace dlvhex {
  namespace mcsdiagexpl {
@@ -68,7 +75,7 @@ struct MCSdescriptionGrammar:
     boost::spirit::classic::rule<S, c, tag<Root> >        	root;		/* 01 */
     boost::spirit::classic::rule<S, c, tag<Expression> >   	expression;	/* 02 */
     boost::spirit::classic::rule<S, c, tag<BridgeRule> >   	bridgerule;	/* 03 */
-    boost::spirit::classic::rule<S, c, tag<RuleHeadElem> >      	ruleheadelem;	/* 04 */
+    boost::spirit::classic::rule<S, c, tag<RuleHeadElem> >      ruleheadelem;	/* 04 */
     boost::spirit::classic::rule<S, c, tag<RuleBody> >      	rulebody;	/* 05 */
     boost::spirit::classic::rule<S, c, tag<RuleElem> >      	ruleelem;	/* 06 */
     boost::spirit::classic::rule<S, c, tag<NegRuleElem> >      	negruleelem;	/* 07 */
@@ -107,7 +114,7 @@ MCSdescriptionGrammar::definition<ScannerT>::definition(MCSdescriptionGrammar co
 	rm[boost::spirit::classic::ch_p('"')] >> boost::spirit::classic::token_node_d[+alnum_] >> rm[boost::spirit::classic::ch_p('"')];
 
   param =
-	rm[boost::spirit::classic::ch_p('"')] >> boost::spirit::classic::token_node_d[*alnumdot] >> rm[boost::spirit::classic::ch_p('"')];
+	rm[boost::spirit::classic::ch_p('"')] >> boost::spirit::classic::token_node_d[*(~boost::spirit::classic::ch_p('"'))] >> rm[boost::spirit::classic::ch_p('"')];
 
   ruleelem =
 	rm[boost::spirit::classic::ch_p('(')] >> rulenum >> 
@@ -146,7 +153,26 @@ MCSdescriptionGrammar::definition<ScannerT>::definition(MCSdescriptionGrammar co
   root =
 	*rm[boost::spirit::classic::comment_p("%")] >> expression >> 
 	*(expression | rm[boost::spirit::classic::comment_p("%")]) >> !boost::spirit::classic::end_p;
+
+  #ifdef BOOST_SPIRIT_DEBUG
+  BOOST_SPIRIT_DEBUG_NODE(root);
+  BOOST_SPIRIT_DEBUG_NODE(expression);
+  BOOST_SPIRIT_DEBUG_NODE(bridgerule);
+  BOOST_SPIRIT_DEBUG_NODE(ruleheadelem);
+  BOOST_SPIRIT_DEBUG_NODE(rulebody);
+  BOOST_SPIRIT_DEBUG_NODE(ruleelem);
+  BOOST_SPIRIT_DEBUG_NODE(negruleelem);
+  BOOST_SPIRIT_DEBUG_NODE(rulenum);
+  BOOST_SPIRIT_DEBUG_NODE(fact);
+  BOOST_SPIRIT_DEBUG_NODE(context);
+  BOOST_SPIRIT_DEBUG_NODE(contextnum);
+  BOOST_SPIRIT_DEBUG_NODE(extatom);
+  BOOST_SPIRIT_DEBUG_NODE(param);
+  BOOST_SPIRIT_DEBUG_NODE(bridgerulefact);
+  BOOST_SPIRIT_DEBUG_NODE(ruleid);
+  #endif
 };
+
 } // END namespace mcsdiagexpl
 } // END namespace dlvhex
 
