@@ -1,3 +1,7 @@
+2010-06-25  Peter Schueller <ps@kr.tuwien.ac.at>
+
+	* configure.ac: Canonicalized plugin name for packaging.
+
 2010-06-24  Peter Schueller <ps@kr.tuwien.ac.at>
 
 	* src/Makefile.am: added so-version for library which is used by plugin

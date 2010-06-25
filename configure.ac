@@ -1,7 +1,7 @@
 AC_PREREQ(2.61)
 
 # main author: markus.boegl@student.tuwien.ac.at
-AC_INIT([dlvhex-mcsie-plugin],[1.7.0],[ps@kr.tuwien.ac.at])
+AC_INIT([dlvhex-mcsieplugin],[1.7.0],[ps@kr.tuwien.ac.at])
 
 AC_CONFIG_SRCDIR([src/MCSdiagexplPlugin.cpp])
 
