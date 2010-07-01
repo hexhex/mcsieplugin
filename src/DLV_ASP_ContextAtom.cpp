@@ -45,6 +45,8 @@
 #include "dlvhex/ASPSolver.h"
 #include "dlvhex/TextOutputBuilder.h"
 
+#include <boost/foreach.hpp>
+
 namespace dlvhex {
   namespace mcsdiagexpl {
 
@@ -56,12 +58,39 @@ void printSet (std::string s) {
 
 void
 DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginError) {
-  std::set<std::string> oset,aset,bset, aointerset, ominusaset;
-  set<string> interset, accset;
+  const std::string& input = query.getInputTuple()[0].getString();
+  const std::string& output = query.getInputTuple()[1].getString();
+  const std::string& param = query.getInputTuple()[2].getUnquotedString();
 
-  const std::string param = query.getInputTuple()[4].getUnquotedString();
+	//std::cerr << "querying atom " << input << " " << output << " " << param << std::endl;
 
-  convertQueryToStringSets(query,aset,bset,oset);
+	// get bset from input
+  std::set<std::string> bset;
+	{
+		AtomSet bset_a;
+		query.getInterpretation().matchPredicate(input,bset_a);
+		for(AtomSet::const_iterator at = bset_a.begin();
+				at != bset_a.end(); ++at)
+		{
+			const std::string& inp = at->getArgument(1).getString();
+			//std::cerr << "got inp " << inp << std::endl;
+			bset.insert(inp);
+		}
+	}
+
+	// get oset from output
+  std::set<std::string> oset;
+	{
+		AtomSet oset_a;
+		query.getInterpretation().matchPredicate(output,oset_a);
+		for(AtomSet::const_iterator at = oset_a.begin();
+				at != oset_a.end(); ++at)
+		{
+			const std::string& out = at->getArgument(1).getString();
+			//std::cerr << "got out " << out << std::endl;
+			oset.insert(out);
+		}
+	}
 
   #ifdef DEBUG
        std::cout << "===========================================" << std::endl;
@@ -85,6 +114,19 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
 
   DLVProcess dlv;
   dlv.addOption("-facts");
+	{
+		std::ostringstream filter;
+		filter << "-pfilter=";
+		for(std::set<std::string>::const_iterator it = oset.begin();
+				it != oset.end(); ++it)
+		{
+			if( it != oset.begin() )
+				filter << ",";
+			filter << *it;
+		}
+		//std::cerr << "adding option " << filter.str() << std::endl;
+		dlv.addOption(filter.str());
+	}
   std::vector<AtomSet> answersets;
   std::vector<AtomSet>::const_iterator as;
 
@@ -131,6 +173,7 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
     edb.insert(AtomPtr(new Atom(Tuple(1, Term(*inputit)))));
   }
 
+	#if 0
   // Rules of Programm
   RuleHead_t h;
   RuleBody_t b;
@@ -160,6 +203,7 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
     #endif
     idb.addRule(new Rule(h,b));
   }
+	#endif
 
   /////////////////////////////////////////////////////////////////
   //
@@ -207,10 +251,29 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
        cout << "Answerset size: " << answersets.size() << endl;
   #endif
 
-  if (answersets.size() > 0) {
-    Tuple out;
-    answer.addTuple(out);
-  }
+ unsigned asidx = 0;
+ for(as = answersets.begin(); as!=answersets.end(); ++as, ++asidx)
+ {
+   Tuple basetuple;
+	 // first output = handle
+	 basetuple.push_back(Term(asidx));
+
+	 // add a dummy belief (if there is no output belief, there can be no tuple otherwise)
+	 {
+   	 Tuple out(basetuple);
+		 out.push_back(Term(0));
+   	 answer.addTuple(out);
+	 }
+	 for(AtomSet::const_iterator atom = as->begin();
+			 atom != as->end(); ++atom)
+ 	 {
+   	 Tuple out(basetuple);
+		 // second output = belief (here we only get filtered beliefs)
+		 assert(atom->getArity() == 0 ); // must be propositional!
+		 out.push_back(atom->getPredicate());
+   	 answer.addTuple(out);
+	 }
+ }
 }
 
   } // namespace mcsdiagexpl

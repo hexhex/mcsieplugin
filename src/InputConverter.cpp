@@ -273,6 +273,7 @@ namespace dlvhex {
        ASPStringSolver solver(dlv);
        solver.solve(fvs.str(), fvsResult);
 
+       #if 0
        //std::cerr << "solved!" << fvsResult.size() << std::endl;
        DLVPrintVisitor visitor(std::cerr);
        BOOST_FOREACH(const AtomSet& as, fvsResult)
@@ -280,6 +281,7 @@ namespace dlvhex {
          std::cerr << "answer set:" << std::endl;
          as.accept(visitor);
        }
+       #endif
 
        // find set of "out" contexts in answer set
        assert(!fvsResult.empty());
@@ -307,8 +309,8 @@ namespace dlvhex {
          // not a fvs context
 
          // output forward evaluation
-         o << "a" << u << "(H,B) :- out" << u << "(P), " <<
-              "&" << ctx.ExtAtom() << "[b" << u << ",out" << u << "](H,B)." << std::endl;
+         o << "aa" << u << "(H,B) :- o" << u << "(P), " <<
+              "&" << ctx.ExtAtom() << "[b" << u << ",o" << u << ",\"" << ctx.Param() << "\"](H,B)." << std::endl;
        }
        else
        {
@@ -318,8 +320,8 @@ namespace dlvhex {
          o << "bg" << u << "(S) v nbg" << u << "(S) :- in" << u << "(S)." << std::endl;
 
          // output forward evaluation
-         o << "a" << u << "(H,B) :- out" << u << "(B), " <<
-              "&" << ctx.ExtAtom() << "[bg" << u << ",out" << u << "](H,B)." << std::endl;
+         o << "aa" << u << "(H,B) :- o" << u << "(B), " <<
+              "&" << ctx.ExtAtom() << "[bg" << u << ",o" << u << ",\"" << ctx.Param() << "\"](H,B)." << std::endl;
 
          // guess vs calculated input verification
          o << ":- bg" << u << "(S), not b" << u << "(S)." << std::endl;
@@ -327,7 +329,7 @@ namespace dlvhex {
        }
 
        // guess handle
-       o << "use" << u << "(H) v nuse" << u << "(H) :- a" << u << "(H,B)." << std::endl;
+       o << "use" << u << "(H) v nuse" << u << "(H) :- aa" << u << "(H,B)." << std::endl;
 
        // choose no more than one handle by guessing
        o << ":- use" << u << "(H1), use" << u << "(H2), H1 != H2." << std::endl;
@@ -335,6 +337,10 @@ namespace dlvhex {
        // choose at least one handle by guessing
        o << "used" << u << " :- use" << u << "(H)." << std::endl;
        o << ":- not used" << u << "." << std::endl;
+
+       // store chosen output in a<i>(belief) (just s.t. we don't need to change the
+       // EquilibriumOutputVisitor)
+       o << "a" << u << "(X) :- aa" << u << "(H,X), use" << u << "(H)." << std::endl;
      }
 
      // generate code for bridge rules
@@ -364,7 +370,7 @@ namespace dlvhex {
             o << "use" << ctx << "(H" << ctx << "), ";
             if( naf )
               o << "not ";
-            o << "a" << ctx << "(H" << ctx << "," << fact << ")";
+            o << "aa" << ctx << "(H" << ctx << "," << fact << ")";
           }
           o << "." << std::endl;
 
@@ -374,7 +380,7 @@ namespace dlvhex {
           {
             unsigned ctx = it->ContextID();
             const std::string& fact = it->Fact();
-            o << "out" << ctx << "(" << fact << ")." << std::endl;
+            o << "o" << ctx << "(" << fact << ")." << std::endl;
           }
         }
      }

@@ -47,7 +47,7 @@ namespace dlvhex {
 	int context_id;
 
       public:
-        BaseContextAtom(std::string name): atom_name(name, false), context_id(-1)
+        BaseContextAtom(std::string name): PluginAtom(false), atom_name(name), context_id(-1)
         {
           // input
           addInputPredicate();
@@ -110,5 +110,7 @@ namespace dlvhex {
 
   } // namespace mcsdiagexpl
 } // namespace dlvhex
+
+// vim: ts=8:
 
 #endif // _DLVHEX_MCSDIAGEXPL_BASECONTEXTATOM_H

@@ -73,6 +73,11 @@ EquilibriumPrintVisitor::visit(const AtomSet* const as)
   //stream << '(';
   if (!as->empty()) {
     for (AtomSet::atomset_t::const_iterator a = as->atoms.begin(); a != as->atoms.end(); ++a) {
+	const Tuple& arguments = (*a)->getArguments();
+
+	if( arguments.size() != 1 )
+	  continue;
+
 	// get predicate (we are interested in o<i> a<i> d1 d2)
 	std::string pred;
 	{
@@ -84,10 +89,8 @@ EquilibriumPrintVisitor::visit(const AtomSet* const as)
 	// get argument
 	std::string arg;
 	{
-        	const Tuple& arguments = (*a)->getArguments();
-		assert(arguments.size() == 1);
-		std::stringstream s; s << arguments[0];
-		arg = s.str();
+	  std::ostringstream s; s << arguments[0];
+	  arg = s.str();
 	}
 
 	// process pred
