@@ -47,8 +47,8 @@ namespace dlvhex {
 	void addBodyRule(int id, std::string f, bool n);
 	void writeProgram(std::ostream& o);
 
-        BridgeRuleEntry Head() const { return head; }
-        std::vector<BridgeRuleEntry> Body() const { return body; }
+        const BridgeRuleEntry& Head() const { return head; }
+        const std::vector<BridgeRuleEntry>& Body() const { return body; }
 
       private:
         BridgeRuleEntry head;
@@ -59,3 +59,5 @@ namespace dlvhex {
   }  // END namespace mcsdiagexpl
 } // END namespace dlvhex
 #endif // _DLVHEX_MCSDIAGEXPL_BRIDGERULE_H_
+
+// vim:ts=8:

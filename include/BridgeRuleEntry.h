@@ -48,7 +48,7 @@ namespace dlvhex {
           BridgeRuleEntry();
 
           int ContextID() const { return contextid; }
-          std::string Fact() const { return fact; }
+          const std::string& Fact() const { return fact; }
           bool Neg() const { return neg; }
 
       }; // END class BridgeRuleEntry

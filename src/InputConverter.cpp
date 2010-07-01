@@ -36,12 +36,20 @@
 //#define DEBUG
 
 #include "InputConverter.h"
+#include "dlvhex/ASPSolver.h"
 #include "dlvhex/SpiritDebugging.h"
+#include "dlvhex/DLVProcess.h"
+#include "dlvhex/PrintVisitor.h"
 #include "BridgeRuleEntry.h"
 #include "Global.h"
 
+#include <boost/foreach.hpp>
+#include <boost/spirit/include/qi.hpp>
+
 #include <iostream>
 #include <sstream>
+
+namespace qi = boost::spirit::qi;
 
 namespace dlvhex {
   namespace mcsdiagexpl {
@@ -213,30 +221,162 @@ namespace dlvhex {
        } //end if-rule Context		
      } // end for-loop over all children of root
 
-     ////////////////////////////////////////////////
-     // write the Parsed Program in the out stream //
-     // first write out the Rules an additional    //
-     // output of the rules, then the              //
-     // external Atom output for the context       //
-     ////////////////////////////////////////////////
-     for (std::vector<BridgeRule>::iterator it = bridgerules.begin(); it != bridgerules.end(); ++it) {
-	BridgeRule elem = *it;
-	elem.writeProgram(o);
-     }//end for-loop print bridgerules
-     int maxctx = 0;
-     for (std::vector<ParseContext>::iterator it = context.begin(); it != context.end(); ++it) {
-	ParseContext elem = *it;
-	o << elem;
-        if( elem.ContextNum() > maxctx )
-          maxctx = elem.ContextNum();
-     }//end for-loop print context
+     // we now have parsed the input
+     // -> evaluate FVS via call to external DLV
 
-     if( !Global::getInstance()->isKR2010rewriting() )
+     std::set<unsigned> fvsContexts;
      {
-       // zeroe'th context is ok by default
-       o << "ok(0)." << std::endl;
-       // all contexts are ok if the last one is ok
-       o << "ok(all) :- ok(" << maxctx << ")." << std::endl;
+       std::ostringstream fvs;
+
+       {
+         // calculate maxint
+         std::set<std::pair<int,std::string> > inputs;
+         BOOST_FOREACH(const BridgeRule& rule, bridgerules)
+         {
+           inputs.insert(std::make_pair(rule.Head().ContextID(), rule.Head().Fact()));
+         }
+         fvs << "#maxint=" << inputs.size() << "." << std::endl;
+       }
+
+       BOOST_FOREACH(const ParseContext& ctx, context)
+       {
+         fvs << "ctx(c" << ctx.ContextNum() << ")." << std::endl;
+       }
+       BOOST_FOREACH(const BridgeRule& rule, bridgerules)
+       {
+         fvs << "input(c" << rule.Head().ContextID() << "," << rule.Head().Fact() << ")." << std::endl;
+         BOOST_FOREACH(const BridgeRuleEntry& entry, rule.Body())
+         {
+           fvs << "dep(c" << rule.Head().ContextID() << ",c" << entry.ContextID() << ")." << std::endl;
+         }
+       }
+
+       // count number of inputs of each context
+       fvs << "inputs(Ctx,Number) :- ctx(Ctx), #int(Number), Number = #count { S : input(Ctx,S) }." << std::endl;
+       // guess each context (in or out)
+       fvs << "in(Ctx) v out(Ctx) :- ctx(Ctx)." << std::endl;
+       // try to minimize the number of inputs in "out" contexts
+       fvs << ":~ out(Ctx), inputs(Ctx, Number). [Number:1]" << std::endl;
+       // evaluate reachability between contexts that are "in"
+       fvs << "reach(Ctx1,Ctx2) :- dep(Ctx1,Ctx2), in(Ctx1), in(Ctx2)." << std::endl;
+       fvs << "reach(Ctx1,Ctx3) :- reach(Ctx1,Ctx2), reach(Ctx2,Ctx3)." << std::endl;
+       // forbid cycles -> find feedback vertex sets in "out"
+       fvs << ":- reach(Ctx,Ctx)." << std::endl;
+
+       std::vector<AtomSet> fvsResult;
+
+       DLVProcess dlv;
+       dlv.addOption("-nofacts");
+       dlv.addOption("-silent");
+       // take only first result
+       dlv.addOption("-n=1");
+       ASPStringSolver solver(dlv);
+       solver.solve(fvs.str(), fvsResult);
+
+       //std::cerr << "solved!" << fvsResult.size() << std::endl;
+       DLVPrintVisitor visitor(std::cerr);
+       BOOST_FOREACH(const AtomSet& as, fvsResult)
+       {
+         std::cerr << "answer set:" << std::endl;
+         as.accept(visitor);
+       }
+
+       // find set of "out" contexts in answer set
+       assert(!fvsResult.empty());
+       for(AtomSet::const_iterator at = fvsResult.front().begin();
+           at != fvsResult.front().end(); ++at)
+       {
+         if( at->getPredicate() == "out" )
+         {
+           const std::string& arg = at->getArgument(1).getString();
+           unsigned ctxNum;
+           std::string::const_iterator it = arg.begin();
+           qi::parse(it, arg.end(), 'c' > qi::uint_, ctxNum);
+           //std::cerr << "found ctxNum " << ctxNum << std::endl;
+           fvsContexts.insert(ctxNum);
+         }
+       }
+     }
+
+     // generate code for contexts
+     BOOST_FOREACH(const ParseContext& ctx, context)
+     {
+       unsigned u = ctx.ContextNum();
+       if( fvsContexts.count(u) == 0 )
+       {
+         // not a fvs context
+
+         // output forward evaluation
+         o << "a" << u << "(H,B) :- out" << u << "(P), " <<
+              "&" << ctx.ExtAtom() << "[b" << u << ",out" << u << "](H,B)." << std::endl;
+       }
+       else
+       {
+         // a fvs context
+
+         // input guessing
+         o << "bg" << u << "(S) v nbg" << u << "(S) :- in" << u << "(S)." << std::endl;
+
+         // output forward evaluation
+         o << "a" << u << "(H,B) :- out" << u << "(B), " <<
+              "&" << ctx.ExtAtom() << "[bg" << u << ",out" << u << "](H,B)." << std::endl;
+
+         // guess vs calculated input verification
+         o << ":- bg" << u << "(S), not b" << u << "(S)." << std::endl;
+         o << ":- not bg" << u << "(S), b" << u << "(S)." << std::endl;
+       }
+
+       // guess handle
+       o << "use" << u << "(H) v nuse" << u << "(H) :- a" << u << "(H,B)." << std::endl;
+
+       // choose no more than one handle by guessing
+       o << ":- use" << u << "(H1), use" << u << "(H2), H1 != H2." << std::endl;
+
+       // choose at least one handle by guessing
+       o << "used" << u << " :- use" << u << "(H)." << std::endl;
+       o << ":- not used" << u << "." << std::endl;
+     }
+
+     // generate code for bridge rules
+     BOOST_FOREACH(const BridgeRule& rule, bridgerules)
+     {
+        const BridgeRuleEntry& head = rule.Head();
+        // mark head as input
+        o << "in" << head.ContextID() << "(" << head.Fact() << ")." << std::endl;
+
+        // write rule
+        o << "b" << head.ContextID() << "(" << head.Fact() << ")";
+        if( rule.Body().empty() )
+        {
+          o << "." << std::endl;
+        }
+        else
+        {
+          o << " :- ";
+          for(std::vector<BridgeRuleEntry>::const_iterator it = rule.Body().begin();
+              it != rule.Body().end(); ++it)
+          {
+            unsigned ctx = it->ContextID();
+            const std::string& fact = it->Fact();
+            bool naf = it->Neg();
+            if( it != rule.Body().begin() )
+              o << ", ";
+            o << "use" << ctx << "(H" << ctx << "), ";
+            if( naf )
+              o << "not ";
+            o << "a" << ctx << "(H" << ctx << "," << fact << ")";
+          }
+          o << "." << std::endl;
+
+          // write each fact as context output
+          for(std::vector<BridgeRuleEntry>::const_iterator it = rule.Body().begin();
+              it != rule.Body().end(); ++it)
+          {
+            unsigned ctx = it->ContextID();
+            const std::string& fact = it->Fact();
+            o << "out" << ctx << "(" << fact << ")." << std::endl;
+          }
+        }
      }
    } // end convertParseTreeToDLVProgram
 

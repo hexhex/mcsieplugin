@@ -47,13 +47,15 @@ namespace dlvhex {
 	int context_id;
 
       public:
-        BaseContextAtom(std::string name): atom_name(name), context_id(-1) {
+        BaseContextAtom(std::string name): atom_name(name, false), context_id(-1)
+        {
+          // input
+          addInputPredicate();
+          // output projection
+          addInputPredicate();
+          // parameter
           addInputConstant();
-          addInputPredicate();
-          addInputPredicate();
-          addInputPredicate();
-          addInputConstant();
-          setOutputArity(0);
+          setOutputArity(2);
         }
 
         std::string 
