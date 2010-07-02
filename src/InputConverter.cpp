@@ -309,7 +309,7 @@ namespace dlvhex {
          // not a fvs context
 
          // output forward evaluation
-         o << "aa" << u << "(H,B) :- o" << u << "(P), " <<
+         o << "aa" << u << "(H,B) :- o" << u << "(B), " <<
               "&" << ctx.ExtAtom() << "[b" << u << ",o" << u << ",\"" << ctx.Param() << "\"](H,B)." << std::endl;
        }
        else
@@ -340,7 +340,9 @@ namespace dlvhex {
 
        // store chosen output in a<i>(belief) (just s.t. we don't need to change the
        // EquilibriumOutputVisitor)
-       o << "a" << u << "(X) :- aa" << u << "(H,X), use" << u << "(H)." << std::endl;
+       // store only if it is an output belief (for the workaround to return fact "0"
+       // for answer sets which are empty)
+       o << "a" << u << "(X) :- aa" << u << "(H,X), use" << u << "(H), o" << u << "(X)." << std::endl;
      }
 
      // generate code for bridge rules

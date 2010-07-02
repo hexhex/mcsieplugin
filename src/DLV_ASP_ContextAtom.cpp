@@ -251,28 +251,46 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
        cout << "Answerset size: " << answersets.size() << endl;
   #endif
 
- unsigned asidx = 0;
- for(as = answersets.begin(); as!=answersets.end(); ++as, ++asidx)
+ // normalize answer sets (eliminate duplicates, as we filter some predicates and
+ // thus have projected answer sets)
+ std::set<std::set<std::string> > unique_answersets;
+ for(as = answersets.begin(); as!=answersets.end(); ++as)
+ {
+	 std::set<std::string> this_answerset;
+	 for(AtomSet::const_iterator atom = as->begin();
+			 atom != as->end(); ++atom)
+	 {
+		 assert(atom->getArity() == 0 ); // must be propositional!
+		 this_answerset.insert(atom->getPredicate().getString());
+	 }
+	 unique_answersets.insert(this_answerset);
+ }
+
+ unsigned asidx = 0; // handle counter
+ BOOST_FOREACH(const std::set<std::string>& uas, unique_answersets)
  {
    Tuple basetuple;
 	 // first output = handle
 	 basetuple.push_back(Term(asidx));
 
-	 // add a dummy belief (if there is no output belief, there can be no tuple otherwise)
+	 if( uas.empty() )
 	 {
+		 // add a dummy belief (if there is no output belief, there can be no tuple otherwise)
    	 Tuple out(basetuple);
 		 out.push_back(Term(0));
    	 answer.addTuple(out);
 	 }
-	 for(AtomSet::const_iterator atom = as->begin();
-			 atom != as->end(); ++atom)
- 	 {
-   	 Tuple out(basetuple);
-		 // second output = belief (here we only get filtered beliefs)
-		 assert(atom->getArity() == 0 ); // must be propositional!
-		 out.push_back(atom->getPredicate());
-   	 answer.addTuple(out);
+	 else
+	 {
+		 BOOST_FOREACH(const std::string& s, uas)
+		 {
+			 Tuple out(basetuple);
+			 // second output = belief (here we only get filtered beliefs)
+			 out.push_back(Term(s));
+			 answer.addTuple(out);
+		 }
 	 }
+	 asidx++;
  }
 }
 
