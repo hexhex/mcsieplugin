@@ -235,7 +235,7 @@ namespace dlvhex {
          {
            inputs.insert(std::make_pair(rule.Head().ContextID(), rule.Head().Fact()));
          }
-         fvs << "#maxint=" << inputs.size() << "." << std::endl;
+         fvs << "#maxint=" << (inputs.size()+1) << "." << std::endl;
        }
 
        BOOST_FOREACH(const ParseContext& ctx, context)
@@ -256,7 +256,7 @@ namespace dlvhex {
        // guess each context (in or out)
        fvs << "in(Ctx) v out(Ctx) :- ctx(Ctx)." << std::endl;
        // try to minimize the number of inputs in "out" contexts
-       fvs << ":~ out(Ctx), inputs(Ctx, Number). [Number:1]" << std::endl;
+       fvs << ":~ out(Ctx), inputs(Ctx, Number), #int(Number1), Number1 = Number + 1. [Number1:1]" << std::endl;
        // evaluate reachability between contexts that are "in"
        fvs << "reach(Ctx1,Ctx2) :- dep(Ctx1,Ctx2), in(Ctx1), in(Ctx2)." << std::endl;
        fvs << "reach(Ctx1,Ctx3) :- reach(Ctx1,Ctx2), reach(Ctx2,Ctx3)." << std::endl;
@@ -309,8 +309,8 @@ namespace dlvhex {
          // not a fvs context
 
          // output forward evaluation
-         o << "aa" << u << "(H,B) :- o" << u << "(B), " <<
-              "&" << ctx.ExtAtom() << "[b" << u << ",o" << u << ",\"" << ctx.Param() << "\"](H,B)." << std::endl;
+         o << "aa" << u << "(H,B) :- &" << ctx.ExtAtom() <<
+              "[b" << u << ",o" << u << ",\"" << ctx.Param() << "\"](H,B)." << std::endl;
        }
        else
        {
@@ -320,8 +320,8 @@ namespace dlvhex {
          o << "bg" << u << "(S) v nbg" << u << "(S) :- in" << u << "(S)." << std::endl;
 
          // output forward evaluation
-         o << "aa" << u << "(H,B) :- o" << u << "(B), " <<
-              "&" << ctx.ExtAtom() << "[bg" << u << ",o" << u << ",\"" << ctx.Param() << "\"](H,B)." << std::endl;
+         o << "aa" << u << "(H,B) :- &" << ctx.ExtAtom() <<
+              "[bg" << u << ",o" << u << ",\"" << ctx.Param() << "\"](H,B)." << std::endl;
 
          // guess vs calculated input verification
          o << ":- bg" << u << "(S), not b" << u << "(S)." << std::endl;
