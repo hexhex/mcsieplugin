@@ -107,12 +107,12 @@ EquilibriumPrintVisitor::visit(const AtomSet* const as)
           }
 	}
 
-        if( pred == "ctx" )
+        if( pred.compare(0,3,"use") == 0 )
         {
           std::stringstream s;
-          s << arg;
+          s << pred.substr(3);
           s >> id;
-          assert(id != 0);
+          assert(!s.fail() && id != 0);
           cmap.insert(std::make_pair(id,""));
         }
     } // for-loop over AtomSet's
