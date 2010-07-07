@@ -1,3 +1,8 @@
+2010-07-07  Peter Schueller <ps@kr.tuwien.ac.at>
+
+	* src/OutputRewriter.cpp: Using new ASPSolver interface.
+	* src/DLV_ASP_ContextAtom.cpp: Likewise.
+
 2010-06-25  Peter Schueller <ps@kr.tuwien.ac.at>
 
 	* configure.ac: Canonicalized plugin name for packaging.

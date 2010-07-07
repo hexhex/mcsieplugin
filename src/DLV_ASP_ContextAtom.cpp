@@ -79,32 +79,6 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
 
   /////////////////////////////////////////////////////////////////
   //
-  // Setting Up DLV Process and Options
-  //
-  /////////////////////////////////////////////////////////////////
-
-  DLVProcess dlv;
-  dlv.addOption("-facts");
-  std::vector<AtomSet> answersets;
-  std::vector<AtomSet>::const_iterator as;
-
-  std::vector<std::string> tmp;
-  tmp.push_back("-silent");
-
-
-  /////////////////////////////////////////////////////////////////
-  //
-  // Setting Up Solver
-  //
-  /////////////////////////////////////////////////////////////////
-
-  // 1. Art BaseASPSolver
-  std::auto_ptr<BaseASPSolver> solver(dlv.createSolver());
-  // 2. Art ASPFileSolver
-  //std::auto_ptr<BaseASPSolver> solver(new ASPFileSolver<DLVresultParserDriver>(dlv,tmp));
-
-  /////////////////////////////////////////////////////////////////
-  //
   // Parsing Programm given as param into idb and edb
   //
   /////////////////////////////////////////////////////////////////
@@ -182,10 +156,14 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
     cout << "solve ==========================" << endl;
   #endif
 
-  // 1. Art BaseASPSolver
-  solver->solve(idb, edb, answersets);
-  // 2. Art ASPFileSolver
-  //solver.solve(*pp, *atsp, answersets);
+  std::vector<AtomSet> answersets;
+  std::vector<AtomSet>::const_iterator as;
+  {
+    typedef ASPSolverManager::DLVSoftware DLVSoftware;
+    DLVSoftware::Options options;
+    options.includeFacts = true;
+    ASPSolverManager::Instance().solve<DLVSoftware>(idb, edb, answersets, options);
+  }
 
   if((Timing::getInstance())->isActive()) {
 	(Timing::getInstance())->stop(context_id);

@@ -113,8 +113,6 @@ OutputRewriter::checkAddMinimalResult(ResultList& mrl, AtomSet& d1, AtomSet& d2)
 std::vector<AtomSet> 
 OutputRewriter::getExplaination(ResultList& minRes) {
   std::stringstream ss;
-  DLVProcess dlv;
-  dlv.addOption("-facts");
   std::vector<AtomSet> as;
   HexParserDriver driver;
   Program prog;
@@ -127,7 +125,6 @@ OutputRewriter::getExplaination(ResultList& minRes) {
   ss << "e1(R) v ne1(R) :- rule(R)." << std::endl;
   ss << "e2(R) v ne2(R) :- rule(R)." << std::endl;
 
-  std::auto_ptr<BaseASPSolver> solver(dlv.createSolver());
   std::stringstream rulestream, guessstream;
   for(ResultList::const_iterator rit = minRes.begin(); rit != minRes.end(); ++rit) {
 	d1 = rit->get<0>();
@@ -180,7 +177,13 @@ OutputRewriter::getExplaination(ResultList& minRes) {
   }
 
   driver.parse(ss, prog, asfact);
-  solver->solve(prog, asfact, as);
+
+  {
+    typedef ASPSolverManager::DLVSoftware DLVSoftware;
+    DLVSoftware::Options options;
+    options.includeFacts = true;
+    ASPSolverManager::Instance().solve<DLVSoftware>(prog, asfact, as, options);
+  }
 
   return as;
 }
