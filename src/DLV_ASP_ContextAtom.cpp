@@ -159,10 +159,10 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
   std::vector<AtomSet> answersets;
   std::vector<AtomSet>::const_iterator as;
   {
-    typedef ASPSolverManager::DLVSoftware DLVSoftware;
-    DLVSoftware::Options options;
-    options.includeFacts = true;
-    ASPSolverManager::Instance().solve<DLVSoftware>(idb, edb, answersets, options);
+    typedef ASPSolverManager::SoftwareConfiguration<ASPSolver::DLVSoftware> DLVConfiguration;
+    DLVConfiguration dlv;
+    dlv.options.includeFacts = true;
+    ASPSolverManager::Instance().solve(dlv, idb, edb, answersets);
   }
 
   if((Timing::getInstance())->isActive()) {

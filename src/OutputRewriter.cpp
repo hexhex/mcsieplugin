@@ -179,10 +179,10 @@ OutputRewriter::getExplaination(ResultList& minRes) {
   driver.parse(ss, prog, asfact);
 
   {
-    typedef ASPSolverManager::DLVSoftware DLVSoftware;
-    DLVSoftware::Options options;
-    options.includeFacts = true;
-    ASPSolverManager::Instance().solve<DLVSoftware>(prog, asfact, as, options);
+    typedef ASPSolverManager::SoftwareConfiguration<ASPSolver::DLVSoftware> DLVConfiguration;
+    DLVConfiguration dlv;
+    dlv.options.includeFacts = true;
+    ASPSolverManager::Instance().solve(dlv, prog, asfact, as);
   }
 
   return as;
