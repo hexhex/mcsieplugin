@@ -146,6 +146,11 @@ OutputRewriter::getExplaination(ResultList& minRes) {
 	d1 = rit->get<0>();
 	d2 = rit->get<1>();
 
+	// if we have a consistent system, return no explanations
+	// (there is no cleaner way to do this)
+	if( d1.empty() && d2.empty() )
+	  return std::vector<AtomSet>();
+
         // handle d1
 	for (AtomSet::const_iterator asit = d1.begin(); asit != d1.end(); ++asit) {
 	  Atom a1 = *asit;

@@ -1,5 +1,14 @@
 2010-08-25  Peter Schueller <ps@kr.tuwien.ac.at>
 
+	* src/OutputRewriter.cpp: Fixing bug with consistent systems
+	and explanations.
+	* examples/benchmark9/ddmeem_opeq.out: Fixing testcase.
+	* examples/benchmark9/em.out: Likewise.
+	* examples/benchmark9/e.out: Likewise.
+	* examples/benchmark10/ddmeem_opeq.out: Likewise.
+	* examples/benchmark10/em.out: Likewise.
+	* examples/benchmark10/e.out: Likewise.
+
 	* src/OutputRewriter.cpp: Fixing bug with multiple equilibria
 	and subset-minimal diagnoses, including new testcase.
 	* examples/medExample/master_plusloop.hex: Likewise.
