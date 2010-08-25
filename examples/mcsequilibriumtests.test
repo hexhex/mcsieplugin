@@ -167,6 +167,7 @@
 ./benchmark11/benchctx_master.hex ./benchmark11/ddmeem_opeq.out --ieexplain=D,Dm,E,Em --ieenable
 ./benchmark11/benchctx_master.hex ./benchmark11/ddm.out --ieexplain=D,Dm --ienoprintopeq --ieenable
 ./medExample/master.hex ./medExample/dmem_opeq.out --ieexplain=Dm,Em --ieenable
+./medExample/master_plusloop.hex ./medExample/plusloop_dmem_opeq.out --ieexplain=Dm,Em --ieenable
 ./medExample/master_cppcontext3.hex ./medExample/dmem_opeq.out --ieexplain=Dm,Em --ieenable
 ./medExample/master.hex ./medExample/dmem_opeq.out --ieexplain=Dm,Em --ieenable --ieuseKR2010rewriting
 ./medExample/master_cppcontext3.hex ./medExample/dmem_opeq.out --ieexplain=Dm,Em --ieenable --ieuseKR2010rewriting

@@ -64,7 +64,16 @@ bool
 OutputRewriter::checkAddMinimalResult(ResultList& mrl, AtomSet& d1, AtomSet& d2) {
   bool minimal = false;
   bool skipIt = false;
+  bool proper = false;
   ResultList::iterator mit = mrl.begin();
+  #ifdef DEBUG
+	  RawPrintVisitor rpv(std::cout);
+	  std::cout << "candidate ";
+	  d1.accept(rpv);
+	  std::cout << "/";
+	  d2.accept(rpv);
+	  std::cout << std::endl;
+  #endif
   while(mit != mrl.end()) {
       #ifdef DEBUG
 	      RawPrintVisitor rpv(std::cout);
@@ -79,32 +88,39 @@ OutputRewriter::checkAddMinimalResult(ResultList& mrl, AtomSet& d1, AtomSet& d2)
 	// d1 is contained in the tuples first parameter
 	// and d2 is contained in the tuples second parameter
 	minimal = true;
-	if( mit == mrl.begin() ) {
-	  mrl.erase(mit);
-	  mit = mrl.begin();
-	} else {
-	  ResultList::iterator dit = mit;
-	  mit++;
-	  mrl.erase(dit);
-	}
+	if( d1 != mit->get<0>() ||
+	    d2 != mit->get<1>() )
+	  proper = true;
       } else if( mit->get<0>().difference(d1).empty()
   	&& mit->get<1>().difference(d2).empty() ) {
 	// the tuples first parameter is contained in d1
 	// and the tuples second parameter is contained in d2
 	skipIt = true;
-	mit++;
-      }
-      else {
-	mit++;
       }
       #ifdef DEBUG
-	      std::cout << " skipIt=" << skipIt << " minimal=" << minimal << std::endl;
+	std::cout << " skipIt=" << skipIt << " minimal=" << minimal << " proper=" << proper << std::endl;
       #endif
+      // backup current iterator
+      ResultList::iterator dit = mit;
+      // advance
+      mit++;
+
+      if( skipIt )
+	break;
+      if( minimal && proper )
+      {
+	mrl.erase(dit);
+      }
+      minimal = false;
+      proper = false;
       //assert( (mit->get<0>() == d1 && mit->get<1>() == d2) || "this should not happen");
   } // END while mit != minimalResults.end()
   // we cannot have a minimal answer set which should be skipped
   assert(!(minimal && skipIt));
   if( !skipIt ) {
+      #ifdef DEBUG
+    	std::cout << " candidate accepted!" << std::endl;
+      #endif
       return true;
   }
   return false;

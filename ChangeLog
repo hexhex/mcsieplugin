@@ -1,3 +1,11 @@
+2010-08-25  Peter Schueller <ps@kr.tuwien.ac.at>
+
+	* src/OutputRewriter.cpp: Fixing bug with multiple equilibria
+	and subset-minimal diagnoses, including new testcase.
+	* examples/medExample/master_plusloop.hex: Likewise.
+	* examples/medExample/plusloop_dmem_opeq.out: Likewise.
+	* examples/mcsequilibriumtests.test: Likewise.
+
 2010-07-20  Peter Schueller <ps@kr.tuwien.ac.at>
 
 	* Installing headers required to create custom context plugins.
