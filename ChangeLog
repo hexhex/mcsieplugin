@@ -1,3 +1,7 @@
+2010-10-12  Peter Schueller <ps@kr.tuwien.ac.at>
+
+	* examples/Makefile.am: Fixing warning in make distcheck for one testcase.
+
 2010-08-25  Peter Schueller <ps@kr.tuwien.ac.at>
 
 	* src/OutputRewriter.cpp: Fixing bug with consistent systems

@@ -156,11 +156,13 @@ EXTRA_DIST = mcsequilibriumtests.test \
   benchmark11/d_opeq.out \
   medExample/master.hex \
   medExample/master_cppcontext3.hex \
+  medExample/master_plusloop.hex \
   medExample/kb1.dlv \
   medExample/kb2.dlv \
   medExample/kb3.dlv \
   medExample/kb4.dlv \
   medExample/dmem_opeq.out \
+  medExample/plusloop_dmem_opeq.hex \
   independent_inc1/master.hex \
   independent_inc1/dlvctx_ctx1.dlv \
   independent_inc1/dlvctx_ctx2.dlv \
