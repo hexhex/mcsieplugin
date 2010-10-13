@@ -162,7 +162,7 @@ EXTRA_DIST = mcsequilibriumtests.test \
   medExample/kb3.dlv \
   medExample/kb4.dlv \
   medExample/dmem_opeq.out \
-  medExample/plusloop_dmem_opeq.hex \
+  medExample/plusloop_dmem_opeq.out \
   independent_inc1/master.hex \
   independent_inc1/dlvctx_ctx1.dlv \
   independent_inc1/dlvctx_ctx2.dlv \

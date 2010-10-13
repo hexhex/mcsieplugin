@@ -1,4 +1,4 @@
-2010-10-12  Peter Schueller <ps@kr.tuwien.ac.at>
+2010-10-13  Peter Schueller <ps@kr.tuwien.ac.at>
 
 	* examples/Makefile.am: Fixing warning in make distcheck for one testcase.
 
