@@ -1,3 +1,8 @@
+2010-10-03  Peter Schueller <ps@kr.tuwien.ac.at>
+
+	* include/BaseContextAtom.h: Fixing bug with hardcoded
+	input predicate names.
+
 2010-10-13  Peter Schueller <ps@kr.tuwien.ac.at>
 
 	* examples/Makefile.am: Fixing warning in make distcheck for one testcase.

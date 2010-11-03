@@ -81,13 +81,9 @@ namespace dlvhex {
           int cid = query.getInputTuple()[0].getInt();
 	  context_id = cid;
 
-          std::stringstream ass, bss, oss;
-          ass << "a" << cid;
-          std::string ai_match(ass.str());
-          bss << "b" << cid;
-          std::string bi_match(bss.str());
-          oss << "o" << cid;
-          std::string oi_match(oss.str());
+          const std::string& ai_match = query.getInputTuple()[1].getString();
+          const std::string& bi_match = query.getInputTuple()[2].getString();
+          const std::string& oi_match = query.getInputTuple()[3].getString();
 
           AtomSet input = query.getInterpretation();
 
