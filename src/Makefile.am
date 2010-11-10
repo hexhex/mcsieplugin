@@ -1,5 +1,5 @@
 lib_LTLIBRARIES = libldlvhexmcsdiagexpl.la
-plugin_LTLIBRARIES = libdlvhexmcsdiagexpl.la
+plugin_LTLIBRARIES = libdlvhexmcsdiagexpl.la 
 
 libldlvhexmcsdiagexpl_la_SOURCES = InputConverter.cpp \
                                    BridgeRule.cpp \
@@ -11,7 +11,8 @@ libldlvhexmcsdiagexpl_la_SOURCES = InputConverter.cpp \
                                    EquilibriumPrintVisitor.cpp \
                                    DiagExplPrintVisitor.cpp \
                                    Timing.cpp \
-                                   Global.cpp
+                                   Global.cpp \
+				   SaturationMetaAtom.cpp
 # for more information on `-version-info' see
 # <http://www.gnu.org/software/libtool/manual.html#Versioning>, and
 # the USENIX paper `Library Interface Versioning in Solaris and Linux'
@@ -26,4 +27,3 @@ AM_CPPFLAGS = \
 libdlvhexmcsdiagexpl_la_SOURCES = MCSdiagexplPlugin.cpp
 libdlvhexmcsdiagexpl_la_LDFLAGS = -avoid-version -module
 libdlvhexmcsdiagexpl_la_LIBADD = libldlvhexmcsdiagexpl.la
-

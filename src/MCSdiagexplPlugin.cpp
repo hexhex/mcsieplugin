@@ -64,6 +64,7 @@ MCSdiagexplPlugin::setupProgramCtx(dlvhex::ProgramCtx& pc) {
 		(Timing::getInstance())->begin();
 	}
     }
+    Global::getInstance()->setProgramCtx(pc);
 }
 
 OutputBuilder*

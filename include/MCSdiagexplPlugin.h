@@ -38,6 +38,7 @@
 #include "DLV_ASP_ContextAtom.h"
 #include "BaseContextPlugin.h"
 #include "Timing.h"
+#include "SaturationMetaAtom.h"
 
 namespace dlvhex {
   namespace mcsdiagexpl {

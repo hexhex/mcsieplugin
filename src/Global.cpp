@@ -106,6 +106,14 @@ namespace dlvhex {
 		return rewritingEnabled;
 	}
 
+      void
+      Global::setProgramCtx(ProgramCtx &pc) {
+	  this->pc=&pc;
+      }
+
+      ProgramCtx* Global::getProgramCtx() {
+	  return pc;
+      }
   }
 }
 

@@ -33,6 +33,7 @@
 #define _DLVHEX_MCSDIAGEXPL_BASECONTEXTPLUGIN_H
 
 #include <dlvhex/PluginInterface.h>
+#include "SaturationMetaAtom.h"
 
 namespace dlvhex {
   namespace mcsdiagexpl {
@@ -55,6 +56,8 @@ namespace dlvhex {
 
 	void getAtoms(AtomFunctionMap& a) {
           a_int = &a;
+	  
+	  a["saturation_meta_context"]=boost::shared_ptr<PluginAtom> (new SaturationMetaAtom);
 	  registerAtoms();
 	};
     };

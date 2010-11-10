@@ -10,6 +10,7 @@
 
 #include <ostream>
 #include <sstream>
+#include <dlvhex/ProgramCtx.h>
 
 namespace dlvhex {
   namespace mcsdiagexpl {
@@ -34,9 +35,12 @@ namespace dlvhex {
 			bool isSet();
 			bool isKR2010rewriting();
 			bool isRewritingEnabled();
+			void setProgramCtx(ProgramCtx &pc);
+			ProgramCtx* getProgramCtx();
 
 	  private:
 			static Global *g;
+			ProgramCtx* pc;
 			bool diagnose, explanation, mindiag, minexpl, noprintopeq, kr2010rewriting, rewritingEnabled;
 	  };
   }
