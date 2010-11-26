@@ -52,6 +52,7 @@ namespace dlvhex {
 	std::vector<BridgeRule> bridgerules;
 	std::vector<ParseContext> context;
 	void convertParseTreeToDLVProgram(node_t& node, std::ostream& o);
+	void convertParseTreeToDLVProgramEx(node_t& node, std::ostream& o);
 	void convertBridgeRule(node_t& at, BridgeRule& brule);
 	void convertBridgeRuleFact(node_t& at, BridgeRule& brule);
 	void convertBridgeRuleElem(node_t& at, std::string& ruleid, int& contextid, std::string& fact);

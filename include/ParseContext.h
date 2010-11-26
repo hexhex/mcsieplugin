@@ -56,6 +56,8 @@ namespace dlvhex {
         std::ostream&
         operator<< (std::ostream&, const ParseContext&);
 
+	void EXOP(std::ostream& out, const ParseContext& context);
+
   }  // END namespace mcsdiagexpl
 } // END namespace dlvhex
 #endif // _DLVHEX_MCSDIAGEXPL_PARSECONTEXT_H_

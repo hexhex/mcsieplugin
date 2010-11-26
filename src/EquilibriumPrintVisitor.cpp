@@ -85,9 +85,11 @@ EquilibriumPrintVisitor::visit(const AtomSet* const as)
 	std::string arg;
 	{
         	const Tuple& arguments = (*a)->getArguments();
-		assert(arguments.size() == 1);
+		//assert(arguments.size() == 1);
+		if(arguments.size()==1){
 		std::stringstream s; s << arguments[0];
 		arg = s.str();
+		}
 	}
 
 	// process pred

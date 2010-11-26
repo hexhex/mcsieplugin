@@ -82,9 +82,12 @@ DiagExplPrintVisitor::visit(const AtomSet* const as)
 	std::string arg;
 	{
         	const Tuple& arguments = (*a)->getArguments();
-		assert(arguments.size() == 1);
+		std::cout << arguments << std::endl;
+		//assert(arguments.size() == 1);
+		if (arguments.size() ==1){		
 		std::stringstream s; s << arguments[0];
 		arg = s.str();
+		}
 	}
 
 	// process pred

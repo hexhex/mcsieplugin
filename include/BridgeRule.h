@@ -46,6 +46,7 @@ namespace dlvhex {
         void setHeadRule(std::string rid, int cid, std::string f);
 	void addBodyRule(int id, std::string f, bool n);
 	void writeProgram(std::ostream& o);
+	void writeProgramEx(std::ostream& o);
 
         BridgeRuleEntry Head() const { return head; }
         std::vector<BridgeRuleEntry> Body() const { return body; }

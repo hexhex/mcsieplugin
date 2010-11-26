@@ -28,7 +28,7 @@ namespace dlvhex {
 
 	void
 	Global::init(){
-		explanation = mindiag = minexpl = noprintopeq = diagnose = kr2010rewriting = rewritingEnabled = false;
+		explanation = mindiag = minexpl = noprintopeq = diagnose = kr2010rewriting = rewritingEnabled = calculationOverExplanations = false;
 	}
 
 	void
@@ -64,6 +64,11 @@ namespace dlvhex {
 	void
 	Global::setRewritingEnabled(bool value) {
 		rewritingEnabled = value;
+	}
+
+	void
+	Global::setCalculationOverExplanations() {
+		calculationOverExplanations = true;
 	}
 
 	bool
@@ -104,6 +109,11 @@ namespace dlvhex {
 	bool
 	Global::isRewritingEnabled() {
 		return rewritingEnabled;
+	}
+
+	bool
+	Global::isCalculationOverExplanations() {
+		return calculationOverExplanations;
 	}
 
       void

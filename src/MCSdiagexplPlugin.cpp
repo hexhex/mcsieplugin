@@ -99,6 +99,8 @@ MCSdiagexplPlugin::registerAtoms() {
 	    std::string::size_type o;
 	    std::vector<std::vector<std::string>::iterator> found;
 
+out << "DEBUG: Hallo Welt!" << std::endl <<std::endl;
+
 	    if (doHelp) {
 	       //      123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-
 	        out << "MCS-Inconsistency Explainer (Diagnosis and Explanation) Plugin: " << std::endl << std::endl;
@@ -108,6 +110,9 @@ MCSdiagexplPlugin::registerAtoms() {
 	        out << " --iebenchmark           print time/call summary" << std::endl;
 	        out << " --ieuseKR2010rewriting  use (nearly always) slower rewriting technique" << std::endl
               << "                                 (as published in KR2010)" << std::endl;
+		
+		out << " --iecompoverex          Calculate Equilibria over Explanation not Diagnosis." << std::endl;
+
 		out << std::endl;
 	        return;
 	    }
@@ -174,6 +179,15 @@ MCSdiagexplPlugin::registerAtoms() {
 	        	found.push_back(it);
 	        	continue;
 	        }
+
+		o = it->find("--iecompoverex");
+	        if (o != std::string::npos) {
+			out << "DEBUG: New Option from Gerd found: --iecompoverex" << std::endl;
+			Global::getInstance()->setCalculationOverExplanations();
+	        	found.push_back(it);
+	        	continue;
+	        }
+
 	    }
 
 	    for (std::vector<std::vector<std::string>::iterator>::const_iterator it =
