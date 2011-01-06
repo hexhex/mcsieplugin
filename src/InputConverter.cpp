@@ -76,7 +76,6 @@ namespace dlvhex {
 	InputConverterDiagnosis::getInstance()->convertParseTreeToDLVProgram(*info.trees.begin(), ss);
      }else{
 	InputConverterExplanations::getInstance()->convertParseTreeToDLVProgram(*info.trees.begin(), ss);	
-     }
 	ss << "e1(r1)." << std::endl;
 	ss << "e1(r2)." << std::endl;
 	ss << "e1(r4)." << std::endl;
