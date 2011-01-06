@@ -18,5 +18,9 @@ noinst_HEADERS = \
 		 OutputRewriter.h \
 		 EquilibriumPrintVisitor.h \
 		 DiagExplPrintVisitor.h \
+		 ExplanationPrintVisitor.h \
 		 Timing.h \
-		 Global.h
+		 Global.h \
+		 InputConverterHelper.h \
+		 InputConverterDiagnosis.h \
+		 InputConverterExplanations.h

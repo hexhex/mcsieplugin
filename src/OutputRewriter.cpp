@@ -38,6 +38,7 @@
 #include "dlvhex/ResultContainer.h"
 #include "EquilibriumPrintVisitor.h"
 #include "DiagExplPrintVisitor.h"
+#include "ExplanationPrintVisitor.h"
 #include "Timing.h"
 #include "Global.h"
 #include "dlvhex/DLVProcess.h"
@@ -214,6 +215,7 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
 {
   EquilibriumPrintVisitor epv(stream);
   DiagExplPrintVisitor dpv(stream);
+  ExplanationPrintVisitor xpv(stream);
 
   if((Timing::getInstance())->isActive()) {
 	(Timing::getInstance())->end();
@@ -284,6 +286,7 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
 	//  get Explanations out of      //
 	//  minimal Diagnosis            //
 	///////////////////////////////////
+	 if (!(Global::getInstance())->isCalculationOverExplanations()){
 	  std::vector<AtomSet> expl = getExplaination(minimalResults);
 	  if (expl.size() > 0) {
 	    ResultContainer* explrc = new ResultContainer();
@@ -320,6 +323,34 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
 		} //end for
 	    }// end if isminExp
 	  }//end if expl.size() > 0 
+	}else{
+
+	//DEBUG: Hier gehoert der Code fuer explanations im explanationspfad hin
+	  if (!(Global::getInstance())->isminExp()){
+	    //std::cout << "DEBUG: CALCULATION OVER EXPLANATIONS Under --ieexplain=E" << std::endl;
+	    for (ResultContainer::result_t::const_iterator rit = results.begin(); rit != results.end(); ++rit) {
+	       (*rit)->accept(xpv);
+	    } // end for *rit
+	  }else{
+
+	    //std::cout << "DEBUG: CALCULATION OVER EXPLANATIONS Under --ieexplain=Em"  << std::endl;
+	    for (ResultContainer::result_t::const_iterator rit = results.begin(); rit != results.end(); ++rit) {
+		AtomSet e1,e2;
+		(*rit)->matchPredicate("e1", e1);
+		(*rit)->matchPredicate("e2", e2);
+		if (checkAddMinimalResult(minimalExpl,e1,e2)) {
+		  minimalExpl.push_back(boost::make_tuple(e1,e2,*rit));
+		}//end if checkAddMinimalResult
+	     }
+	     for(ResultList::const_iterator mxt = minimalExpl.begin(); mxt != minimalExpl.end(); ++mxt) {
+		(mxt)->get<2>()->accept(xpv);
+	     }
+
+	  } // end if !isminExp()
+
+
+	}//end if compoverexplanations
+	  
 	}
 
 	if ((Global::getInstance())->isminDiag()) {

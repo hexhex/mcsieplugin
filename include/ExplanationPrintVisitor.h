@@ -23,33 +23,29 @@
 
 
 /**
- * @file   QiConverter.h
- * @author Markus Boegl
- * @date   Sun Jan 24 13:34:49 2010
+ * @file   ExplanationPrintVisitor.h
+ * @author Gerald Weidinger
+ * @date   Sun Jan 24 13:44:22 2010
  * 
- * @brief  Converts the Input file
+ * @brief  PrintVisitor to go throught the Answersets and write as Equilibria when compoverexplnations i set
  */
-#ifndef _DLVHEX_MCSDIAGEXPL_INPUTCONVERTER_H_
-#define _DLVHEX_MCSDIAGEXPL_INPUTCONVERTER_H_
+#ifndef _DLVHEX_MCSDIAGEXPL_EXPLANATIONPRINTVISITOR_H_
+#define _DLVHEX_MCSDIAGEXPL_EXPLANATIONPRINTVISITOR_H_
 
-#include <dlvhex/PluginInterface.h>
-#include "InputParserDriver.h"
-#include "BridgeRule.h"
-#include "ParseContext.h"
+#include "dlvhex/PrintVisitor.h"
 
 namespace dlvhex {
   namespace mcsdiagexpl {
 
-    class InputConverter : public PluginConverter {
+    class ExplanationPrintVisitor : public RawPrintVisitor {
       public:
-	InputConverter() {};
-	typedef boost::spirit::classic::node_val_data_factory<> factory_t;
-	typedef const char* iterator_t;
-	typedef boost::spirit::classic::tree_match<iterator_t, factory_t>::node_t node_t;
+        explicit
+        ExplanationPrintVisitor(std::ostream&);
 
-	virtual void convert(std::istream& i, std::ostream& o);
-    }; // END class InputConverter
-  }  // END namespace mcsdiagexpl
+        /// outputs the Equilibrium in '{(a,b,c), (cd,bx)}' form
+        virtual void visit(const AtomSet* const);
+    };
+  } // END namespace mcsdiagexpl
 } // END namespace dlvhex
 
-#endif // _DLVHEX_MCSDIAGEXPL_INPUTCONVERTER_H
+#endif // _DLVHEX_MCSDIAGEXPL_EXPLANATIONPRINTVISITOR_H_

@@ -51,7 +51,6 @@ namespace dlvhex {
         BridgeRuleEntry Head() const { return head; }
         std::vector<BridgeRuleEntry> Body() const { return body; }
 
-      private:
         BridgeRuleEntry head;
 	std::vector<BridgeRuleEntry> body;
 	bool fact;

@@ -182,7 +182,6 @@ out << "DEBUG: Hallo Welt!" << std::endl <<std::endl;
 
 		o = it->find("--iecompoverex");
 	        if (o != std::string::npos) {
-			out << "DEBUG: New Option from Gerd found: --iecompoverex" << std::endl;
 			Global::getInstance()->setCalculationOverExplanations();
 	        	found.push_back(it);
 	        	continue;

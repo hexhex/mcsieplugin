@@ -29,8 +29,8 @@
  * 
  * @brief  Converts the Input file
  */
-#ifndef _DLVHEX_MCSDIAGEXPL_INPUTCONVERTER_H_
-#define _DLVHEX_MCSDIAGEXPL_INPUTCONVERTER_H_
+#ifndef _DLVHEX_MCSDIAGEXPL_INPUTCONVERTERHELPER_H_
+#define _DLVHEX_MCSDIAGEXPL_INPUTCONVERTERHELPER_H_
 
 #include <dlvhex/PluginInterface.h>
 #include "InputParserDriver.h"
@@ -40,14 +40,26 @@
 namespace dlvhex {
   namespace mcsdiagexpl {
 
-    class InputConverter : public PluginConverter {
+    class InputConverterHelper  {
       public:
-	InputConverter() {};
+	~InputConverterHelper() {};
+	static InputConverterHelper* getInstance();
 	typedef boost::spirit::classic::node_val_data_factory<> factory_t;
 	typedef const char* iterator_t;
 	typedef boost::spirit::classic::tree_match<iterator_t, factory_t>::node_t node_t;
 
-	virtual void convert(std::istream& i, std::ostream& o);
+	//virtual void convert(std::istream& i, std::ostream& o);
+
+	std::vector<BridgeRule> bridgerules;
+	std::vector<ParseContext> context;
+	void convertBridgeRule(node_t& at, BridgeRule& brule);
+	void convertBridgeRuleFact(node_t& at, BridgeRule& brule);
+	void convertBridgeRuleElem(node_t& at, std::string& ruleid, int& contextid, std::string& fact);
+	void convertContext(node_t& at, ParseContext& context);
+
+	private:
+	    static InputConverterHelper *ich;
+
     }; // END class InputConverter
   }  // END namespace mcsdiagexpl
 } // END namespace dlvhex

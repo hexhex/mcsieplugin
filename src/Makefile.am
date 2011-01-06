@@ -10,9 +10,13 @@ libldlvhexmcsdiagexpl_la_SOURCES = InputConverter.cpp \
                                    OutputRewriter.cpp \
                                    EquilibriumPrintVisitor.cpp \
                                    DiagExplPrintVisitor.cpp \
+				   ExplanationPrintVisitor.cpp \
                                    Timing.cpp \
                                    Global.cpp \
-				   SaturationMetaAtom.cpp
+				   SaturationMetaAtom.cpp \
+				   InputConverterHelper.cpp \
+				   InputConverterDiagnosis.cpp \
+				   InputConverterExplanations.cpp
 # for more information on `-version-info' see
 # <http://www.gnu.org/software/libtool/manual.html#Versioning>, and
 # the USENIX paper `Library Interface Versioning in Solaris and Linux'
