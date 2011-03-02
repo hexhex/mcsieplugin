@@ -23,12 +23,13 @@
 
 
 /**
- * @file   InputConverterHelper.cpp
- * @author Gerald Weidinger (Refactored)
- * @date   Sun Dez 28 13:34:29 2010
+ * @file   	InputConverterHelper.cpp
+ * @author 	Markus Boegl
+ * @refactored 	Gerald Weidinger
+ * @date   	Sun Feb 25 13:34:29 2011
  * 
- * @brief  Contains Methods which are used for both classes: InputConverterExplanations and InputConverterExplanations in order to create the parsetree
- *		and parse the Rules.
+ * @brief  Contains Methods which are used for both classes: InputConverterExplanations and InputConverterExplanations
+ *		 in order to create the parsetree and parse the Rules.
  */
 #ifdef HAVE_CONFIG_H
 #include "config.h"

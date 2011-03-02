@@ -23,9 +23,10 @@
 
 
 /**
- * @file   ExplanationPrintVisitor.cpp
- * @author Gerald Weidinger
- * @date   Sun Jan 24 13:43:34 2010
+ * @file   	ExplanationPrintVisitor.cpp
+ * @author 	Markus Boegl
+ * refactored 	Gerald Weidinger
+ * @date   	Sun Jan 24 13:43:34 2010
  * 
  * @brief  PrintVisitor to go throught the Answersets and write as Equilibria when compoverexplanations is set
  */
@@ -89,20 +90,24 @@ ExplanationPrintVisitor::visit(const AtomSet* const as)
 		std::stringstream s; s << (*a)->getPredicate();
 		pred = s.str();
 	}
+	
+	
 
 	if (pred == "e1"){
 		std::stringstream k; 
 		k << (*a)->getArguments();
+		//std::cout << "SYSOUT: Printing because of in e1:" << k.str() << std::endl;
 		e1.push_back(k.str());
 	}
 	if (pred == "e2"){
 		std::stringstream k; 
 		k << (*a)->getArguments();
+		//std::cout << "SYSOUT: Printing because of in e2:" << k.str() << std::endl;
 		e2.push_back(k.str());
 	}
      }
 
-	// Ausgabe des Explanation Rewriters
+	// Output of the Explanation Rewriting
 
 	e1.sort();
 	e2.sort();

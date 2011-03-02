@@ -172,3 +172,5 @@
 ./medExample/master.hex ./medExample/dmem_opeq.out --ieexplain=Dm,Em --ieenable --ieuseKR2010rewriting
 ./medExample/master_cppcontext3.hex ./medExample/dmem_opeq.out --ieexplain=Dm,Em --ieenable --ieuseKR2010rewriting
 ./independent_inc1/master.hex ./independent_inc1/dmem_opeq.out --ieexplain=Dm,Em --ieenable
+./benchmark1/dlvctx_master.hex ./benchmark1/e.out --ieexplain=E --ieenable --iecompoverex
+./benchmark1/dlvctx_master.hex ./benchmark1/em.out --ieexplain=Em --ieenable --iecompoverex

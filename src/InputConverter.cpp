@@ -23,9 +23,10 @@
 
 
 /**
- * @file   Converter.cpp
- * @author Markus Boegl
- * @date   Sun Jan 24 13:34:29 2010
+ * @file   	Converter.cpp
+ * @author 	Markus Boegl
+ * @refactored 	Gerad Weidinger
+ * @date   	Sun Jan 24 13:34:29 2010
  * 
  * @brief  Converts the Input file
  */
@@ -76,24 +77,11 @@ namespace dlvhex {
 	InputConverterDiagnosis::getInstance()->convertParseTreeToDLVProgram(*info.trees.begin(), ss);
      }else{
 	InputConverterExplanations::getInstance()->convertParseTreeToDLVProgram(*info.trees.begin(), ss);	
-	ss << "e1(r1)." << std::endl;
+	/*ss << "e1(r1)." << std::endl;
 	ss << "e1(r2)." << std::endl;
 	ss << "e1(r4)." << std::endl;
-	ss << "e2(r5).";
+	ss << "e2(r5).";*/
      }
-
-	//guess a subset of the candidate explanation
-	// for which holds that E1 C_ r1 C_ brM and r2 C_ brM \ E2
-	//std::cout << "r1(R) :- e1(R)." << std::endl;
-	//std::cout << "r1(R) v nr1(R) :− ne1(R)." << std::endl;
-	//std::cout << "r2(R)vnr2(R) :− ne2(R)." << std::endl;
-	// ensure saturation
-	//std::cout << ":- not spoil." << std::endl;
-
-	
-
-	//std::cout << "==============================================" << std::endl;
-	//std::cout << o.rdbuf();
 
      #ifdef DEBUG
        std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << std::endl;

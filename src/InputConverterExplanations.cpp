@@ -82,7 +82,6 @@ namespace dlvhex {
          //create new Bridgerule elem and fill the vector with elements
 	 BridgeRule bridgeRule = BridgeRule();
          ich->convertBridgeRule(at,bridgeRule);
-	 //bridgeRule.writeProgram(std::cout);
          bridgerules.push_back(bridgeRule);
        } //end if-rule Bridgerule
        ////////////////////////////////////////////
@@ -118,7 +117,6 @@ namespace dlvhex {
      for (std::vector<BridgeRule>::iterator it = bridgerules.begin(); it != bridgerules.end(); ++it) {
 	BridgeRule elem = *it;
 	writeProgram(o,elem);
-	//elem.writeProgramEx(o);
      }//end for-loop print bridgerules
      int maxctx = 0;
      for (std::vector<ParseContext>::iterator it = context.begin(); it != context.end(); ++it) {
@@ -126,8 +124,9 @@ namespace dlvhex {
 
 
 	//8.) spoil if the guessed belief state is no equilibrium
-	//std::cout << "spoil :- not &saturationmetacontext[\"" << elem.ExtAtom()  <<"\",spoil," << elem.ContextNum() << ",pres_" << elem.ContextNum() << ",in_" << elem.ContextNum() << ",out_" << elem.ContextNum() << ",\"" << elem.Param() << "\"]." << std::endl; 
-	o << "spoil :- not &saturation_meta_context[\"" << elem.ExtAtom()  <<"\",spoil," << elem.ContextNum() << ",pres_" << elem.ContextNum() << ",in_" << elem.ContextNum() << ",out_" << elem.ContextNum() << ",\"" << elem.Param() << "\"]." << std::endl; 
+	o << "spoil :- not &saturation_meta_context[\"" << elem.ExtAtom()  <<"\",spoil,"
+		 << elem.ContextNum() << ",pres_" << elem.ContextNum() << ",in_" << elem.ContextNum()
+		 << ",out_" << elem.ContextNum() << ",\"" << elem.Param() << "\"]." << std::endl; 
 
         if( elem.ContextNum() > maxctx )
           maxctx = elem.ContextNum();
@@ -144,19 +143,11 @@ namespace dlvhex {
 	o << ":- not spoil." << std::endl;
 
 	// data to make the medExample easier
-	o << "e1(r1)." << std::endl;
-	o << "e1(r2)." << std::endl;
-	//o << "e1(r3)." << std::endl;
-	o << "e1(r4)." << std::endl;
-	o << "e2(r5).";
-
-     /*if( !Global::getInstance()->isKR2010rewriting() )
-     {
-       // zeroe'th context is ok by default
-       o << "ok(0)." << std::endl;
-       // all contexts are ok if the last one is ok
-       o << "ok(all) :- ok(" << maxctx << ")." << std::endl;
-     }*/
+	//o << "e1(r1)." << std::endl;
+	//o << "e1(r2)." << std::endl;
+	////o << "e1(r3)." << std::endl;
+	//o << "e1(r4)." << std::endl;
+	//o << "e2(r5).";
 
 
    } // end convertParseTreeToDLVProgramEx
@@ -172,14 +163,6 @@ void
      for (std::vector<BridgeRuleEntry>::iterator it = br.body.begin(); it != br.body.end(); ++it) {
        const BridgeRuleEntry& elem = *it;
        iny << ", pres_" << elem.ContextID() << "(" << elem.Fact() << ")";	
-       //std::cout << "pres_" << elem.ContextID() << "(" << elem.Fact() << ") v abs_" << elem.ContextID() << "(" << elem.Fact() << ")." << std::endl;
-	// 7.) i.e. OUTi, so Vo e OUTi add out_i(o)	
-	//std::cout << "out_" << elem.ContextID() << "(" << elem.Fact() << ")." << std::endl;
-	// 10.) saturate on spoil	
-	//std::cout << "pres_" << elem.ContextID() << "(" << elem.Fact() << ") :- spoil." << std::endl;
-	//std::cout << "abs_" << elem.ContextID() << "(" << elem.Fact() << ") :- spoil." << std::endl;
-	//9.) spoil if our guesses are wrong by themselves.
-	//std::cout << "spoil :- pres_" << elem.ContextID() << "(" << elem.Fact() << "), " << "abs_" << elem.ContextID() << "(" << elem.Fact() << ")." << std::endl;
 
 	o << "pres_" << elem.ContextID() << "(" << elem.Fact() << ") v abs_" << elem.ContextID() << "(" << elem.Fact() << ")." << std::endl;
 	// 7.) i.e. OUTi, so Vo e OUTi add out_i(o)	
@@ -188,33 +171,11 @@ void
 	o << "pres_" << elem.ContextID() << "(" << elem.Fact() << ") :- spoil." << std::endl;
 	o << "abs_" << elem.ContextID() << "(" << elem.Fact() << ") :- spoil." << std::endl;
 	//9.) spoil if our guesses are wrong by themselves.
-	o << "spoil :- pres_" << elem.ContextID() << "(" << elem.Fact() << "), " << "abs_" << elem.ContextID() << "(" << elem.Fact() << ")." << std::endl;
+	o << "spoil :- pres_" << elem.ContextID() << "(" << elem.Fact() << "), " << "abs_" << elem.ContextID() << "(" << elem.Fact() << ")." 
+		<< std::endl;
 
      }
 	iny << ".";
-	// derive applicable rule heads
-	//std::cout << iny.str() << std::endl;
-	// derive heads of unconditional rules.
-	//std::cout << "in_" << head.ContextID() << "(" << head.Fact() << ") :- r2(" << ruleid << ")." << std::endl;
-	// 10.) saturate on spoil
-	//std::cout << "in_" << head.ContextID() << "(" << head.Fact() << ") :- spoil." << std::endl;
-	//9.) spoil if our guesses are wrong by themselves.
-	//std::cout << "spoil :- r1(" << ruleid << "), " << "nr1(" << ruleid << ")." << std::endl;
-	//std::cout << "spoil :- r2(" << ruleid << "), " << "nr2(" << ruleid << ")." << std::endl;
-	
-	//guess an explanation candidate.
-	//std::cout << "e1(" << ruleid << ") v ne1(" << ruleid << ")." << std::endl;
-	//std::cout << "e2(" << ruleid << ") v ne2(" << ruleid << ")." << std::endl;
-	//std::cout << ":- e1(" << ruleid << "), ne1(" << ruleid << ")." << std::endl;
-	//std::cout << ":- e2(" << ruleid << "), ne2(" << ruleid << ")." << std::endl;;
-
-	// 10.) saturate on spoil	
-	//std::cout << "r1(" << ruleid << ") :- spoil." << std::endl;
-	//std::cout << "r2(" << ruleid << ") :- spoil." << std::endl;
-	//std::cout << "nr1(" << ruleid << ") :- spoil." << std::endl;
-	//std::cout << "nr2(" << ruleid << ") :- spoil." << std::endl;
-
-
 
 	// derive applicable rule heads
 	o << iny.str() << std::endl;
