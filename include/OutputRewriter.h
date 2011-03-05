@@ -49,6 +49,7 @@ namespace dlvhex {
     private:
       bool checkAddMinimalResult(ResultList& rs, AtomSet& d1, AtomSet& d2);
       std::vector<AtomSet> getExplaination(ResultList& minRes);
+      std::vector<AtomSet> getDiagnosis(ResultList& minExp);
 
     public:
       /// Dtor

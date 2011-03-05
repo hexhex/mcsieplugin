@@ -59,6 +59,9 @@ ExplanationPrintVisitor::ExplanationPrintVisitor(std::ostream& s)
 void
 ExplanationPrintVisitor::visit(const AtomSet* const as)
 {
+	
+	std::cout << "DEBUG: STARTING VISIT" << std::endl;
+
   // diagnosis output
   //typedef std::map<std::string, int> DiagMap;
   std::map<int, std::string> cmap;
@@ -113,9 +116,9 @@ ExplanationPrintVisitor::visit(const AtomSet* const as)
 	e2.sort();
 
 	if ((Global::getInstance())->isminExp()){
-		std::cout << "Em: ";
+		std::cout << "Em:";
 	}else{
-		std::cout << "E: ";
+		std::cout << "E:";
 	}
 
 	std::cout << "({";
@@ -140,7 +143,7 @@ ExplanationPrintVisitor::visit(const AtomSet* const as)
   	}
 	std::cout << "})" << std::endl << std::endl;
 
-
+	std::cout << "DEBUG: ENDING VISIT" << std::endl;
 
 
   } // if empty

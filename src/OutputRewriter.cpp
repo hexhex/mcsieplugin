@@ -210,6 +210,76 @@ OutputRewriter::getExplaination(ResultList& minRes) {
   return as;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+std::vector<AtomSet> 
+OutputRewriter::getDiagnosis(ResultList& minExp) {
+ std::stringstream ss;
+  std::vector<AtomSet> as;
+  HexParserDriver driver;
+  Program prog;
+  AtomSet asfact;
+  AtomSet d1,d2,normal;
+  Term e1 = Term("e1");
+  Term e2 = Term("e2");
+  Term rule = Term("rule");
+
+
+  ss << "D1(R) v D2(R) :- rule(R)." << std::endl;
+  ss << " :- not D1OK, not D2OK." << std::endl;
+
+std::cout << "DEBUG: So ein mist: " << minExp.size() << std::endl;
+
+  std::stringstream rulestream, guessstream;
+  for(ResultList::const_iterator rit = minExp.begin(); rit != minExp.end(); ++rit) {
+	//For each minimal Explanation
+	d1 = rit->get<0>(); // E1 of actual minExplanation
+	d2 = rit->get<1>(); // E2 of actual minExplanation
+
+	for (AtomSet::const_iterator asit = d1.begin(); asit != d1.end(); ++asit) {
+	  //For each rule in E1 of actual xplanation
+	  Atom a1 = *asit;
+	  std::cout << "DEBUG: D1 = " << a1.getPredicate() << std::endl;
+	  std::cout << "DEBUG: D1 = " << a1.getArguments() << std::endl;
+	}
+
+	for (AtomSet::const_iterator asit = d2.begin(); asit != d2.end(); ++asit) {
+	  //For each rule in E2 of actual xplanation
+	  Atom a1 = *asit;
+	  std::cout << "DEBUG: D2 = " << a1.getPredicate() << std::endl;
+	}
+
+  }
+	
+
+  return as;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void
 OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
 {
@@ -230,6 +300,7 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
     }
 
   if (!results.empty()) {
+     if (!(Global::getInstance())->isCalculationOverExplanations()){
 	for (ResultContainer::result_t::const_iterator rit = results.begin(); rit != results.end(); ++rit) {
 		AtomSet d1, d2, normal;
 		(*rit)->matchPredicate("d1", d1);
@@ -286,7 +357,6 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
 	//  get Explanations out of      //
 	//  minimal Diagnosis            //
 	///////////////////////////////////
-	 if (!(Global::getInstance())->isCalculationOverExplanations()){
 	  std::vector<AtomSet> expl = getExplaination(minimalResults);
 	  if (expl.size() > 0) {
 	    ResultContainer* explrc = new ResultContainer();
@@ -323,35 +393,9 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
 		} //end for
 	    }// end if isminExp
 	  }//end if expl.size() > 0 
-	}else{
 
-	//DEBUG: Hier gehoert der Code fuer explanations im explanationspfad hin
-	  if (!(Global::getInstance())->isminExp()){
-	    //std::cout << "DEBUG: CALCULATION OVER EXPLANATIONS Under --ieexplain=E" << std::endl;
-	    for (ResultContainer::result_t::const_iterator rit = results.begin(); rit != results.end(); ++rit) {
-	       (*rit)->accept(xpv);
-	    } // end for *rit
-	  }else{
+	  } // end if !isminExp()	  
 
-	    //std::cout << "DEBUG: CALCULATION OVER EXPLANATIONS Under --ieexplain=Em"  << std::endl;
-	    for (ResultContainer::result_t::const_iterator rit = results.begin(); rit != results.end(); ++rit) {
-		AtomSet e1,e2;
-		(*rit)->matchPredicate("e1", e1);
-		(*rit)->matchPredicate("e2", e2);
-		if (checkAddMinimalResult(minimalExpl,e1,e2)) {
-		  minimalExpl.push_back(boost::make_tuple(e1,e2,*rit));
-		}//end if checkAddMinimalResult
-	     }
-	     for(ResultList::const_iterator mxt = minimalExpl.begin(); mxt != minimalExpl.end(); ++mxt) {
-		(mxt)->get<2>()->accept(xpv);
-	     }
-
-	  } // end if !isminExp()
-
-
-	}//end if compoverexplanations
-	  
-	}
 
 	if ((Global::getInstance())->isminDiag()) {
 	///////////////////////////////////
@@ -400,7 +444,101 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
 		}
 	    } // end for iterate minimalResults
 	} // END else if Printing diagnosis without equilibria
-  } // if result !emty
+	std::cout << "DEBUG: COMP OVER DIAGNOSIS"<< std::endl;	
+    }else{ // Else compoverExplanations
+	std::cout << "DEBUG: COMP OVER EXPLANATIONS"<< std::endl;
+	for (ResultContainer::result_t::const_iterator rit = results.begin(); rit != results.end(); ++rit) {
+		AtomSet e1, e2, normal;
+		(*rit)->matchPredicate("e1", e1);
+		(*rit)->matchPredicate("e2", e2);
+
+
+		if ((Global::getInstance())->isExp()) {
+			(*rit)->accept(xpv);
+		}
+		if ((Global::getInstance())->isminExp() || (Global::getInstance())->isDiag() || (Global::getInstance())->isminDiag()) {
+			if (checkAddMinimalResult(minimalExpl,e1,e2)) {
+		  		minimalExpl.push_back(boost::make_tuple(e1,e2,*rit));
+
+				for (AtomSet::const_iterator asit = e1.begin(); asit != e1.end(); ++asit) {
+					Atom a2 = *asit;
+					std::cout << "DEBUG: Called checkAddMinimalResult E1: " << a2.getArguments() << std::endl;
+				}
+				for (AtomSet::const_iterator asit = e2.begin(); asit != e2.end(); ++asit) {
+					Atom a2 = *asit;
+					std::cout << "DEBUG: Called checkAddMinimalResult E2: " << a2.getArguments() << std::endl;
+				}
+
+
+				
+			}//end if checkAddMinimalResult
+		}
+
+	}
+
+	if ((Global::getInstance())->isminExp()) {
+		std::cout << "DEBUG: MINEXP: " << minimalExpl.size() << std::endl;
+		for(ResultList::const_iterator mxt = minimalExpl.begin(); mxt != minimalExpl.end(); ++mxt) {
+			(mxt)->get<2>()->accept(xpv);
+	     	}
+	}
+
+	if ((Global::getInstance())->isDiag() || (Global::getInstance())->isminDiag()) {
+		std::cout << "DEBUG: DIAG or minDIAG"<< std::endl;
+		std::vector<AtomSet> diags = getDiagnosis(minimalExpl);
+		std::cout << "DEBUG: BUHU"<< std::endl;
+	  if (diags.size() > 0) {
+	    ResultContainer* diagsrc = new ResultContainer();
+	    for (std::vector<AtomSet>::const_iterator asit = diags.begin(); asit!=diags.end(); ++asit) {
+		diagsrc->addSet(*asit);
+	    }//end for
+	    const ResultContainer::result_t& diagsres = diagsrc->getAnswerSets();
+	    for (ResultContainer::result_t::const_iterator rit = diagsres.begin(); rit != diagsres.end(); ++rit) {
+		AtomSet d1,d2;
+		(*rit)->matchPredicate("d1", d1);
+		(*rit)->matchPredicate("d2", d2);
+	        if ((Global::getInstance())->isminDiag()) {
+		  if (checkAddMinimalResult(minimalExpl,d1,d2)) {
+			minimalExpl.push_back(boost::make_tuple(d1,d2,*rit));
+		  }//end if checkAddMinimalResult
+	        }// if isminExp
+		if ((Global::getInstance())->isExp()) {
+			stream << "E:";
+			(*rit)->accept(dpv);
+			stream << std::endl;
+			if (!Globals::Instance()->getOption("Silent")) {
+				stream << std::endl;
+			}
+		}// if isExp
+	    }//end for ResultContaine
+	   }//end if diag.size > 0
+	}	
+
+
+	//DEBUG: Hier gehoert der Code fuer explanations im explanationspfad hin
+	  //if (!(Global::getInstance())->isminExp()){
+	    //std::cout << "DEBUG: CALCULATION OVER EXPLANATIONS Under --ieexplain=E" << std::endl;
+	    //for (ResultContainer::result_t::const_iterator rit = results.begin(); rit != results.end(); ++rit) {
+	    //   (*rit)->accept(xpv);
+	    //} // end for *rit
+	  //}else{
+
+	    //std::cout << "DEBUG: CALCULATION OVER EXPLANATIONS Under --ieexplain=Em"  << std::endl;
+	    //for (ResultContainer::result_t::const_iterator rit = results.begin(); rit != results.end(); ++rit) {
+		//AtomSet e1,e2;
+		//(*rit)->matchPredicate("e1", e1);
+		//(*rit)->matchPredicate("e2", e2);
+		//if (checkAddMinimalResult(minimalExpl,e1,e2)) {
+		  //minimalExpl.push_back(boost::make_tuple(e1,e2,*rit));
+		//}//end if checkAddMinimalResult
+	     //}
+	     //for(ResultList::const_iterator mxt = minimalExpl.begin(); mxt != minimalExpl.end(); ++mxt) {
+		//(mxt)->get<2>()->accept(xpv);
+	     //}
+	   //} // end if !isminExp
+	
+    }// end if compoverex
+}//if result !empty
 
   if((Timing::getInstance())->isActive()) {
 	(Timing::getInstance())->stopPostProc();
@@ -408,10 +546,10 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
 	stream << *Timing::getInstance();
   }
 
+
   if (results.empty())
     return;
 }
-
 }//namespace mcsdiagexpl
 }//namespace dlvhex
 // vim:ts=8:
