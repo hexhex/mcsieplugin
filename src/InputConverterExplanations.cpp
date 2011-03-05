@@ -165,6 +165,7 @@ void
        const BridgeRuleEntry& elem = *it;
        iny << ", pres_" << elem.ContextID() << "(" << elem.Fact() << ")";	
 
+	// 3.) guess a belief state, every a e Outi
 	o << "pres_" << elem.ContextID() << "(" << elem.Fact() << ") v abs_" << elem.ContextID() << "(" << elem.Fact() << ")." << std::endl;
 	// 7.) i.e. OUTi, so Vo e OUTi add out_i(o)	
 	o << "out_" << elem.ContextID() << "(" << elem.Fact() << ")." << std::endl;
