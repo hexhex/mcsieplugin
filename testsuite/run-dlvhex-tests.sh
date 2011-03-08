@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 #
 # dlvhex -- Answer-Set Programming with external interfaces.
 # Copyright (C) 2005, 2006, 2007 Roman Schindlauer

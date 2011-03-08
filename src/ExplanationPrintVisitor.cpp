@@ -60,7 +60,7 @@ void
 ExplanationPrintVisitor::visit(const AtomSet* const as)
 {
 	
-	std::cout << "DEBUG: STARTING VISIT" << std::endl;
+	//std::cout << "DEBUG: STARTING VISIT" << std::endl;
 
   // diagnosis output
   //typedef std::map<std::string, int> DiagMap;
@@ -143,7 +143,7 @@ ExplanationPrintVisitor::visit(const AtomSet* const as)
   	}
 	std::cout << "})" << std::endl << std::endl;
 
-	std::cout << "DEBUG: ENDING VISIT" << std::endl;
+	//std::cout << "DEBUG: ENDING VISIT" << std::endl;
 
 
   } // if empty

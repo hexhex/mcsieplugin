@@ -339,13 +339,13 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
       stream << std::endl;
     }
 
- if((Global::getInstance())->isnoprintopeq()){
+ /*if((Global::getInstance())->isnoprintopeq()){
 	std::cout << "DEBUG: AN!" << std::endl;
 
 	}else{
 	std::cout << "DEBUG: AUS!" << std::endl;
 
-	}
+	}*/
   
   if (!results.empty()) {
      if (!(Global::getInstance())->isCalculationOverExplanations()){
@@ -492,9 +492,9 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
 		}
 	    } // end for iterate minimalResults
 	} // END else if Printing diagnosis without equilibria
-	std::cout << "DEBUG: COMP OVER DIAGNOSIS"<< std::endl;	
+	//std::cout << "DEBUG: COMP OVER DIAGNOSIS"<< std::endl;	
     }else{ // Else compoverExplanations
-	std::cout << "DEBUG: COMP OVER EXPLANATIONS"<< std::endl;
+	//std::cout << "DEBUG: COMP OVER EXPLANATIONS"<< std::endl;
 	for (ResultContainer::result_t::const_iterator rit = results.begin(); rit != results.end(); ++rit) {
 		AtomSet e1, e2, normal;
 		(*rit)->matchPredicate("e1", e1);
