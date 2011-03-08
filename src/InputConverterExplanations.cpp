@@ -136,10 +136,10 @@ namespace dlvhex {
 
 	//guess a subset of the candidate explanation
 	// for which holds that E1 C_ r1 C_ brM and r2 C_ brM \ E2
-	//o << "foo3(r1). foo3(r2)." << std::endl;
-	//o << "r1(R) :- e1(R), foo3(R)." << std::endl;
-	//o << "r1(R) v nr1(R) :- ne1(R), foo3(R)." << std::endl;
-	//o << "r2(R) v nr2(R) :- ne2(R), foo3(R)." << std::endl;
+	o << "foo3(r1). foo3(r2). foo3(r3)." << std::endl;
+	o << "r1(R) :- e1(R), foo3(R)." << std::endl;
+	o << "r1(R) v nr1(R) :- ne1(R), foo3(R)." << std::endl;
+	o << "r2(R) v nr2(R) :- ne2(R), foo3(R)." << std::endl;
 	
 	// ensure saturation
 	o << ":- not spoil." << std::endl;
@@ -198,9 +198,9 @@ void
 
 	//guess a subset of the candidate explanation
 	// for which holds that E1 C_ r1 C_ brM and r2 C_ brM \ E2
-	o << "r1(" << br.ruleid << ") :- e1(" << br.ruleid << ")." << std::endl;
-	o << "r1(" << br.ruleid << ") v nr1(" << br.ruleid << ") :- ne1(" << br.ruleid << ")." << std::endl;
-	o << "r2(" << br.ruleid << ") v nr2(" << br.ruleid << ") :- ne2(" << br.ruleid << ")." << std::endl;
+	//o << "r1(" << br.ruleid << ") :- e1(" << br.ruleid << ")." << std::endl;
+	//o << "r1(" << br.ruleid << ") v nr1(" << br.ruleid << ") :- ne1(" << br.ruleid << ")." << std::endl;
+	//o << "r2(" << br.ruleid << ") v nr2(" << br.ruleid << ") :- ne2(" << br.ruleid << ")." << std::endl;
 
 	// 10.) saturate on spoil	
 	o << "r1(" << br.ruleid << ") :- spoil." << std::endl;
