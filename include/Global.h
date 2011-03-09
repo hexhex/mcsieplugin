@@ -11,6 +11,7 @@
 #include <ostream>
 #include <sstream>
 #include <dlvhex/ProgramCtx.h>
+#include <list>
 
 namespace dlvhex {
   namespace mcsdiagexpl {
@@ -28,6 +29,8 @@ namespace dlvhex {
 			void setKR2010rewriting();
 			void setRewritingEnabled(bool value=true);
 			void setCalculationOverExplanations();
+			void setRuleList(std::list<std::string> rL);
+			std::list<std::string> & getRuleList();
 			bool isDiag();
 			bool isminDiag();
 			bool isExp();
@@ -44,6 +47,7 @@ namespace dlvhex {
 			static Global *g;
 			ProgramCtx* pc;
 			bool diagnose, explanation, mindiag, minexpl, noprintopeq, kr2010rewriting, rewritingEnabled, calculationOverExplanations;
+			std::list<std::string> ruleList;
 	  };
   }
 }

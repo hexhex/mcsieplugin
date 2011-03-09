@@ -37,6 +37,7 @@
 #include "BridgeRule.h"
 #include "ParseContext.h"
 #include "InputConverterHelper.h"
+#include "Global.h"
 
 namespace dlvhex {
   namespace mcsdiagexpl {

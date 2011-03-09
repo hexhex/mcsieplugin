@@ -142,6 +142,8 @@ OutputRewriter::getExplaination(ResultList& minRes) {
   ss << "e1(R) v ne1(R) :- rule(R)." << std::endl;
   ss << "e2(R) v ne2(R) :- rule(R)." << std::endl;
 
+  
+
   std::stringstream rulestream, guessstream;
   for(ResultList::const_iterator rit = minRes.begin(); rit != minRes.end(); ++rit) {
 	d1 = rit->get<0>();
@@ -198,8 +200,8 @@ OutputRewriter::getExplaination(ResultList& minRes) {
     std::cerr << ss.str() << std::endl;
   }
 
-   std::cout << "DEBUG: Program for calculating Explanations from Diagnoses: " << std::endl;
-    std::cout << ss.str() << std::endl;
+   //std::cout << "DEBUG: Program for calculating Explanations from Diagnoses: " << std::endl;
+    //std::cout << ss.str() << std::endl;
 
   driver.parse(ss, prog, asfact);
 
@@ -237,10 +239,20 @@ OutputRewriter::getDiagnosis(ResultList& minExp) {
   Term rule = Term("rule");
 
 
-  ss << "d1(R) v d2(R) :- rule(R)." << std::endl;
+  //ss << "d1(R) v d2(R) :- rule(R)." << std::endl;
+  ss << "d1(R) v nd1(R) :- rule(R)." << std::endl;
+  ss << "d2(R) v nd2(R) :- rule(R)." << std::endl;
+  ss << ":- d1(R), d2(R).";
   ss << ":- not d1OK, not d2OK." << std::endl;
+//std::cout << "DEBUG SIZE: " << (Global::getInstance())->getRuleList().size() << std::endl;
+	while (!(Global::getInstance())->getRuleList().empty())
+	// for every bridge rule we create a predicate rule(br).
+  	{    		
+		ss << "rule(" << (Global::getInstance())->getRuleList().front() << ")." << std::endl;
+    		(Global::getInstance())->getRuleList().pop_front();
+  	}
 
-std::cout << "DEBUG: So ein mist: " << minExp.size() << std::endl;
+//std::cout << "DEBUG: So ein mist: " << minExp.size() << std::endl;
 
 std::stringstream ssD1ok, ssD2ok;
   int i = 0;
@@ -268,18 +280,18 @@ std::stringstream ssD1ok, ssD2ok;
 	for (AtomSet::const_iterator asit = d1.begin(); asit != d1.end(); ++asit) {
 	  //For each rule in E1 of actual xplanation
 	  Atom a1 = *asit;
-	  std::cout << "DEBUG: D1pred = " << a1.getPredicate() << std::endl;
-	  std::cout << "DEBUG: D1arg = " << a1.getArguments() << std::endl;
+	  //std::cout << "DEBUG: D1pred = " << a1.getPredicate() << std::endl;
+	  //std::cout << "DEBUG: D1arg = " << a1.getArguments() << std::endl;
 	  ss << "inExp" << i << "_E1(" << a1.getArguments() <<")." << std::endl;
-	  ss << "rule(" << a1.getArguments() <<")."  << std::endl;
+	  //ss << "rule(" << a1.getArguments() <<")."  << std::endl;
 	}
 
 	for (AtomSet::const_iterator asit = d2.begin(); asit != d2.end(); ++asit) {
 	  //For each rule in E2 of actual xplanation
 	  Atom a1 = *asit;
-	  std::cout << "DEBUG: D2 = " << a1.getPredicate() << std::endl;
+	  //std::cout << "DEBUG: D2 = " << a1.getPredicate() << std::endl;
 	  ss << "inExp" << i << "_E2(" << a1.getArguments() <<")." << std::endl;
-	  ss << "rule(" << a1.getArguments() <<")."  << std::endl;
+	  //ss << "rule(" << a1.getArguments() <<")."  << std::endl;
 	}
 
   }
@@ -289,7 +301,7 @@ std::stringstream ssD1ok, ssD2ok;
 	ss << ssD1ok.str();
 	ss << ssD2ok.str();
 
-std::cout << "Output DLVProgramm: get Diagnosis: " << std::endl << ss.str() << std::endl;
+//std::cout << "Output DLVProgramm: get Diagnosis: " << std::endl << ss.str() << std::endl;
 
 driver.parse(ss, prog, asfact);
 
@@ -502,6 +514,7 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
 
 
 		if ((Global::getInstance())->isExp()) {
+			std::cout << "E:";
 			(*rit)->accept(xpv);
 		}
 		if ((Global::getInstance())->isminExp() || (Global::getInstance())->isDiag() || (Global::getInstance())->isminDiag()) {
@@ -510,11 +523,11 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
 
 				for (AtomSet::const_iterator asit = e1.begin(); asit != e1.end(); ++asit) {
 					Atom a2 = *asit;
-					std::cout << "DEBUG: Called checkAddMinimalResult E1: " << a2.getArguments() << std::endl;
+					//std::cout << "DEBUG: Called checkAddMinimalResult E1: " << a2.getArguments() << std::endl;
 				}
 				for (AtomSet::const_iterator asit = e2.begin(); asit != e2.end(); ++asit) {
 					Atom a2 = *asit;
-					std::cout << "DEBUG: Called checkAddMinimalResult E2: " << a2.getArguments() << std::endl;
+					//std::cout << "DEBUG: Called checkAddMinimalResult E2: " << a2.getArguments() << std::endl;
 				}
 
 
@@ -525,16 +538,17 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
 	}
 
 	if ((Global::getInstance())->isminExp()) {
-		std::cout << "DEBUG: MINEXP: " << minimalExpl.size() << std::endl;
+		//std::cout << "DEBUG: MINEXP: " << minimalExpl.size() << std::endl;
 		for(ResultList::const_iterator mxt = minimalExpl.begin(); mxt != minimalExpl.end(); ++mxt) {
+			std::cout << "Em:";			
 			(mxt)->get<2>()->accept(xpv);
 	     	}
 	}
 
 	if ((Global::getInstance())->isDiag() || (Global::getInstance())->isminDiag()) {
-		std::cout << "DEBUG: DIAG or minDIAG"<< std::endl;
+		//std::cout << "DEBUG: DIAG or minDIAG"<< std::endl;
 		std::vector<AtomSet> diags = getDiagnosis(minimalExpl);
-		std::cout << "DEBUG: BUHU: diags.size= " << diags.size() << std::endl;
+		//std::cout << "DEBUG: BUHU: diags.size= " << diags.size() << std::endl;
 	  if (diags.size() > 0) {
 	    ResultContainer* diagsrc = new ResultContainer();
 	    for (std::vector<AtomSet>::const_iterator asit = diags.begin(); asit!=diags.end(); ++asit) {
@@ -544,7 +558,7 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
 
 
 		if ((Global::getInstance())->isminDiag()) {
-			std::cout << "DEBUG: isminDiag"<< std::endl;
+			//std::cout << "DEBUG: isminDiag"<< std::endl;
 
 			///////////////////////////////////
 			//  Printing minimal diagnosis   //
@@ -587,7 +601,7 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
 
 
 		if ((Global::getInstance())->isDiag()) {
-			std::cout << "DEBUG: isDiag"<< std::endl;
+			//std::cout << "DEBUG: isDiag"<< std::endl;
 			for (ResultContainer::result_t::const_iterator rit = diagsres.begin(); rit != diagsres.end(); ++rit) {
 				AtomSet d1, d2, normal;
 				(*rit)->matchPredicate("d1", d1);

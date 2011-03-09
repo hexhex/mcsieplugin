@@ -15,6 +15,8 @@
 namespace dlvhex {
   namespace mcsdiagexpl {
 
+	std::list<std::string> ruleList;
+
 	Global* Global::g = NULL;
 
 	Global*
@@ -69,6 +71,15 @@ namespace dlvhex {
 	void
 	Global::setCalculationOverExplanations() {
 		calculationOverExplanations = true;
+	}
+
+	void 
+	Global::setRuleList(std::list<std::string> rL){
+		ruleList = rL;
+	}
+	std::list<std::string> &
+	Global::getRuleList(){
+		return ruleList;
 	}
 
 	bool

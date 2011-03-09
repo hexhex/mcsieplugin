@@ -31,6 +31,7 @@
  */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
+#include "Global.h"
 #endif /* HAVE_CONFIG_H */
 
 //#define DEBUG
@@ -38,7 +39,6 @@
 #include "InputConverter.h"
 #include "dlvhex/SpiritDebugging.h"
 #include "BridgeRuleEntry.h"
-#include "Global.h"
 #include "InputConverterExplanations.h"
 
 
@@ -136,10 +136,10 @@ namespace dlvhex {
 
 	//guess a subset of the candidate explanation
 	// for which holds that E1 C_ r1 C_ brM and r2 C_ brM \ E2
-	o << "foo3(r1). foo3(r2). foo3(r3)." << std::endl;
-	o << "r1(R) :- e1(R), foo3(R)." << std::endl;
-	o << "r1(R) v nr1(R) :- ne1(R), foo3(R)." << std::endl;
-	o << "r2(R) v nr2(R) :- ne2(R), foo3(R)." << std::endl;
+	//o << "foo3(r1). foo3(r2). foo3(r3)." << std::endl;
+	//o << "r1(R) :- e1(R)." << std::endl;
+	//o << "r1(R) v nr1(R) :- ne1(R)." << std::endl;
+	//o << "r2(R) v nr2(R) :- ne2(R)." << std::endl;
 	
 	// ensure saturation
 	o << ":- not spoil." << std::endl;
@@ -157,14 +157,21 @@ namespace dlvhex {
 void 
    InputConverterExplanations::writeProgram(std::ostream& o, BridgeRule br) {
      // write bridgerule in asp form
-     std::list<int> ilist;
+     std::list<std::string> brlist = (Global::getInstance())->getRuleList();
+     brlist.push_back(br.ruleid);
+     (Global::getInstance())->setRuleList(brlist);
 
 
      std::stringstream iny;
      iny << "in_" << br.head.ContextID() << "(" << br.head.Fact() << ") :- r1(" << br.ruleid << ")";
      for (std::vector<BridgeRuleEntry>::iterator it = br.body.begin(); it != br.body.end(); ++it) {
        const BridgeRuleEntry& elem = *it;
-       iny << ", pres_" << elem.ContextID() << "(" << elem.Fact() << ")";	
+
+	if (elem.Neg()){
+		iny << ", abs_" << elem.ContextID() << "(" << elem.Fact() << ")";	
+	}else{
+		iny << ", pres_" << elem.ContextID() << "(" << elem.Fact() << ")";	
+	}	
 
 	// 3.) guess a belief state, every a e Outi
 	o << "pres_" << elem.ContextID() << "(" << elem.Fact() << ") v abs_" << elem.ContextID() << "(" << elem.Fact() << ")." << std::endl;
@@ -198,9 +205,9 @@ void
 
 	//guess a subset of the candidate explanation
 	// for which holds that E1 C_ r1 C_ brM and r2 C_ brM \ E2
-	//o << "r1(" << br.ruleid << ") :- e1(" << br.ruleid << ")." << std::endl;
-	//o << "r1(" << br.ruleid << ") v nr1(" << br.ruleid << ") :- ne1(" << br.ruleid << ")." << std::endl;
-	//o << "r2(" << br.ruleid << ") v nr2(" << br.ruleid << ") :- ne2(" << br.ruleid << ")." << std::endl;
+	o << "r1(" << br.ruleid << ") :- e1(" << br.ruleid << ")." << std::endl;
+	o << "r1(" << br.ruleid << ") v nr1(" << br.ruleid << ") :- ne1(" << br.ruleid << ")." << std::endl;
+	o << "r2(" << br.ruleid << ") v nr2(" << br.ruleid << ") :- ne2(" << br.ruleid << ")." << std::endl;
 
 	// 10.) saturate on spoil	
 	o << "r1(" << br.ruleid << ") :- spoil." << std::endl;

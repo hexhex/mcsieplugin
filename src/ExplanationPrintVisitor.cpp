@@ -115,11 +115,11 @@ ExplanationPrintVisitor::visit(const AtomSet* const as)
 	e1.sort();
 	e2.sort();
 
-	if ((Global::getInstance())->isminExp()){
+	/*if ((Global::getInstance())->isminExp()){
 		std::cout << "Em:";
 	}else{
 		std::cout << "E:";
-	}
+	}*/
 
 	std::cout << "({";
 	if (!(e1.empty())){
