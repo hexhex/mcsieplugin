@@ -26,9 +26,9 @@
  * @file   	Converter.cpp
  * @author 	Markus Boegl
  * @refactored 	Gerad Weidinger
- * @date   	Sun Jan 24 13:34:29 2010
+ * @date   	Sun Jan 08 13:34:29 2011
  * 
- * @brief  Converts the Input file
+ * @brief  serial Interface with DLV, converts the Inputfile with the Help of: InputConverterExplanations.cpp and InputConverterDiagnosis.cpp
  */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -77,10 +77,6 @@ namespace dlvhex {
 	InputConverterDiagnosis::getInstance()->convertParseTreeToDLVProgram(*info.trees.begin(), ss);
      }else{
 	InputConverterExplanations::getInstance()->convertParseTreeToDLVProgram(*info.trees.begin(), ss);	
-	/*ss << "e1(r1)." << std::endl;
-	ss << "e1(r2)." << std::endl;
-	ss << "e1(r4)." << std::endl;
-	ss << "e2(r5).";*/
      }
 
      #ifdef DEBUG

@@ -25,7 +25,8 @@
 /**
  * @file   MCSequilibriumPlugin.cpp
  * @author Markus Boegl
- * @date   Sun Jan 24 13:45:07 2010
+ * @extended Gerald Weidinger
+ * @date   Sun Dez 24 13:45:07 2010
  * 
  * @brief  Main Class of dlvhex-mcs-equilibrium-plugin
  */
@@ -98,8 +99,6 @@ MCSdiagexplPlugin::registerAtoms() {
 	MCSdiagexplPlugin::setOptions(bool doHelp, std::vector<std::string>& argv, std::ostream& out) {
 	    std::string::size_type o;
 	    std::vector<std::vector<std::string>::iterator> found;
-
-out << "DEBUG: Hallo Welt!" << std::endl <<std::endl;
 
 	    if (doHelp) {
 	       //      123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-

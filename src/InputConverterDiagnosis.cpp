@@ -23,11 +23,12 @@
 
 
 /**
- * @file   Converter.cpp
- * @author Markus Boegl
- * @date   Sun Jan 24 13:34:29 2010
+ * @file   	Converter.cpp
+ * @author 	Markus Boegl
+ * refactored 	Gerald Weidinger
+ * @date   	Sun Jan 08 13:34:29 2011
  * 
- * @brief  Converts the Input file
+ * @brief  	Converts the Input file when calculating over Diagnosis
  */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -82,7 +83,6 @@ namespace dlvhex {
          //create new Bridgerule elem and fill the vector with elements
 	 BridgeRule bridgeRule = BridgeRule();
          ich->convertBridgeRule(at,bridgeRule);
-	 //bridgeRule.writeProgram(std::cout);
          bridgerules.push_back(bridgeRule);
        } //end if-rule Bridgerule
        ////////////////////////////////////////////
@@ -95,8 +95,7 @@ namespace dlvhex {
 	 #endif
          //create new Bridgerule elem and fill the vector with elements
 	 BridgeRule bridgeRule = BridgeRule(true);
-         ich->convertBridgeRuleFact(at,bridgeRule);
-	 //bridgeRule.writeProgram(std::cout);
+         ich->convertBridgeRuleFact(at,bridgeRule);;
          bridgerules.push_back(bridgeRule);
        } //end if-rule Bridgerule
        if (at.value.id() == MCSdescriptionGrammar::Context) {
@@ -118,7 +117,6 @@ namespace dlvhex {
      for (std::vector<BridgeRule>::iterator it = bridgerules.begin(); it != bridgerules.end(); ++it) {
 	BridgeRule elem = *it;
 	writeProgram(o, elem);
-	//elem.writeProgram(o);
      }//end for-loop print bridgerules
      int maxctx = 0;
      for (std::vector<ParseContext>::iterator it = context.begin(); it != context.end(); ++it) {

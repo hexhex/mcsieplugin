@@ -1,1 +1,36 @@
-./benchmark1/benchctx_master.hex ./benchmark1/ddmeem_opeq.out --ieexplain=D,Dm,E,Em --ieenable --iecompoverex
+./benchmark1/dlvctx_master.hex ./benchmark1/dlvctx.out --ieenable --iecompoverex
+./benchmark1/dlvctx_master.hex ./benchmark1/d.out --ieexplain=D --ienoprintopeq --ieenable --iecompoverex
+./benchmark1/dlvctx_master.hex ./benchmark1/dm.out --ieexplain=Dm --ienoprintopeq --ieenable --iecompoverex
+./benchmark1/dlvctx_master.hex ./benchmark1/e.out --ieexplain=E --ieenable --iecompoverex
+./benchmark1/dlvctx_master.hex ./benchmark1/em.out --ieexplain=Em --ieenable --iecompoverex
+./benchmark1/dlvctx_master.hex ./benchmark1/ddm.out --ieexplain=D,Dm --ienoprintopeq --ieenable --iecompoverex
+./benchmark1/benchctx_master.hex ./benchmark1/dlvctx.out --ieenable --iecompoverex
+./benchmark1/benchctx_master.hex ./benchmark1/d.out --ieexplain=D --ienoprintopeq --ieenable --iecompoverex
+./benchmark1/benchctx_master.hex ./benchmark1/dm.out --ieexplain=Dm --ienoprintopeq --ieenable --iecompoverex
+./benchmark1/benchctx_master.hex ./benchmark1/e.out --ieexplain=E --ieenable --iecompoverex
+./benchmark1/benchctx_master.hex ./benchmark1/em.out --ieexplain=Em --ieenable --iecompoverex
+./benchmark1/benchctx_master.hex ./benchmark1/ddm.out --ieexplain=D,Dm --ienoprintopeq --ieenable --iecompoverex
+./benchmark2/dlvctx_master.hex ./benchmark2/dlvctx.out --ieenable --iecompoverex
+./benchmark2/dlvctx_master.hex ./benchmark2/d.out --ieexplain=D --ienoprintopeq --ieenable --iecompoverex
+./benchmark2/dlvctx_master.hex ./benchmark2/dm.out --ieexplain=Dm --ienoprintopeq --ieenable --iecompoverex
+./benchmark2/dlvctx_master.hex ./benchmark2/e.out --ieexplain=E --ieenable --iecompoverex
+./benchmark2/dlvctx_master.hex ./benchmark2/em.out --ieexplain=Em --ieenable --iecompoverex
+./benchmark2/dlvctx_master.hex ./benchmark2/ddm.out --ieexplain=D,Dm --ienoprintopeq --ieenable --iecompoverex
+./benchmark2/benchctx_master.hex ./benchmark2/dlvctx.out --ieenable --iecompoverex
+./benchmark2/benchctx_master.hex ./benchmark2/d.out --ieexplain=D --ienoprintopeq --ieenable --iecompoverex
+./benchmark2/benchctx_master.hex ./benchmark2/dm.out --ieexplain=Dm --ienoprintopeq --ieenable --iecompoverex
+./benchmark2/benchctx_master.hex ./benchmark2/e.out --ieexplain=E --ieenable --iecompoverex
+./benchmark2/benchctx_master.hex ./benchmark2/em.out --ieexplain=Em --ieenable --iecompoverex
+./benchmark2/benchctx_master.hex ./benchmark2/ddm.out --ieexplain=D,Dm --ienoprintopeq --ieenable --iecompoverex
+./benchmark3/dlvctx_master.hex ./benchmark3/dlvctx.out --ieenable --iecompoverex
+./benchmark3/dlvctx_master.hex ./benchmark3/d.out --ieexplain=D --ienoprintopeq --ieenable --iecompoverex
+./benchmark3/dlvctx_master.hex ./benchmark3/dm.out --ieexplain=Dm --ienoprintopeq --ieenable --iecompoverex
+./benchmark3/dlvctx_master.hex ./benchmark3/e.out --ieexplain=E --ieenable --iecompoverex
+./benchmark3/dlvctx_master.hex ./benchmark3/em.out --ieexplain=Em --ieenable --iecompoverex
+./benchmark3/dlvctx_master.hex ./benchmark3/ddm.out --ieexplain=D,Dm --ienoprintopeq --ieenable --iecompoverex
+./benchmark3/benchctx_master.hex ./benchmark3/dlvctx.out --ieenable --iecompoverex
+./benchmark3/benchctx_master.hex ./benchmark3/d.out --ieexplain=D --ienoprintopeq --ieenable --iecompoverex
+./benchmark3/benchctx_master.hex ./benchmark3/dm.out --ieexplain=Dm --ienoprintopeq --ieenable --iecompoverex
+./benchmark3/benchctx_master.hex ./benchmark3/e.out --ieexplain=E --ieenable --iecompoverex
+./benchmark3/benchctx_master.hex ./benchmark3/em.out --ieexplain=Em --ieenable --iecompoverex
+./benchmark3/benchctx_master.hex ./benchmark3/ddm.out --ieexplain=D,Dm --ienoprintopeq --ieenable --iecompoverex

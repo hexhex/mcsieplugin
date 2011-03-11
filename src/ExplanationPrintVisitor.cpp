@@ -24,11 +24,10 @@
 
 /**
  * @file   	ExplanationPrintVisitor.cpp
- * @author 	Markus Boegl
- * refactored 	Gerald Weidinger
- * @date   	Sun Jan 24 13:43:34 2010
+ * @Author 	Gerald Weidinger
+ * @date   	Sun Jan 08 13:43:34 2011
  * 
- * @brief  PrintVisitor to go throught the Answersets and write as Equilibria when compoverexplanations is set
+ * @brief  PrintVisitor to go throught the Answersets and write the Explanations when compoverexplanations is set
  */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -59,35 +58,13 @@ ExplanationPrintVisitor::ExplanationPrintVisitor(std::ostream& s)
 void
 ExplanationPrintVisitor::visit(const AtomSet* const as)
 {
-	
-	//std::cout << "DEBUG: STARTING VISIT" << std::endl;
-
-  // diagnosis output
-  //typedef std::map<std::string, int> DiagMap;
-  std::map<int, std::string> cmap;
-  std::multimap<int,std::string> outlist; 
-  std::string pred;
-  int id=0;
-
-  #ifdef DEBUG
-    std::cerr << "Answerset: ";
-		::dlvhex::RawPrintVisitor dbgVisitor(std::cerr);
-		as->accept(dbgVisitor);
-		std::cerr << std::endl;
-    //stream << "D1 size: " << d1.size() << "  / D2 size: " << d2.size() << " / normal: " << normal.size() << std::endl;
-  #endif
-
-  //stream << '(';
-
-	//std::stringstream e1;
-	//std::stringstream e2;
 
 	std::list<std::string> e1;
 	std::list<std::string> e2;
 
   if (!as->empty()) {
     for (AtomSet::atomset_t::const_iterator a = as->atoms.begin(); a != as->atoms.end(); ++a) {
-	// get predicate (we are interested in o<i> a<i> d1 d2)
+	// get predicate (we are interested in e1 and e2)
 	std::string pred;
 	{
 		std::stringstream s; s << (*a)->getPredicate();
@@ -99,27 +76,19 @@ ExplanationPrintVisitor::visit(const AtomSet* const as)
 	if (pred == "e1"){
 		std::stringstream k; 
 		k << (*a)->getArguments();
-		//std::cout << "SYSOUT: Printing because of in e1:" << k.str() << std::endl;
 		e1.push_back(k.str());
 	}
 	if (pred == "e2"){
 		std::stringstream k; 
-		k << (*a)->getArguments();
-		//std::cout << "SYSOUT: Printing because of in e2:" << k.str() << std::endl;
+		k << (*a)->getArguments();;
 		e2.push_back(k.str());
 	}
-     }
+     }// end for
 
 	// Output of the Explanation Rewriting
 
 	e1.sort();
 	e2.sort();
-
-	/*if ((Global::getInstance())->isminExp()){
-		std::cout << "Em:";
-	}else{
-		std::cout << "E:";
-	}*/
 
 	std::cout << "({";
 	if (!(e1.empty())){
@@ -142,8 +111,6 @@ ExplanationPrintVisitor::visit(const AtomSet* const as)
     		e2.pop_front();
   	}
 	std::cout << "})" << std::endl << std::endl;
-
-	//std::cout << "DEBUG: ENDING VISIT" << std::endl;
 
 
   } // if empty
