@@ -144,13 +144,6 @@ namespace dlvhex {
 	// 11.) ensure saturation
 	o << ":- not spoil." << std::endl;
 
-	// data to make the medExample easier
-	//o << "e1(r1)." << std::endl;
-	//o << "e1(r2)." << std::endl;
-	////o << "e1(r3)." << std::endl;
-	//o << "e1(r4)." << std::endl;
-	//o << "e2(r5).";
-
 
    } // end convertParseTreeToDLVProgramEx
 
@@ -161,61 +154,34 @@ void
      brlist.push_back(br.ruleid);
      (Global::getInstance())->setRuleList(brlist);
 
-
-     std::stringstream iny1;
      // 4.) derive applicable rule heads 
-     iny1 << "in_" << br.head.ContextID() << "(" << br.head.Fact() << ") :- r1(" << br.ruleid << ")";
-
-     std::stringstream iny2;
-     std::stringstream iny3;
-     std::stringstream iny4;
-     std::stringstream iny5;
-     std::stringstream iny6;
-
-
-     /*
-	We need to iterate through the bridge rules body for the following rules. So we iterate one times,
-	and write to different stringstreams which are added afterwords, so rules of the same scema are together,
-	in the final DLV Program. (In order to increase readabilty of that program.)
-     */
+     o << "in_" << br.head.ContextID() << "(" << br.head.Fact() << ") :- r1(" << br.ruleid << ")";
      for (std::vector<BridgeRuleEntry>::iterator it = br.body.begin(); it != br.body.end(); ++it) {
        const BridgeRuleEntry& elem = *it;
-
-	// 4.) derive applicable rule heads 
 	if (elem.Neg()){
-		iny1 << ", abs_" << elem.ContextID() << "(" << elem.Fact() << ")";	
+		o << ", abs_" << elem.ContextID() << "(" << elem.Fact() << ")";	
 	}else{
-		iny1 << ", pres_" << elem.ContextID() << "(" << elem.Fact() << ")";	
-	}	
+		o << ", pres_" << elem.ContextID() << "(" << elem.Fact() << ")";	
+	}
+     }
+     o << "." << std::endl;		
+
+
+     for (std::vector<BridgeRuleEntry>::iterator it = br.body.begin(); it != br.body.end(); ++it) {
+       const BridgeRuleEntry& elem = *it;	
 
 	// 3.) guess a belief state, every a e Outi
-	iny2 << "pres_" << elem.ContextID() << "(" << elem.Fact() << ") v abs_" << elem.ContextID() << "(" << elem.Fact() << ")." << std::endl;
+	o << "pres_" << elem.ContextID() << "(" << elem.Fact() << ") v abs_" << elem.ContextID() << "(" << elem.Fact() << ")." << std::endl;
 	// 7.) i.e. OUTi, so Vo e OUTi add out_i(o)	
-	iny3 << "out_" << elem.ContextID() << "(" << elem.Fact() << ")." << std::endl;
+	o << "out_" << elem.ContextID() << "(" << elem.Fact() << ")." << std::endl;
 	// 10.) saturate on spoil	
-	iny4 << "pres_" << elem.ContextID() << "(" << elem.Fact() << ") :- spoil." << std::endl;
-	iny5 << "abs_" << elem.ContextID() << "(" << elem.Fact() << ") :- spoil." << std::endl;
+	o << "pres_" << elem.ContextID() << "(" << elem.Fact() << ") :- spoil." << std::endl;
+	o << "abs_" << elem.ContextID() << "(" << elem.Fact() << ") :- spoil." << std::endl;
 	//9.) spoil if our guesses are wrong by themselves.
-	iny6 << "spoil :- pres_" << elem.ContextID() << "(" << elem.Fact() << "), " << "abs_" << elem.ContextID() << "(" << elem.Fact() << ")." 
+	o << "spoil :- pres_" << elem.ContextID() << "(" << elem.Fact() << "), " << "abs_" << elem.ContextID() << "(" << elem.Fact() << ")." 
 		<< std::endl;
 
      }
-	iny1 << ".";
-
-	// 4.) derive applicable rule heads
-	o << iny1.str() << std::endl;
-	// 3.) guess a belief state, every a e Outi
-	o << iny2.str();
-	// 7.) i.e. OUTi, so Vo e OUTi add out_i(o)	
-	o << iny3.str();
-	// 10.) saturate on spoil	
-	o << iny4.str();
-	o << iny5.str();
-	//9.) spoil if our guesses are wrong by themselves.
-	o << iny6.str();
-
-
-
 
 	// 5.) derive heads of unconditional rules.
 	o << "in_" << br.head.ContextID() << "(" << br.head.Fact() << ") :- r2(" << br.ruleid << ")." << std::endl;
