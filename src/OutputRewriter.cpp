@@ -515,8 +515,7 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
 				if (!Globals::Instance()->getOption("Silent")) {
 					stream << std::endl;
 				}
-	    		} //end for
-	  		
+	    		} //end for	  		
 	        }//if isminDiag
 
 
@@ -553,8 +552,12 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
   }
 
 
-  if (results.empty())
-    return;
+  if (results.empty()){
+	if ((Global::getInstance())->isDiag() || (Global::getInstance())->isminDiag()) {
+		stream << "Dm:({},{})" << std::endl;
+	}
+	return;
+  }
 }
 }//namespace mcsdiagexpl
 }//namespace dlvhex
