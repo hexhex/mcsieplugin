@@ -25,7 +25,7 @@
 /**
  * @file   	Converter.cpp
  * @author 	Markus Boegl
- * refactored 	Gerald Weidinger
+ * @author 	Gerald Weidinger
  * @date   	Sun Jan 08 13:34:29 2011
  * 
  * @brief  	Converts the Input file when calculating over Diagnosis

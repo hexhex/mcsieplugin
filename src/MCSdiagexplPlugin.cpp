@@ -25,7 +25,7 @@
 /**
  * @file   MCSequilibriumPlugin.cpp
  * @author Markus Boegl
- * @extended Gerald Weidinger
+ * @author Gerald Weidinger
  * @date   Sun Dez 24 13:45:07 2010
  * 
  * @brief  Main Class of dlvhex-mcs-equilibrium-plugin

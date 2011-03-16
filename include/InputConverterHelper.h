@@ -25,7 +25,7 @@
 /**
  * @file   	QiConverter.h
  * @author 	Markus Boegl
- * @Refactored 	Gerald Weidinger
+ * @author 	Gerald Weidinger
  * @date   	Sun Jan 24 13:34:49 2010
  * 
  * @brief  Converts the Input file

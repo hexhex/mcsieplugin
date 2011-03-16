@@ -25,7 +25,7 @@
 /**
  * @file   	Converter.cpp
  * @author 	Markus Boegl
- * @refactored 	Gerad Weidinger
+ * @author 	Gerad Weidinger
  * @date   	Sun Jan 08 13:34:29 2011
  * 
  * @brief  serial Interface with DLV, converts the Inputfile with the Help of: InputConverterExplanations.cpp and InputConverterDiagnosis.cpp
@@ -76,6 +76,12 @@ namespace dlvhex {
      if (!Global::getInstance()->isCalculationOverExplanations()){
 	InputConverterDiagnosis::getInstance()->convertParseTreeToDLVProgram(*info.trees.begin(), ss);
      }else{
+	if (Global::getInstance()->isDiag()){
+		//The calculation over explanations produces a superset of the actual diagnosis. some of the contained tuples may not be diagnosis.
+		//If you want to print out the found superset remove this code, and enable the output code for diaagnosis in Outputrewriter.cpp
+		std::cout << "A calculation over explanations cannot produce D, please choose an other value for parameter --ieexplain!" << std::endl;
+		exit(0);
+	}
 	InputConverterExplanations::getInstance()->convertParseTreeToDLVProgram(*info.trees.begin(), ss);	
      }
 

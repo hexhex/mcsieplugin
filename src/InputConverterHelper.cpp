@@ -25,7 +25,7 @@
 /**
  * @file   	InputConverterHelper.cpp
  * @author 	Markus Boegl
- * @refactored 	Gerald Weidinger
+ * @author 	Gerald Weidinger
  * @date   	Sun Feb 25 13:34:29 2011
  * 
  * @brief  Contains Methods which are used for both classes: InputConverterExplanations and InputConverterExplanations

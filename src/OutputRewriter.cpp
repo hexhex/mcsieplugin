@@ -25,7 +25,7 @@
 /**
  * @file   	OutputRewriter.cpp
  * @author 	Markus Boegl
- * @extended 	Gerald Weidinger
+ * @author 	Gerald Weidinger
  * @date   	Sun Jan 08 13:40:01 2011
  * 
  * @brief  OutputBuilder to write the Answersets as Equilibria
@@ -229,19 +229,18 @@ OutputRewriter::getDiagnosis(ResultList& minExp) {
   ss << "d2(R) v nd2(R) :- rule(R)." << std::endl;
   ss << ":- d1(R), d2(R).";
   ss << ":- not d1OK, not d2OK." << std::endl;
-	while (!(Global::getInstance())->getRuleList().empty())
-	// for every bridge rule we create a predicate rule(br).
-  	{    		
-		ss << "rule(" << (Global::getInstance())->getRuleList().front() << ")." << std::endl;
-    		(Global::getInstance())->getRuleList().pop_front();
-  	}
+  while (!(Global::getInstance())->getRuleList().empty()) {
+	// for every bridge rule we create a predicate rule(br).    		
+	ss << "rule(" << (Global::getInstance())->getRuleList().front() << ")." << std::endl;
+    	(Global::getInstance())->getRuleList().pop_front();
+  }
 
-std::stringstream ssD1ok, ssD2ok;
+  std::stringstream ssD1ok, ssD2ok;
   int i = 0;
   std::stringstream rulestream, guessstream;
 
-	ssD1ok << "d1OK :- ";
-	ssD2ok << "d2OK :- ";
+  ssD1ok << "d1OK :- ";
+  ssD2ok << "d2OK :- ";
 
   for(ResultList::const_iterator rit = minExp.begin(); rit != minExp.end(); ++rit) {
 	i++;
@@ -271,12 +270,12 @@ std::stringstream ssD1ok, ssD2ok;
 
   }
 
-	ssD1ok << "." << std::endl;
-	ssD2ok << ".";
-	ss << ssD1ok.str();
-	ss << ssD2ok.str();
+  ssD1ok << "." << std::endl;
+  ssD2ok << ".";
+  ss << ssD1ok.str();
+  ss << ssD2ok.str();
 
-driver.parse(ss, prog, asfact);
+  driver.parse(ss, prog, asfact);
 
   {
     typedef ASPSolverManager::SoftwareConfiguration<ASPSolver::DLVSoftware> DLVConfiguration;
@@ -518,8 +517,9 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
 	    		} //end for	  		
 	        }//if isminDiag
 
-
-		if ((Global::getInstance())->isDiag()) {
+		// The calculation over explanation produces a superset of the real diagnosis. if you want to output this supercet
+		// enable the following code. (And disable the code in Inputconverter.cpp which stops the program when D is set.
+		/*if ((Global::getInstance())->isDiag()) {
 			for (ResultContainer::result_t::const_iterator rit = diagsres.begin(); rit != diagsres.end(); ++rit) {
 				AtomSet d1, d2, normal;
 				(*rit)->matchPredicate("d1", d1);
@@ -534,7 +534,7 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
 					stream << std::endl;
 				}
 			}//end for
-		  } // end if Diagnose
+		  }*/ // end if Diagnose
 
 
 		
@@ -551,7 +551,7 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
 	stream << *Timing::getInstance();
   }
 
-
+  // if no explanation exists, the system is consistent and therefore the empty Diagnosis is the minimal one.
   if (results.empty()){
 	if ((Global::getInstance())->isDiag() || (Global::getInstance())->isminDiag()) {
 		stream << "Dm:({},{})" << std::endl;

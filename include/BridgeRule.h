@@ -25,7 +25,7 @@
 /**
  * @file   	BridgeRule.h
  * @author 	Markus Boegl
- * @Refactored 	Gerald Weidinger
+ * @author 	Gerald Weidinger
  * @date   	Sun Feb 24 13:32:05 2011
  * 
  * @brief  BridgeRule element for Parsing the Input file
