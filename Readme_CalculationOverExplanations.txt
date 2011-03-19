@@ -130,11 +130,13 @@ d2(R) v nd2(R) :- rule(R).
 //a bridgerule cannot be in d1 and d2 the same time
 :- d1(R), d2(R).
 
-//d1OK follows if the intersection of d1 with all E1 is empty
-d1OK :- inExpi_E1(Ri), d1(Ri).
+// for minimal explanations Exp1 to Eexpn, ensure we have a hitting set in E1:
+//d1OK follows if the intersection of d1 with some E1 is not empty
+d1OK :- inExp1_E1(R1), d1(R1), ..., inExpn_E1(Rn), d1(Rn). 
 
-//d2OK follows if the intersection of d2 with all E2 is empty
-d2OK :- inExpi_E2(Ri), d2(Ri).
+// for minimal explanations Exp1 to Eexpn, ensure we have a hitting set in E2:
+//d2OK follows if the intersection of d2 with some E2 is not empty
+d2OK :- inExp1_E2(R1), d2(R1), ..., inExpn_E2(Rn), d2(Rn).
 
 //if neither d1OK nor d2OK is calculated, it is no Diagnosis
 :- not d1OK, not d2OK. 
@@ -145,8 +147,8 @@ d2OK :- inExpi_E2(Ri), d2(Ri).
 
 In the calculation of the explanations following rules were used in the constructed DLV-Program.
 
-//for every bridgerule 
-r1(ri) :- e1(bi).
+//for every bridgerule bi 
+r1(bi) :- e1(bi).
 r1(bi) v nr1(bi) :- ne1(bi).
 r2(bi) v nr2(bi) :- ne2(bi).
 
