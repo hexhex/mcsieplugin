@@ -1,7 +1,7 @@
 AC_PREREQ(2.61)
 
-# main author: markus.boegl@student.tuwien.ac.at
-AC_INIT([dlvhex-mcsieplugin],[1.7.1],[ps@kr.tuwien.ac.at])
+# main author of original plugin: markus.boegl@student.tuwien.ac.at
+AC_INIT([dlvhex-mcsieplugin],[2.0.0],[ps@kr.tuwien.ac.at])
 
 AC_CONFIG_SRCDIR([src/MCSdiagexplPlugin.cpp])
 
@@ -31,7 +31,7 @@ esac
 
 # Checks for programs.
 AC_PROG_CXX
-AC_PROG_CC
+AC_LANG([C++])
 
 # Checks for header files.
 AC_HEADER_DIRENT
@@ -41,14 +41,10 @@ AC_CHECK_HEADERS([sys/param.h])
 AC_HEADER_STDBOOL
 AC_C_CONST
 
-AC_PROG_LIBTOOL
 # Checks for library functions.
-#_LT_SET_OPTION([LT_INIT],[dlopen])
-#AC_DIAGNOSE([obsolete],[AC_LIBTOOL_DLOPEN: Remove this warning and the call to _LT_SET_OPTION when you
-#put the `dlopen' option into LT_INIT's first parameter.])
-
-AC_DISABLE_STATIC # we don't need a static lbrary
-#LT_INIT
+AC_LIBTOOL_DLOPEN # we build a module library
+AC_DISABLE_STATIC # we don't need a static library
+AC_PROG_LIBTOOL
 
 #
 # check for other libraries here
@@ -57,37 +53,50 @@ AC_DISABLE_STATIC # we don't need a static lbrary
 #
 # of course we need dlvhex itself!
 #
-PKG_CHECK_MODULES([DLVHEX], [dlvhex >= 1.7])
+PKG_CHECK_MODULES([DLVHEX], [dlvhex >= 2.0])
+_PKG_CONFIG([DLVHEX_USERPLUGINDIR], [variable=userplugindir], [dlvhex >= 2.0])
+_PKG_CONFIG([DLVHEX_SYSPLUGINDIR], [variable=sysplugindir], [dlvhex >= 2.0])
+_PKG_CONFIG([DLVHEX_BINDIR], [variable=bindir], [dlvhex >= 2.0])
+DLVHEX_USERPLUGINDIR=$pkg_cv_DLVHEX_USERPLUGINDIR
+DLVHEX_SYSPLUGINDIR=$pkg_cv_DLVHEX_SYSPLUGINDIR
+DLVHEX_BINDIR=$pkg_cv_DLVHEX_BINDIR
+AC_SUBST(DLVHEX_USERPLUGINDIR)
+AC_SUBST(DLVHEX_SYSPLUGINDIR)
+AC_SUBST(DLVHEX_BINDIR)
 
-# checking for boost libs
-BOOST_REQUIRE([1.41.0])
-BOOST_SMART_PTR
-BOOST_STRING_ALGO
-BOOST_TOKENIZER
+SAVE_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="$CPPFLAGS $DLVHEX_CFLAGS"
+AC_CHECK_HEADER([dlvhex/OnlineModelBuilder.hpp],,[AC_MSG_ERROR([Cannot find dlvhex headers!])])
+CPPFLAGS="$SAFE_CPPFLAGS"
 
-
-#
 # where the plugin will be installed by default.
 # running configure will take sysplugindir from dlvhex.pc,
 # running configure --enable-userinstall will take homeplugindir.
-#
-
 AC_ARG_ENABLE(userinstall, 
              [  --enable-userinstall    Install plugin into home directory],
-             [plugindir=$HOME/`pkg-config dlvhex --variable=userplugindir`],
-             [plugindir=`pkg-config dlvhex --variable=sysplugindir`]
+             [plugindir=$HOME/$DLVHEX_USERPLUGINDIR],
+             [plugindir=$DLVHEX_SYSPLUGINDIR]
              )
 AC_SUBST([plugindir])
+if test "x$plugindir" == "x"; then
+	AC_MSG_ERROR([Cannot determine nonempty value for plugindir!])
+fi
+
+# checking for boost libs
+BOOST_REQUIRE([1.43.0])
+BOOST_SMART_PTR
+BOOST_STRING_ALGO
+BOOST_TOKENIZER
 
 #
 # all needed makefiles
 #
 AC_CONFIG_FILES([
-           Makefile 
-           src/Makefile
-           include/Makefile
-	   testsuite/Makefile
-	   examples/Makefile
+  Makefile 
+  src/Makefile
+  include/Makefile
+  testsuite/Makefile
+  examples/Makefile
 ])
 
 AC_OUTPUT

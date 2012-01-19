@@ -46,10 +46,10 @@ namespace {\
 }\
 \
   extern "C"\
-  classname* PLUGINIMPORTFUNCTION() {\
+  void* PLUGINIMPORTFUNCTION() {\
     thePlugin.setPluginName(#classname);\
     thePlugin.setVersion(major,minor,micro);\
 \
-    return &thePlugin;\
+    return reinterpret_cast<void*>(&thePlugin);\
   }
 #endif //_CONTEXTINTERFACEPLUGIN_H_

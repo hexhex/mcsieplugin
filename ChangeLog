@@ -1,3 +1,8 @@
+2011-01-11  Peter Schueller <ps@kr.tuwien.ac.at>
+
+	* include/ContextInterfacePlugin.h: Workaround for clang issue (not sure
+	if gcc or clang bug). http://llvm.org/bugs/show_bug.cgi?id=8952
+
 2010-10-03  Peter Schueller <ps@kr.tuwien.ac.at>
 
 	* include/BaseContextAtom.h: Fixing bug with hardcoded
