@@ -23,44 +23,29 @@
 
 
 /**
- * @file   BaseContextPlugin.h
- * @author Markus Boegl
- * @date   Sun Jan 24 13:26:52 2010
+ * @file   ExplanationPrintVisitor.h
+ * @author Gerald Weidinger
+ * @date   Sun Jan 24 13:44:22 2010
  * 
- * @brief  Base Context Plugin Element
+ * @brief  PrintVisitor to go throught the Answersets and write as Equilibria when compoverexplnations i set
  */
-#ifndef _DLVHEX_MCSDIAGEXPL_BASECONTEXTPLUGIN_H
-#define _DLVHEX_MCSDIAGEXPL_BASECONTEXTPLUGIN_H
+#ifndef _DLVHEX_MCSDIAGEXPL_EXPLANATIONPRINTVISITOR_H_
+#define _DLVHEX_MCSDIAGEXPL_EXPLANATIONPRINTVISITOR_H_
 
-#include <dlvhex/PluginInterface.h>
-#include "SaturationMetaAtom.h"
+#include "dlvhex/PrintVisitor.h"
 
 namespace dlvhex {
   namespace mcsdiagexpl {
 
-    class BaseContextPlugin : public PluginInterface {
-      private:
-        AtomFunctionMap *a_int;
-
+    class ExplanationPrintVisitor : public RawPrintVisitor {
       public:
-        BaseContextPlugin() {};
+        explicit
+        ExplanationPrintVisitor(std::ostream&);
 
-	template <class type> void registerAtom() {
-           boost::shared_ptr<dlvhex::mcsdiagexpl::BaseContextAtom> atom(new type());
-           (*a_int)[(atom.get())->getExtAtomName()] = atom;
-	};
-
-	// User-Defined Atoms are registered in this Function
-	// use the registerAtom<AtomType>(); function above.
-	virtual void registerAtoms() = 0;
-
-	void getAtoms(AtomFunctionMap& a) {
-          a_int = &a;
-	  
-	  a["saturation_meta_context"]=boost::shared_ptr<PluginAtom> (new SaturationMetaAtom);
-	  registerAtoms();
-	};
+        /// outputs the Equilibrium in '{(a,b,c), (cd,bx)}' form
+        virtual void visit(const AtomSet* const);
     };
-  } // namespace mcsdiagexpl
-} // namespace dlvhex
-#endif // _DLVHEX_MCSDIAGEXPL_GENERICCONTEXTATOM_H
+  } // END namespace mcsdiagexpl
+} // END namespace dlvhex
+
+#endif // _DLVHEX_MCSDIAGEXPL_EXPLANATIONPRINTVISITOR_H_

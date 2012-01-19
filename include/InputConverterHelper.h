@@ -23,38 +23,46 @@
 
 
 /**
- * @file   	BridgeRule.h
+ * @file   	QiConverter.h
  * @author 	Markus Boegl
  * @author 	Gerald Weidinger
- * @date   	Sun Feb 24 13:32:05 2011
+ * @date   	Sun Jan 24 13:34:49 2010
  * 
- * @brief  BridgeRule element for Parsing the Input file
+ * @brief  Converts the Input file
  */
-#ifndef _DLVHEX_MCSDIAGEXPL_BRIDGERULE_H_
-#define _DLVHEX_MCSDIAGEXPL_BRIDGERULE_H_
+#ifndef _DLVHEX_MCSDIAGEXPL_INPUTCONVERTERHELPER_H_
+#define _DLVHEX_MCSDIAGEXPL_INPUTCONVERTERHELPER_H_
 
-#include "BridgeRuleEntry.h"
-#include <vector>
-#include <string>
+#include <dlvhex/PluginInterface.h>
+#include "InputParserDriver.h"
+#include "BridgeRule.h"
+#include "ParseContext.h"
 
 namespace dlvhex {
   namespace mcsdiagexpl {
 
-    class BridgeRule {
+    class InputConverterHelper  {
       public:
-	BridgeRule(bool f);
-        BridgeRule();
-        void setHeadRule(std::string rid, int cid, std::string f);
-	void addBodyRule(int id, std::string f, bool n);
+	~InputConverterHelper() {};
+	static InputConverterHelper* getInstance();
+	typedef boost::spirit::classic::node_val_data_factory<> factory_t;
+	typedef const char* iterator_t;
+	typedef boost::spirit::classic::tree_match<iterator_t, factory_t>::node_t node_t;
 
-        BridgeRuleEntry Head() const { return head; }
-        std::vector<BridgeRuleEntry> Body() const { return body; }
+	//virtual void convert(std::istream& i, std::ostream& o);
 
-        BridgeRuleEntry head;
-	std::vector<BridgeRuleEntry> body;
-	bool fact;
-	std::string ruleid;
-    }; // END class BridgeRule
+	std::vector<BridgeRule> bridgerules;
+	std::vector<ParseContext> context;
+	void convertBridgeRule(node_t& at, BridgeRule& brule);
+	void convertBridgeRuleFact(node_t& at, BridgeRule& brule);
+	void convertBridgeRuleElem(node_t& at, std::string& ruleid, int& contextid, std::string& fact);
+	void convertContext(node_t& at, ParseContext& context);
+
+	private:
+	    static InputConverterHelper *ich;
+
+    }; // END class InputConverter
   }  // END namespace mcsdiagexpl
 } // END namespace dlvhex
-#endif // _DLVHEX_MCSDIAGEXPL_BRIDGERULE_H_
+
+#endif // _DLVHEX_MCSDIAGEXPL_INPUTCONVERTER_H

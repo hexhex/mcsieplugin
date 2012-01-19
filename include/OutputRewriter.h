@@ -25,7 +25,8 @@
 /**
  * @file   OutputRewriter.h
  * @author Markus Boegl
- * @date   Sun Jan 24 13:40:51 2010
+ * @author Gerald Weidinger
+ * @date   Sun Feb 24 13:40:51 2011
  * 
  * @brief  OutputRewriter to extract diagnosis, output projected equilibria,
  *         calculate explanations and print them
@@ -49,6 +50,7 @@ namespace dlvhex {
     private:
       bool checkAddMinimalResult(ResultList& rs, AtomSet& d1, AtomSet& d2);
       std::vector<AtomSet> getExplaination(ResultList& minRes);
+      std::vector<AtomSet> getDiagnosis(ResultList& minExp);
 
     public:
       /// Dtor

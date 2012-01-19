@@ -31,6 +31,7 @@
  */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
+#include "Global.h"
 #endif /* HAVE_CONFIG_H */
 
 #include "EquilibriumPrintVisitor.h"
@@ -38,6 +39,7 @@
 #include "dlvhex/AtomSet.h"
 #include <iostream>
 #include <sstream>
+#include <list>
 
 //#define DEBUG
 
@@ -54,7 +56,8 @@ EquilibriumPrintVisitor::EquilibriumPrintVisitor(std::ostream& s)
 
 void
 EquilibriumPrintVisitor::visit(const AtomSet* const as)
-{
+{	
+
   // diagnosis output
   //typedef std::map<std::string, int> DiagMap;
   std::map<int, std::string> cmap;
@@ -85,9 +88,11 @@ EquilibriumPrintVisitor::visit(const AtomSet* const as)
 	std::string arg;
 	{
         	const Tuple& arguments = (*a)->getArguments();
-		assert(arguments.size() == 1);
+		//assert(arguments.size() == 1);
+		if(arguments.size()==1){
 		std::stringstream s; s << arguments[0];
 		arg = s.str();
+		}
 	}
 
 	// process pred
@@ -139,6 +144,7 @@ EquilibriumPrintVisitor::visit(const AtomSet* const as)
 
   } // if empty
 }//EquilibriumPrintVisitor::visit(AtomSet* const as)
+
 
 }//namespace mcsdiagexpl
 }//namespace dlvhex

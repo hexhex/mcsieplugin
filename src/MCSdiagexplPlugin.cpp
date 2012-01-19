@@ -25,7 +25,8 @@
 /**
  * @file   MCSequilibriumPlugin.cpp
  * @author Markus Boegl
- * @date   Sun Jan 24 13:45:07 2010
+ * @author Gerald Weidinger
+ * @date   Sun Dez 24 13:45:07 2010
  * 
  * @brief  Main Class of dlvhex-mcs-equilibrium-plugin
  */
@@ -64,6 +65,7 @@ MCSdiagexplPlugin::setupProgramCtx(dlvhex::ProgramCtx& pc) {
 		(Timing::getInstance())->begin();
 	}
     }
+    Global::getInstance()->setProgramCtx(pc);
 }
 
 OutputBuilder*
@@ -107,6 +109,9 @@ MCSdiagexplPlugin::registerAtoms() {
 	        out << " --iebenchmark           print time/call summary" << std::endl;
 	        out << " --ieuseKR2010rewriting  use (nearly always) slower rewriting technique" << std::endl
               << "                                 (as published in KR2010)" << std::endl;
+		
+		out << " --iecompoverex          Calculate Equilibria over Explanation not Diagnosis." << std::endl;
+
 		out << std::endl;
 	        return;
 	    }
@@ -173,6 +178,14 @@ MCSdiagexplPlugin::registerAtoms() {
 	        	found.push_back(it);
 	        	continue;
 	        }
+
+		o = it->find("--iecompoverex");
+	        if (o != std::string::npos) {
+			Global::getInstance()->setCalculationOverExplanations();
+	        	found.push_back(it);
+	        	continue;
+	        }
+
 	    }
 
 	    for (std::vector<std::vector<std::string>::iterator>::const_iterator it =

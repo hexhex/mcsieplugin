@@ -23,41 +23,45 @@
 
 
 /**
- * @file   ParseContext.h
- * @author Markus Boegl
- * @date   Sun Jan 24 13:47:00 2010
+ * @file   QiConverter.h
+ * @author Gerald Weidinger (refactored)
+ * @date   Sun Dez 28 13:34:49 2010
  * 
- * @brief  Context element for Parsing the Input file
+ * @brief  Converts the Input file for the calculation over dignosis.
  */
-#ifndef _DLVHEX_MCSDIAGEXPL_PARSECONTEXT_H_
-#define _DLVHEX_MCSDIAGEXPL_PARSECONTEXT_H_
+#ifndef _DLVHEX_MCSDIAGEXPL_INPUTCONVERTERDIAGNOSIS_H_
+#define _DLVHEX_MCSDIAGEXPL_INPUTCONVERTERDIAGNOSIS_H_
 
-#include <string>
+#include <dlvhex/PluginInterface.h>
+#include "InputParserDriver.h"
+#include "BridgeRule.h"
+#include "ParseContext.h"
+#include "InputConverterHelper.h"
 
 namespace dlvhex {
   namespace mcsdiagexpl {
 
-      class ParseContext {
-        private:
-          int contextnum;
-          std::string extatom;
-          std::string param;
+    class InputConverterDiagnosis {
+      public:
+	InputConverterDiagnosis() {};
+	static InputConverterDiagnosis* getInstance();
+	typedef boost::spirit::classic::node_val_data_factory<> factory_t;
+	typedef const char* iterator_t;
+	typedef boost::spirit::classic::tree_match<iterator_t, factory_t>::node_t node_t;
 
-        public:
-          ParseContext(int num, std::string e, std::string p);
-          ParseContext();
+	void convertParseTreeToDLVProgram(node_t& node, std::ostream& o);
 
-          int ContextNum() const { return contextnum; }
-          std::string ExtAtom() const { return extatom; }
-          std::string Param() const { return param; }
+      
+      private:
+	std::vector<BridgeRule> bridgerules;
+	std::vector<ParseContext> context;
+	static InputConverterDiagnosis *icd;
+	void writeProgram(std::ostream& o, BridgeRule br);
+	
+	
 
-      }; // END class Context
-
-        std::ostream&
-        operator<< (std::ostream&, const ParseContext&);
-
-	void EXOP(std::ostream& out, const ParseContext& context);
-
+    }; // END class InputConverter
   }  // END namespace mcsdiagexpl
 } // END namespace dlvhex
-#endif // _DLVHEX_MCSDIAGEXPL_PARSECONTEXT_H_
+
+#endif // _DLVHEX_MCSDIAGEXPL_INPUTCONVERTER_H

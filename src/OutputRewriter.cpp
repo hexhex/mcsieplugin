@@ -23,9 +23,10 @@
 
 
 /**
- * @file   OutputRewriter.cpp
- * @author Markus Boegl
- * @date   Sun Jan 24 13:40:01 2010
+ * @file   	OutputRewriter.cpp
+ * @author 	Markus Boegl
+ * @author 	Gerald Weidinger
+ * @date   	Sun Jan 08 13:40:01 2011
  * 
  * @brief  OutputBuilder to write the Answersets as Equilibria
  */
@@ -38,6 +39,7 @@
 #include "dlvhex/ResultContainer.h"
 #include "EquilibriumPrintVisitor.h"
 #include "DiagExplPrintVisitor.h"
+#include "ExplanationPrintVisitor.h"
 #include "Timing.h"
 #include "Global.h"
 #include "dlvhex/DLVProcess.h"
@@ -209,11 +211,90 @@ OutputRewriter::getExplaination(ResultList& minRes) {
   return as;
 }
 
+
+std::vector<AtomSet> 
+OutputRewriter::getDiagnosis(ResultList& minExp) {
+ std::stringstream ss;
+  std::vector<AtomSet> as;
+  HexParserDriver driver;
+  Program prog;
+  AtomSet asfact;
+  AtomSet d1,d2,normal;
+  Term e1 = Term("e1");
+  Term e2 = Term("e2");
+  Term rule = Term("rule");
+
+
+  ss << "d1(R) v nd1(R) :- rule(R)." << std::endl;
+  ss << "d2(R) v nd2(R) :- rule(R)." << std::endl;
+  ss << ":- d1(R), d2(R).";
+  ss << ":- not d1OK, not d2OK." << std::endl;
+  while (!(Global::getInstance())->getRuleList().empty()) {
+	// for every bridge rule we create a predicate rule(br).    		
+	ss << "rule(" << (Global::getInstance())->getRuleList().front() << ")." << std::endl;
+    	(Global::getInstance())->getRuleList().pop_front();
+  }
+
+  std::stringstream ssD1ok, ssD2ok;
+  int i = 0;
+  std::stringstream rulestream, guessstream;
+
+  ssD1ok << "d1OK :- ";
+  ssD2ok << "d2OK :- ";
+
+  for(ResultList::const_iterator rit = minExp.begin(); rit != minExp.end(); ++rit) {
+	i++;
+	//For each minimal Explanation
+	d1 = rit->get<0>(); // E1 of actual minExplanation
+	d2 = rit->get<1>(); // E2 of actual minExplanation
+
+	if (i != 1) {
+		ssD1ok << ", ";
+		ssD2ok << ", ";
+	}
+	ssD1ok << "inExp" << i << "_E1(R" << i <<"), d1(R" << i << ")";
+	ssD2ok << "inExp" << i << "_E2(R" << i <<"), d2(R" << i << ")";
+
+
+	for (AtomSet::const_iterator asit = d1.begin(); asit != d1.end(); ++asit) {
+	  //For each rule in E1 of actual Explanation
+	  Atom a1 = *asit;
+	  ss << "inExp" << i << "_E1(" << a1.getArguments() <<")." << std::endl;
+	}
+
+	for (AtomSet::const_iterator asit = d2.begin(); asit != d2.end(); ++asit) {
+	  //For each rule in E2 of actual xplanation
+	  Atom a1 = *asit;
+	  ss << "inExp" << i << "_E2(" << a1.getArguments() <<")." << std::endl;
+	}
+
+  }
+
+  ssD1ok << "." << std::endl;
+  ssD2ok << ".";
+  ss << ssD1ok.str();
+  ss << ssD2ok.str();
+
+  driver.parse(ss, prog, asfact);
+
+  {
+    typedef ASPSolverManager::SoftwareConfiguration<ASPSolver::DLVSoftware> DLVConfiguration;
+    DLVConfiguration dlv;
+    dlv.options.includeFacts = false;
+    ASPSolverManager::Instance().solve(dlv, prog, asfact, as);
+  }
+	
+
+  return as;
+}
+
+
 void
 OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
 {
   EquilibriumPrintVisitor epv(stream);
   DiagExplPrintVisitor dpv(stream);
+  ExplanationPrintVisitor xpv(stream);
 
   if((Timing::getInstance())->isActive()) {
 	(Timing::getInstance())->end();
@@ -226,8 +307,9 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
     {
       stream << std::endl;
     }
-
+  
   if (!results.empty()) {
+     if (!(Global::getInstance())->isCalculationOverExplanations()){
 	for (ResultContainer::result_t::const_iterator rit = results.begin(); rit != results.end(); ++rit) {
 		AtomSet d1, d2, normal;
 		(*rit)->matchPredicate("d1", d1);
@@ -320,7 +402,9 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
 		} //end for
 	    }// end if isminExp
 	  }//end if expl.size() > 0 
-	}
+
+	  } // end if !isminExp()	  
+
 
 	if ((Global::getInstance())->isminDiag()) {
 	///////////////////////////////////
@@ -368,8 +452,98 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
 			stream << std::endl;
 		}
 	    } // end for iterate minimalResults
-	} // END else if Printing diagnosis without equilibria
-  } // if result !emty
+	} // END else if Printing diagnosis without equilibria	
+    }else{ // Else compoverExplanations
+	for (ResultContainer::result_t::const_iterator rit = results.begin(); rit != results.end(); ++rit) {
+		AtomSet e1, e2, normal;
+		(*rit)->matchPredicate("e1", e1);
+		(*rit)->matchPredicate("e2", e2);
+
+
+		if ((Global::getInstance())->isExp()) {
+			std::cout << "E:";
+			(*rit)->accept(xpv);
+		}
+		if ((Global::getInstance())->isminExp() || (Global::getInstance())->isDiag() || (Global::getInstance())->isminDiag()) {
+			if (checkAddMinimalResult(minimalExpl,e1,e2)) {
+		  		minimalExpl.push_back(boost::make_tuple(e1,e2,*rit));	
+			}//end if checkAddMinimalResult
+		}
+
+	}
+
+	if ((Global::getInstance())->isminExp()) {
+		for(ResultList::const_iterator mxt = minimalExpl.begin(); mxt != minimalExpl.end(); ++mxt) {
+			std::cout << "Em:";			
+			(mxt)->get<2>()->accept(xpv);
+	     	}
+	}
+
+	if ((Global::getInstance())->isDiag() || (Global::getInstance())->isminDiag()) {
+		std::vector<AtomSet> diags = getDiagnosis(minimalExpl);
+	  if (diags.size() > 0) {
+	    ResultContainer* diagsrc = new ResultContainer();
+	    for (std::vector<AtomSet>::const_iterator asit = diags.begin(); asit!=diags.end(); ++asit) {
+		diagsrc->addSet(*asit);
+	    }//end for
+	    const ResultContainer::result_t& diagsres = diagsrc->getAnswerSets();
+
+
+		if ((Global::getInstance())->isminDiag()) {
+			///////////////////////////////////
+			//  Printing minimal diagnosis   //
+			//  with or without equilibria   //
+			///////////////////////////////////
+			for (ResultContainer::result_t::const_iterator rit = diagsres.begin(); rit != diagsres.end(); ++rit) {
+				// get minimal Diagnosis out of the result from getDiagnosis
+				AtomSet d1, d2;
+				(*rit)->matchPredicate("d1", d1);
+				(*rit)->matchPredicate("d2", d2);
+				if (checkAddMinimalResult(minimalResults,d1,d2)) {
+					minimalResults.push_back(boost::make_tuple(d1,d2,*rit));
+		  		} 
+			}
+
+			for(ResultList::const_iterator rit = minimalResults.begin(); rit != minimalResults.end(); ++rit) {
+				// print out minimal Diagnosis
+				stream << "Dm:";
+
+				rit->get<2>()->accept(dpv);
+				stream << std::endl;
+
+				if (!Globals::Instance()->getOption("Silent")) {
+					stream << std::endl;
+				}
+	    		} //end for	  		
+	        }//if isminDiag
+
+		// The calculation over explanation produces a superset of the real diagnosis. if you want to output this supercet
+		// enable the following code. (And disable the code in Inputconverter.cpp which stops the program when D is set.
+		/*if ((Global::getInstance())->isDiag()) {
+			for (ResultContainer::result_t::const_iterator rit = diagsres.begin(); rit != diagsres.end(); ++rit) {
+				AtomSet d1, d2, normal;
+				(*rit)->matchPredicate("d1", d1);
+				(*rit)->matchPredicate("d2", d2);
+			  	///////////////////////
+			  	// Print Diagnosis  //
+			  	/////////////////////
+			  	stream << "D:";
+				(*rit)->accept(dpv);
+				stream << std::endl;
+			  	if (!Globals::Instance()->getOption("Silent")) {
+					stream << std::endl;
+				}
+			}//end for
+		  }*/ // end if Diagnose
+
+
+		
+
+	   }//end if diag.size > 0
+	}// end if diag or mindiag	
+	
+    }// end if compoverex
+}//if result !empty
 
   if((Timing::getInstance())->isActive()) {
 	(Timing::getInstance())->stopPostProc();
@@ -377,10 +551,14 @@ OutputRewriter::buildResult(std::ostream& stream, const ResultContainer& facts)
 	stream << *Timing::getInstance();
   }
 
-  if (results.empty())
-    return;
+  // if no explanation exists, the system is consistent and therefore the empty Diagnosis is the minimal one.
+  if (results.empty()){
+	if ((Global::getInstance())->isDiag() || (Global::getInstance())->isminDiag()) {
+		stream << "Dm:({},{})" << std::endl;
+	}
+	return;
+  }
 }
-
 }//namespace mcsdiagexpl
 }//namespace dlvhex
 // vim:ts=8:

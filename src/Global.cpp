@@ -15,6 +15,8 @@
 namespace dlvhex {
   namespace mcsdiagexpl {
 
+	std::list<std::string> ruleList;
+
 	Global* Global::g = NULL;
 
 	Global*
@@ -28,7 +30,7 @@ namespace dlvhex {
 
 	void
 	Global::init(){
-		explanation = mindiag = minexpl = noprintopeq = diagnose = kr2010rewriting = rewritingEnabled = false;
+		explanation = mindiag = minexpl = noprintopeq = diagnose = kr2010rewriting = rewritingEnabled = calculationOverExplanations = false;
 	}
 
 	void
@@ -64,6 +66,20 @@ namespace dlvhex {
 	void
 	Global::setRewritingEnabled(bool value) {
 		rewritingEnabled = value;
+	}
+
+	void
+	Global::setCalculationOverExplanations() {
+		calculationOverExplanations = true;
+	}
+
+	void 
+	Global::setRuleList(std::list<std::string> rL){
+		ruleList = rL;
+	}
+	std::list<std::string> &
+	Global::getRuleList(){
+		return ruleList;
 	}
 
 	bool
@@ -106,6 +122,19 @@ namespace dlvhex {
 		return rewritingEnabled;
 	}
 
+	bool
+	Global::isCalculationOverExplanations() {
+		return calculationOverExplanations;
+	}
+
+      void
+      Global::setProgramCtx(ProgramCtx &pc) {
+	  this->pc=&pc;
+      }
+
+      ProgramCtx* Global::getProgramCtx() {
+	  return pc;
+      }
   }
 }
 

@@ -23,38 +23,44 @@
 
 
 /**
- * @file   	BridgeRule.h
- * @author 	Markus Boegl
- * @author 	Gerald Weidinger
- * @date   	Sun Feb 24 13:32:05 2011
+ * @file   QiConverter.h
+ * @author Gerald Weidinger (refactored)
+ * @date   Sun Dez 28 13:34:49 2010
  * 
- * @brief  BridgeRule element for Parsing the Input file
+ * @brief  Converts the Input file for the calculation over dignosis.
  */
-#ifndef _DLVHEX_MCSDIAGEXPL_BRIDGERULE_H_
-#define _DLVHEX_MCSDIAGEXPL_BRIDGERULE_H_
+#ifndef _DLVHEX_MCSDIAGEXPL_INPUTCONVERTEREXPLANATION_H_
+#define _DLVHEX_MCSDIAGEXPL_INPUTCONVERTEREXPLANATION_H_
 
-#include "BridgeRuleEntry.h"
-#include <vector>
-#include <string>
+#include <dlvhex/PluginInterface.h>
+#include "InputParserDriver.h"
+#include "BridgeRule.h"
+#include "ParseContext.h"
+#include "InputConverterHelper.h"
+#include "Global.h"
 
 namespace dlvhex {
   namespace mcsdiagexpl {
 
-    class BridgeRule {
+    class InputConverterExplanations {
       public:
-	BridgeRule(bool f);
-        BridgeRule();
-        void setHeadRule(std::string rid, int cid, std::string f);
-	void addBodyRule(int id, std::string f, bool n);
+	InputConverterExplanations() {};
+	static InputConverterExplanations* getInstance();
+	typedef boost::spirit::classic::node_val_data_factory<> factory_t;
+	typedef const char* iterator_t;
+	typedef boost::spirit::classic::tree_match<iterator_t, factory_t>::node_t node_t;
 
-        BridgeRuleEntry Head() const { return head; }
-        std::vector<BridgeRuleEntry> Body() const { return body; }
+	void convertParseTreeToDLVProgram(node_t& node, std::ostream& o);
+      
+      private:
+	std::vector<BridgeRule> bridgerules;
+	std::vector<ParseContext> context;
+	static InputConverterExplanations *ice;
+	void writeProgram(std::ostream& o, BridgeRule br);
+	
 
-        BridgeRuleEntry head;
-	std::vector<BridgeRuleEntry> body;
-	bool fact;
-	std::string ruleid;
-    }; // END class BridgeRule
+    }; // END class InputConverter
   }  // END namespace mcsdiagexpl
 } // END namespace dlvhex
-#endif // _DLVHEX_MCSDIAGEXPL_BRIDGERULE_H_
+
+#endif // _DLVHEX_MCSDIAGEXPL_INPUTCONVERTER_H

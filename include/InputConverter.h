@@ -23,9 +23,10 @@
 
 
 /**
- * @file   QiConverter.h
- * @author Markus Boegl
- * @date   Sun Jan 24 13:34:49 2010
+ * @file   	QiConverter.h
+ * @author 	Markus Boegl
+ * @author 	Gerald Weidinger
+ * @date   	Sun Feb 24 13:34:49 2011
  * 
  * @brief  Converts the Input file
  */
@@ -48,14 +49,6 @@ namespace dlvhex {
 	typedef boost::spirit::classic::tree_match<iterator_t, factory_t>::node_t node_t;
 
 	virtual void convert(std::istream& i, std::ostream& o);
-      private:
-	std::vector<BridgeRule> bridgerules;
-	std::vector<ParseContext> context;
-	void convertParseTreeToDLVProgram(node_t& node, std::ostream& o);
-	void convertBridgeRule(node_t& at, BridgeRule& brule);
-	void convertBridgeRuleFact(node_t& at, BridgeRule& brule);
-	void convertBridgeRuleElem(node_t& at, std::string& ruleid, int& contextid, std::string& fact);
-	void convertContext(node_t& at, ParseContext& context);
     }; // END class InputConverter
   }  // END namespace mcsdiagexpl
 } // END namespace dlvhex
