@@ -1,3 +1,7 @@
+2011-03-19  xiriel
+
+	Implementation of Saturation Encoding for calculating explanations.
+
 2011-01-11  Peter Schueller <ps@kr.tuwien.ac.at>
 
 	* include/ContextInterfacePlugin.h: Workaround for clang issue (not sure
@@ -99,6 +103,10 @@
 2010-06-15  Thomas Krennwallner  <tkren@kr.tuwien.ac.at>
 
 	* configure.ac (BOOST_REQUIRE): Require boost >= 1.41.
+
+2010-05-03  Markus Boegl <markus.boegl@student.tuwien.ac.at>
+
+	Initial version.
 
 2010-04-23  Thomas Krennwallner  <tkren@kr.tuwien.ac.at>
 

@@ -1,21 +1,13 @@
 AC_PREREQ(2.61)
-
-# main author of original plugin: markus.boegl@student.tuwien.ac.at
-AC_INIT([dlvhex-mcsieplugin],[2.0.0],[ps@kr.tuwien.ac.at])
-
+AC_INIT([dlvhex-mcsieplugin],[2.0.0],[dlvhex-devel@lists.sourceforge.net])
 AC_CONFIG_SRCDIR([src/MCSdiagexplPlugin.cpp])
-
 AC_CONFIG_HEADERS([src/config.h])
+
 AC_CONFIG_MACRO_DIR([m4])
-
-MAJOR=`echo $PACKAGE_VERSION | sed "s/^\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/"`
-MINOR=`echo $PACKAGE_VERSION | sed "s/^\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/"`
-MICRO=`echo $PACKAGE_VERSION | sed "s/^\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/"`
-
-AC_DEFINE_UNQUOTED([MCSDIAGEXPLPLUGIN_MAJOR], [$MAJOR], [Major version number of the mcsie-plugin])
-AC_DEFINE_UNQUOTED([MCSDIAGEXPLPLUGIN_MINOR], [$MINOR], [Minor version number of the mcsie-plugin])
-AC_DEFINE_UNQUOTED([MCSDIAGEXPLPLUGIN_MICRO], [$MICRO], [Micro version number of the mcsie-plugin])
-
+# for documentation of the versioning scheme see
+# https://sourceforge.net/apps/trac/dlvhex/wiki/LibraryVersions
+DLVHEX_DEFINE_VERSION([MCSIEPLUGIN],[$PACKAGE_VERSION])
+DLVHEX_DEFINE_VERSION([DLVHEX_ABI],[7.0.0])
 
 AM_INIT_AUTOMAKE
 
@@ -50,24 +42,8 @@ AC_PROG_LIBTOOL
 # check for other libraries here
 #
 
-#
-# of course we need dlvhex itself!
-#
-PKG_CHECK_MODULES([DLVHEX], [dlvhex >= 2.0])
-_PKG_CONFIG([DLVHEX_USERPLUGINDIR], [variable=userplugindir], [dlvhex >= 2.0])
-_PKG_CONFIG([DLVHEX_SYSPLUGINDIR], [variable=sysplugindir], [dlvhex >= 2.0])
-_PKG_CONFIG([DLVHEX_BINDIR], [variable=bindir], [dlvhex >= 2.0])
-DLVHEX_USERPLUGINDIR=$pkg_cv_DLVHEX_USERPLUGINDIR
-DLVHEX_SYSPLUGINDIR=$pkg_cv_DLVHEX_SYSPLUGINDIR
-DLVHEX_BINDIR=$pkg_cv_DLVHEX_BINDIR
-AC_SUBST(DLVHEX_USERPLUGINDIR)
-AC_SUBST(DLVHEX_SYSPLUGINDIR)
-AC_SUBST(DLVHEX_BINDIR)
-
-SAVE_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="$CPPFLAGS $DLVHEX_CFLAGS"
-AC_CHECK_HEADER([dlvhex/OnlineModelBuilder.hpp],,[AC_MSG_ERROR([Cannot find dlvhex headers!])])
-CPPFLAGS="$SAFE_CPPFLAGS"
+# check for dlvhex, sets various variables
+DLVHEX_REQUIRE([2.0.0])
 
 # where the plugin will be installed by default.
 # running configure will take sysplugindir from dlvhex.pc,
@@ -101,3 +77,25 @@ AC_CONFIG_FILES([
 
 AC_OUTPUT
 
+dnl output configuration
+cat <<EOF
+ 
+$PACKAGE_TARNAME $PACKAGE_VERSION configuration:
+
+ - Compiler settings
+ CC: $CC
+ CXX: $CXX
+ CFLAGS: $CFLAGS
+ CPPFLAGS: $CPPFLAGS
+ CXXFLAGS: $CXXFLAGS
+ LDFLAGS: $LDFLAGS
+
+ - from pkg-config
+ DLVHEX_CFLAGS: $DLVHEX_CFLAGS
+ DLVHEX_LIBS: $DLVHEX_LIBS
+ DLVHEX_BINDIR: $DLVHEX_BINDIR
+ 
+ - Path settings
+ prefix: $prefix
+ plugindir: $plugindir
+EOF
