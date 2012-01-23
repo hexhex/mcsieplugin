@@ -1,4 +1,8 @@
-2011-03-19  xiriel
+2012-01-XX  Peter Schueller <ps@kr.tuwien.ac.at>
+
+	Porting to dlvhex 2.0.0.
+
+2011-03-19  xiriel TODO
 
 	Implementation of Saturation Encoding for calculating explanations.
 
@@ -6,6 +10,11 @@
 
 	* include/ContextInterfacePlugin.h: Workaround for clang issue (not sure
 	if gcc or clang bug). http://llvm.org/bugs/show_bug.cgi?id=8952
+
+2010-10-03  Peter Schueller <ps@kr.tuwien.ac.at>
+
+	* include/BaseContextAtom.h: Fixing bug with hardcoded
+	input predicate names.
 
 2010-10-03  Peter Schueller <ps@kr.tuwien.ac.at>
 

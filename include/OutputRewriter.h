@@ -35,10 +35,6 @@
 #define _DLVHEX_MCSDIAGEXPL_OUTPUTREWRITER_H_
 
 #include "dlvhex/OutputBuilder.h"
-#include <boost/tuple/tuple.hpp>
-#include <boost/tuple/tuple_comparison.hpp>
-#include "dlvhex/AtomSet.h"
-
 
 namespace dlvhex {
   namespace mcsdiagexpl {
@@ -53,15 +49,14 @@ namespace dlvhex {
       std::vector<AtomSet> getDiagnosis(ResultList& minExp);
 
     public:
-      /// Dtor
-      virtual
-      ~OutputRewriter() {};
-
-      /// Ctor
       OutputRewriter() {};
+      virtual ~OutputRewriter() {};
 
-      virtual void
-      buildResult(std::ostream&, const ResultContainer&);
+      virtual void buildResult(
+          std::ostream& out, ResultsPtr results);
+
+      virtual void printEQ(
+          std::ostream& out, InterpretationConstPtr interpretation) const;
    };
 
   } // END namespace mcsdiagexpl
