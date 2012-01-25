@@ -8,7 +8,7 @@ LIBLDLVHEXMCSDIAGEXPL_HDRS = \
 pkginclude_HEADERS = $(LIBLDLVHEXMCSDIAGEXPL_HDRS)
 
 noinst_HEADERS = \
-		 MCSdiagexplPlugin.h \
+		 MCSIEPlugin.h \
 		 InputConverter.h \
 		 InputParserDriver.h \
 		 BridgeRule.h \
@@ -20,7 +20,6 @@ noinst_HEADERS = \
 		 DiagExplPrintVisitor.h \
 		 ExplanationPrintVisitor.h \
 		 Timing.h \
-		 Global.h \
 		 InputConverterHelper.h \
 		 InputConverterDiagnosis.h \
 		 InputConverterExplanations.h

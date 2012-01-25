@@ -23,8 +23,9 @@
 
 
 /**
- * @file   MCSequilibriumPlugin.h
+ * @file   MCSIEPlugin.h
  * @author Markus Boegl
+ * @author Peter Schueller
  * @date   Sun Jan 24 13:45:57 2010
  * 
  * @brief  Main Class of dlvhex-mcs-equilibrium-plugin
@@ -32,36 +33,52 @@
 #ifndef _DLVHEX_MCSDIAGEXPL_MCSEQUILIBRIUMPLUGIN_H_
 #define _DLVHEX_MCSDIAGEXPL_MCSEQUILIBRIUMPLUGIN_H_
 
-#include <dlvhex/ProgramCtx.h>
-#include "InputConverter.h"
-#include "OutputRewriter.h"
-#include "DLV_ASP_ContextAtom.h"
+//#include <dlvhex2/ProgramCtx.h>
+//#include "InputConverter.h"
+//#include "ProgramCtxData.h"
 #include "BaseContextPlugin.h"
-#include "Timing.h"
-#include "SaturationMetaAtom.h"
+//#include "OutputRewriter.h"
+//#include "DLV_ASP_ContextAtom.h"
+//#include "Timing.h"
+//#include "SaturationMetaAtom.h"
 
 namespace dlvhex {
-  namespace mcsdiagexpl {
+namespace mcsdiagexpl {
 	
-    class MCSdiagexplPlugin : public BaseContextPlugin {
-	private:
-	  InputConverter* mcseconverter;
-	  OutputBuilder* equilibriumOB;
-	  MCSdiagexplPlugin(const MCSdiagexplPlugin&);
-	  AtomFunctionMap *afm;
-	  bool bench;
+class MCSIEPlugin:
+  public BaseContextPlugin
+{
+  /*
+private:
+  InputConverter* mcseconverter;
+  OutputBuilder* equilibriumOB;
+  MCSIEPlugin(const MCSIEPlugin&);
+  AtomFunctionMap *afm;
+  bool bench;
 
-	public:
-	  MCSdiagexplPlugin();
-	  ~MCSdiagexplPlugin();
-	  virtual void setupProgramCtx(ProgramCtx& pc);
-	  virtual OutputBuilder* createOutputBuilder();
-	  virtual PluginConverter* createConverter();
-	  virtual void registerAtoms();
-	  virtual void setOptions(bool doHelp, std::vector<std::string>& argv, std::ostream& out);
-	
-    }; // END class MCSdiagexplPlugin
-  } // END namespace mcsdiagexpl
+  */
+public:
+  MCSIEPlugin();
+  virtual ~MCSIEPlugin();
+
+  virtual void registerAtoms(ProgramCtxData& pcd) const;
+  // we do not only provide context atoms, so we also need to override the following
+  virtual std::vector<PluginAtomPtr> createAtoms(ProgramCtx& ctx) const;
+
+  virtual void printUsage(std::ostream& o) const;
+  virtual void processOptions(std::list<const char*>& pluginOptions, ProgramCtx& ctx);
+  /*
+  virtual void setupProgramCtx(ProgramCtx& pc);
+  virtual OutputBuilder* createOutputBuilder();
+  virtual PluginConverter* createConverter();
+  virtual void setOptions(bool doHelp, std::vector<std::string>& argv, std::ostream& out);
+  */
+
+};
+
+} // END namespace mcsdiagexpl
 } // END namespace dlvhex
 
 #endif // _DLVHEX_MCSDIAGEXPL_MCSEQUILIBRIUMPLUGIN_H_
+
+// vim:ts=8:

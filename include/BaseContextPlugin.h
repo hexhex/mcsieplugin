@@ -21,7 +21,6 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
 /**
  * @file   BaseContextPlugin.h
  * @author Markus Boegl
@@ -32,35 +31,40 @@
 #ifndef _DLVHEX_MCSDIAGEXPL_BASECONTEXTPLUGIN_H
 #define _DLVHEX_MCSDIAGEXPL_BASECONTEXTPLUGIN_H
 
-#include <dlvhex/PluginInterface.h>
-#include "SaturationMetaAtom.h"
+#include "BaseContextAtom.h"
+#include "ProgramCtxData.h"
+
+#include <dlvhex2/PluginInterface.h>
 
 namespace dlvhex {
-  namespace mcsdiagexpl {
+namespace mcsdiagexpl {
 
-    class BaseContextPlugin : public PluginInterface {
-      private:
-        AtomFunctionMap *a_int;
+// base class for plugins that implement MCS contexts for MCSIE
+class BaseContextPlugin:
+  public PluginInterface
+{
+public:
+  BaseContextPlugin();
+  virtual ~BaseContextPlugin();
 
-      public:
-        BaseContextPlugin() {};
+  // User-Defined Atoms are registered in this Function
+  // use the registerAtom<AtomType>(pcd); function below.
+  virtual void registerAtoms(ProgramCtxData& pcd) const = 0;
 
-	template <class type> void registerAtom() {
-           boost::shared_ptr<dlvhex::mcsdiagexpl::BaseContextAtom> atom(new type());
-           (*a_int)[(atom.get())->getExtAtomName()] = atom;
-	};
+  // plugin writers call this to register context atoms
+  template<typename ContextAtomT>
+  void registerAtom(ProgramCtxData& pcd) const
+  {
+    pcd.getContextAtoms().push_back(ContextAtomPtr(new ContextAtomT));
+  };
 
-	// User-Defined Atoms are registered in this Function
-	// use the registerAtom<AtomType>(); function above.
-	virtual void registerAtoms() = 0;
+  // overwrite this if you want to add more than only context atoms
+  std::vector<PluginAtomPtr> createAtoms(ProgramCtx& ctx) const;
+};
 
-	void getAtoms(AtomFunctionMap& a) {
-          a_int = &a;
-	  
-	  a["saturation_meta_context"]=boost::shared_ptr<PluginAtom> (new SaturationMetaAtom);
-	  registerAtoms();
-	};
-    };
-  } // namespace mcsdiagexpl
+} // namespace mcsdiagexpl
 } // namespace dlvhex
+
 #endif // _DLVHEX_MCSDIAGEXPL_GENERICCONTEXTATOM_H
+
+// vim:ts=8:

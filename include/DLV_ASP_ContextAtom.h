@@ -41,7 +41,7 @@ namespace dlvhex {
 
       public:
         DLV_ASP_ContextAtom() : BaseContextAtom("dlv_asp_context_acc") {};
-        void retrieve(const Query& query, Answer& answer) throw (PluginError);
+        void retrieve(const Query& query, Answer& answer);
     };
 
   } // namespace mcsdiagexpl

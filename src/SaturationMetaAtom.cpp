@@ -2,6 +2,7 @@
  * Calculate Equilibrium Semantics of Multi Context Systems in dlvhex
  *
  * Copyright (C) 2010  Antonius Weinzierl
+ * Copyright (C) 2012  Peter Schueller
  * 
  * This file is part of dlvhex-mcs-equilibrium-plugin.
  *
@@ -25,6 +26,7 @@
 /**
  * @file   SaturationMetaAtom.cpp
  * @author Antonius Weinzierl
+ * @author Peter Schueller
  * 
  * @brief  Meta atom for saturation encoding, can query other external atoms
  */
@@ -32,10 +34,12 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#include "Timing.h"
-#include "Global.h"
 #include "SaturationMetaAtom.h"
-#include <dlvhex/PluginContainer.h>
+//#include "Timing.h"
+//#include "Global.h"
+
+#include <dlvhex2/PluginInterface.h>
+
 #include <boost/algorithm/string.hpp>
 
 
@@ -43,8 +47,10 @@ namespace dlvhex {
   namespace mcsdiagexpl {
       
 
-      void SaturationMetaAtom::retrieve(const Query& query, Answer& answer) throw (PluginError) {
+      void SaturationMetaAtom::retrieve(const Query& query, Answer& answer) {
 	  // check if saturation is the case
+        throw std::runtime_error("todo implement SaturationMetaAtom::retrieve");
+        #if 0
 	  const std::string& sat_pred = query.getInputTuple()[1].getUnquotedString();
 	  AtomSet interpretation = query.getInterpretation();
 	  AtomSet saturation;
@@ -54,6 +60,7 @@ namespace dlvhex {
 	      // saturation is not the case, check if context is consistent
 
 	      // find the external atom of the context
+            // TODO the contextname is the name of the context processing atom?
 	      std::string contextname = query.getInputTuple()[0].getUnquotedString();
 	      boost::shared_ptr<PluginAtom> pa=Global::getInstance()->
 		  getProgramCtx()->getPluginContainer()->getAtom(contextname);
@@ -74,9 +81,11 @@ namespace dlvhex {
 	      // saturation is the case, signal that context is inconsistent
 	      // by adding no tuple to &answer
 	  }
+          #endif
       }
       
 
 
   } // namespace mcsequilibrium
 } // namespace dlvhex
+// vim:ts=8:

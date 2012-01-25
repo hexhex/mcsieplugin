@@ -21,10 +21,10 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
 /**
  * @file   BaseContextAtom.h
  * @author Markus Boegl
+ * @author Peter Schueller
  * @date   Sun Jan 24 13:25:02 2010
  * 
  * @brief  Base Context Plugin Atom Element
@@ -32,75 +32,38 @@
 #ifndef _DLVHEX_MCSDIAGEXPL_BASECONTEXTATOM_H
 #define _DLVHEX_MCSDIAGEXPL_BASECONTEXTATOM_H
 
-#include <dlvhex/PluginInterface.h>
-#include <dlvhex/PluginInterface.h>
-#include <sstream>
+#include <dlvhex2/PluginInterface.h>
+
+#include <boost/shared_ptr.hpp>
 
 namespace dlvhex {
-  namespace mcsdiagexpl {
+namespace mcsdiagexpl {
 
-    class BaseContextAtom : public PluginAtom {
-;
+class BaseContextAtom:
+  public PluginAtom
+{
+public:
+  BaseContextAtom(std::string name):
+    PluginAtom(name, false)
+  {
+    addInputConstant();
+    addInputPredicate();
+    addInputPredicate();
+    addInputPredicate();
+    addInputConstant();
+    setOutputArity(0);
+  }
 
-      protected:
-	int context_id;
+  virtual ~BaseContextAtom() { }
 
-      public:
-        BaseContextAtom(std::string name):
-          PluginAtom(name, false),
-          context_id(-1) {
-          addInputConstant();
-          addInputPredicate();
-          addInputPredicate();
-          addInputPredicate();
-          addInputConstant();
-          setOutputArity(0);
-        }
+  virtual void retrieve(const Query& query, Answer& answer) = 0;
+};
+typedef boost::shared_ptr<BaseContextAtom>
+        ContextAtomPtr;
 
-        virtual void retrieve(const Query& query, Answer& answer) throw (PluginError) = 0;
-
-      protected:
-        #if 0
-        void
-        convertAtomSetToStringSet(AtomSet& as, std::set<std::string>& sset) {
-          for (AtomSet::const_iterator ai = as.begin(); ai != as.end(); ++ai) {
-            sset.insert(((*ai).getArgument(1)).getString());
-          }
-        }
-
-        void
-        convertQueryToStringSets( const Query& query,
-                                  std::set<std::string>& aset, 
-                                  std::set<std::string>& bset, 
-                                  std::set<std::string>& oset) 
-        throw (PluginError) {
-
-          int cid = query.getInputTuple()[0].getInt();
-	  context_id = cid;
-
-          const std::string& ai_match = query.getInputTuple()[1].getString();
-          const std::string& bi_match = query.getInputTuple()[2].getString();
-          const std::string& oi_match = query.getInputTuple()[3].getString();
-
-          AtomSet input = query.getInterpretation();
-
-          AtomSet a;
-          input.matchPredicate(ai_match,a);
-          AtomSet b;
-          input.matchPredicate(bi_match,b);
-          AtomSet o;
-          input.matchPredicate(oi_match,o);
-
-          convertAtomSetToStringSet(a,aset);
-          convertAtomSetToStringSet(b,bset);
-          convertAtomSetToStringSet(o,oset);
-
-        }
-
-        #endif
-    };
-
-  } // namespace mcsdiagexpl
+} // namespace mcsdiagexpl
 } // namespace dlvhex
 
 #endif // _DLVHEX_MCSDIAGEXPL_BASECONTEXTATOM_H
+
+// vim:ts=8:sw=2:

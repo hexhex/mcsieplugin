@@ -1,7 +1,8 @@
-/* dlvhex-mcs-equilibrium-plugin
- * Calculate Equilibrium Semantics of Multi Context Systems in dlvhex
- *
- * Copyright (C) 2009,2010  Markus Boegl
+/* dlvhex-mcs-equilibrium-plugin -- Inconsistency analysis and equilibrium
+ * semantics for heterogeneous nonmonotonic Multi-Context Systems in dlvhex.
+ * Copyright (C) 2009,2010 Markus Boegl
+ * Copyright (C) 2011 Gerald Weidinger
+ * Copyright (C) 2012 Peter Schueller
  * 
  * This file is part of dlvhex-mcs-equilibrium-plugin.
  *
@@ -21,11 +22,11 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
 /**
- * @file   	QiConverter.h
+ * @file   	InputConverter.h
  * @author 	Markus Boegl
  * @author 	Gerald Weidinger
+ * @author 	Peter Schueller
  * @date   	Sun Feb 24 13:34:49 2011
  * 
  * @brief  Converts the Input file
@@ -33,24 +34,28 @@
 #ifndef _DLVHEX_MCSDIAGEXPL_INPUTCONVERTER_H_
 #define _DLVHEX_MCSDIAGEXPL_INPUTCONVERTER_H_
 
-#include <dlvhex/PluginInterface.h>
-#include "InputParserDriver.h"
-#include "BridgeRule.h"
-#include "ParseContext.h"
+#include <dlvhex2/PluginInterface.h>
+#include "ProgramCtxData.h"
 
-namespace dlvhex {
-  namespace mcsdiagexpl {
+namespace dlvhex
+{
+namespace mcsdiagexpl
+{
 
-    class InputConverter : public PluginConverter {
-      public:
-	InputConverter() {};
-	typedef boost::spirit::classic::node_val_data_factory<> factory_t;
-	typedef const char* iterator_t;
-	typedef boost::spirit::classic::tree_match<iterator_t, factory_t>::node_t node_t;
+class InputConverter:
+  public PluginConverter
+{
+public:
+  InputConverter(ProgramCtxData& pcd);
 
-	virtual void convert(std::istream& i, std::ostream& o);
-    }; // END class InputConverter
-  }  // END namespace mcsdiagexpl
-} // END namespace dlvhex
+  virtual void convert(std::istream& i, std::ostream& o);
+protected:
+  ProgramCtxData& pcd;
+};
+
+}
+}
 
 #endif // _DLVHEX_MCSDIAGEXPL_INPUTCONVERTER_H
+
+// vi:ts=8:

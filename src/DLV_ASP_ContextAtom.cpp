@@ -36,17 +36,22 @@
 //#define DEBUG
 
 #include "DLV_ASP_ContextAtom.h"
-#include "Timing.h"
+//#include "Timing.h"
 
-#include <dlvhex/DLVProcess.h>
-#include <dlvhex/HexParser.hpp>
-#include <dlvhex/ProgramCtx.h>
-#include <dlvhex/ASPSolver.h>
-#include <dlvhex/ASPSolverManager.h>
-#include <dlvhex/Logger.hpp>
+#include <dlvhex2/Logger.h>
+#include <dlvhex2/Registry.h>
+#include <dlvhex2/Printhelpers.h>
+#include <dlvhex2/Printer.h>
+#include <dlvhex2/InputProvider.h>
+#include <dlvhex2/ProgramCtx.h>
+#include <dlvhex2/HexParser.h>
+#include <dlvhex2/ASPSolverManager.h>
+//#include <dlvhex/ProgramCtx.h>
+//#include <dlvhex2/DLVProcess.h>
+#include <dlvhex2/ASPSolver.h>
 
 namespace dlvhex {
-  namespace mcsdiagexpl {
+namespace mcsdiagexpl {
 
 using namespace std;
 
@@ -55,24 +60,39 @@ void printSet (std::string s) {
 }
 
 void
-DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginError)
+DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer)
 {
-  LOG_SCOPE("DACA::r",false);
-  LOG("= DLV_ASP_ContextAtom::retrieve");
+  LOG_SCOPE(INFO,"DACA::r",false);
+  LOG(INFO,"DLV_ASP_ContextAtom::retrieve");
 
   // query.input is tuple [context_id,belief_pred,input_pred,outputs_pred,program]
-  // get name of context program
-  const std::string& programStr = registry->terms.getByID(query.input[4]).symbol;
-  std::string program = programStr.substr(1, programStr.size()-2);
-  LOG("retrieving context for program '" << program << "'");
 
   // we use an extra registry for this external program
   ProgramCtx kbctx;
-  kbctx.registry.reset(new Registry());
+  kbctx.setupRegistry(RegistryPtr(new Registry()));
 
-  // parse program
-  HexParser parser(kbctx);
-  parser.parse(program);
+  // parse kb into kbctx
+  {
+    // get name of context program
+    const std::string& programStr = registry->terms.getByID(query.input[4]).symbol;
+
+    // remove quotes
+    assert(programStr[0] == '"' && programStr[programStr.size()-1] == '"');
+    std::string program = programStr.substr(1, programStr.size()-2);
+
+    LOG(DBG,"parsing context kb for program '" << program << "'");
+
+    // build input
+    InputProviderPtr input(new InputProvider);
+    input->addFileInput(program);
+
+    // parse
+    ModuleHexParser parser;
+    parser.parse(input, kbctx);
+  }
+  DBGLOG(DBG,"after parsing input: idb and edb are" << std::endl << std::endl <<
+      printManyToString<RawPrinter>(kbctx.idb,"\n",kbctx.registry()) << std::endl <<
+      *kbctx.edb << std::endl);
 
   // add constraints for outputs to program
   // convert query to string sets
@@ -93,9 +113,9 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
       // lookup
       const OrdinaryAtom& oa = registry->ogatoms.getByID(oaid);
       assert(oa.tuple.size() == 2);
-      LOG("got term " << oa.tuple[1]);
+      DBGLOG(DBG,"got term " << oa.tuple[1]);
       const Term& term = registry->terms.getByID(oa.tuple[1]);
-      LOG("this is symbol " << term.symbol);
+      DBGLOG(DBG,"this is symbol " << term.symbol);
 
       if( oa.tuple[0] == apredid )
       {
@@ -111,9 +131,9 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
       }
     }
   }
-  LOG("got output beliefs: " << printrange(oset));
-  LOG("got present output beliefs: " << printrange(aset));
-  LOG("got bridge rule inputs: " << printrange(bset));
+  LOG(DBG,"got output beliefs: " << printrange(oset));
+  LOG(DBG,"got present output beliefs: " << printrange(aset));
+  LOG(DBG,"got bridge rule inputs: " << printrange(bset));
 
   // add inputs (= bridge rule heads) to program
   {
@@ -123,25 +143,25 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
 			Term inputTerm(ID::MAINKIND_TERM | ID::SUBKIND_TERM_CONSTANT, *inp);
 
       // create term symbol (this is now another registry!) and add
-      ID kbInputTermID = kbctx.registry->terms.getIDByString(inputTerm.symbol);
+      ID kbInputTermID = kbctx.registry()->terms.getIDByString(inputTerm.symbol);
       if( kbInputTermID == ID_FAIL )
-        kbInputTermID = kbctx.registry->terms.storeAndGetID(inputTerm);
-      LOG("in kbctx this term has id " << kbInputTermID);
+        kbInputTermID = kbctx.registry()->terms.storeAndGetID(inputTerm);
+      DBGLOG(DBG,"in kbctx this term has id " << kbInputTermID);
 
       // create unary fact (this is now another registry!)
       OrdinaryAtom kboatom(ID::MAINKIND_ATOM | ID::SUBKIND_ATOM_ORDINARYG);
       kboatom.tuple.push_back(kbInputTermID);
       kboatom.text = inputTerm.symbol;
-      ID kbInputFactID = kbctx.registry->ogatoms.getIDByTuple(kboatom.tuple);
+      ID kbInputFactID = kbctx.registry()->ogatoms.getIDByTuple(kboatom.tuple);
       if( kbInputFactID == ID_FAIL )
-        kbInputFactID = kbctx.registry->ogatoms.storeAndGetID(kboatom);
-      LOG("in kbctx this fact has id " << kbInputFactID);
+        kbInputFactID = kbctx.registry()->ogatoms.storeAndGetID(kboatom);
+      DBGLOG(DBG,"in kbctx this fact has id " << kbInputFactID);
 
       // add to edb
       kbctx.edb->setFact(kbInputFactID.address);
     }
-    LOG("after adding inputs: kbctx.edb is " << *kbctx.edb);
   }
+  DBGLOG(DBG,"after adding inputs: kbctx.edb is " << *kbctx.edb);
 
   // calculate set differences and add constraints
   StringSet ainoset, ominusaset;
@@ -158,55 +178,55 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
 
     // add O - A as Constraint ":- x."
     // => enforce that beliefs not in A are not there
-    LOG("enforcing the following beliefs to be absent: " << printrange(ominusaset));
+    DBGLOG(DBG,"enforcing the following beliefs to be absent: " << printrange(ominusaset));
     for(StringSet::const_iterator it = ominusaset.begin();
         it != ominusaset.end(); ++it)
     {
       // term
       Term t(ID::MAINKIND_TERM | ID::SUBKIND_TERM_CONSTANT, *it);
-      ID kbidt = kbctx.registry->terms.getIDByString(t.symbol);
+      ID kbidt = kbctx.registry()->terms.getIDByString(t.symbol);
       if( kbidt == ID_FAIL )
-        kbidt = kbctx.registry->terms.storeAndGetID(t);
+        kbidt = kbctx.registry()->terms.storeAndGetID(t);
 
       // ordinary atom
       OrdinaryAtom oa(ID::MAINKIND_ATOM | ID::SUBKIND_ATOM_ORDINARYG);
       oa.tuple.push_back(kbidt);
       oa.text = *it;
-      ID kbidoa = kbctx.registry->ogatoms.getIDByTuple(oa.tuple);
+      ID kbidoa = kbctx.registry()->ogatoms.getIDByTuple(oa.tuple);
       if( kbidoa == ID_FAIL )
-        kbidoa = kbctx.registry->ogatoms.storeAndGetID(oa);
+        kbidoa = kbctx.registry()->ogatoms.storeAndGetID(oa);
 
       // constraint :- *it.
       Rule constraint(ID::MAINKIND_RULE | ID::SUBKIND_RULE_CONSTRAINT);
       constraint.body.push_back(ID::posLiteralFromAtom(kbidoa));
-      ID kbidconstraint = kbctx.registry->rules.storeAndGetID(constraint);
+      ID kbidconstraint = kbctx.registry()->rules.storeAndGetID(constraint);
       kbctx.idb.push_back(kbidconstraint);
     }
 
     // add A - O as Constraint ":- not x."
     // => enforce that beliefs in A are there
-    LOG("enforcing the following beliefs to be present: " << printrange(ainoset));
+    DBGLOG(DBG,"enforcing the following beliefs to be present: " << printrange(ainoset));
     for(StringSet::const_iterator it = ainoset.begin();
         it != ainoset.end(); ++it)
     {
       // term
       Term t(ID::MAINKIND_TERM | ID::SUBKIND_TERM_CONSTANT, *it);
-      ID kbidt = kbctx.registry->terms.getIDByString(t.symbol);
+      ID kbidt = kbctx.registry()->terms.getIDByString(t.symbol);
       if( kbidt == ID_FAIL )
-        kbidt = kbctx.registry->terms.storeAndGetID(t);
+        kbidt = kbctx.registry()->terms.storeAndGetID(t);
 
       // ordinary atom
       OrdinaryAtom oa(ID::MAINKIND_ATOM | ID::SUBKIND_ATOM_ORDINARYG);
       oa.tuple.push_back(kbidt);
       oa.text = *it;
-      ID kbidoa = kbctx.registry->ogatoms.getIDByTuple(oa.tuple);
+      ID kbidoa = kbctx.registry()->ogatoms.getIDByTuple(oa.tuple);
       if( kbidoa == ID_FAIL )
-        kbidoa = kbctx.registry->ogatoms.storeAndGetID(oa);
+        kbidoa = kbctx.registry()->ogatoms.storeAndGetID(oa);
 
       // constraint :- not *it.
       Rule constraint(ID::MAINKIND_RULE | ID::SUBKIND_RULE_CONSTRAINT);
       constraint.body.push_back(ID::nafLiteralFromAtom(kbidoa));
-      ID kbidconstraint = kbctx.registry->rules.storeAndGetID(constraint);
+      ID kbidconstraint = kbctx.registry()->rules.storeAndGetID(constraint);
       kbctx.idb.push_back(kbidconstraint);
     }
   }
@@ -215,166 +235,25 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginE
   {
     typedef ASPSolverManager::SoftwareConfiguration<ASPSolver::DLVSoftware> DLVConfiguration;
     DLVConfiguration dlv;
-    //dlv.options.includeFacts = true;
-    ASPProgram program(kbctx.registry, kbctx.idb, kbctx.edb, kbctx.maxint);
-    #ifndef NDEBUG
-    LOG("BEGIN context program ===");
-    RawPrinter printer(std::cerr, kbctx.registry);
-    printer.printmany(kbctx.idb, "\n");
-    std::cerr << std::endl << *kbctx.edb << std::endl;
-    LOG("END context program ===");
-    #endif
+    ASPProgram program(kbctx.registry(), kbctx.idb, kbctx.edb, kbctx.maxint);
+    LOG(DBG,"context program:" << std::endl << 
+      printManyToString<RawPrinter>(kbctx.idb,"\n",kbctx.registry()) << std::endl <<
+      *kbctx.edb << std::endl);
     ASPSolverManager mgr;
     ASPSolverManager::ResultsPtr res = mgr.solve(dlv, program);
     AnswerSet::Ptr firstAnswerSet = res->getNextAnswerSet();
     if( firstAnswerSet != 0 )
     {
-      LOG("got answer set " << *firstAnswerSet->interpretation);
+      LOG(DBG,"got answer set " << *firstAnswerSet->interpretation);
       Tuple t;
       answer.get().push_back(t);
     }
     else
     {
-      LOG("got no answer set!");
+      LOG(DBG,"got no answer set!");
     }
   }
-
-  #if 0
-  std::set<std::string> oset,aset,bset, aointerset, ominusaset;
-  set<string> interset, accset;
-
-  const std::string param = query.getInputTuple()[4].getUnquotedString();
-
-  convertQueryToStringSets(query,aset,bset,oset);
-
-  #ifdef DEBUG
-       std::cout << "===========================================" << std::endl;
-       std::cout << param << std::endl;
-       std::cout << "aset: " << std::endl;
-       for_each(aset.begin(),aset.end(),printSet);
-       std::cout << "oset: " << std::endl;
-       for_each(oset.begin(),oset.end(),printSet);
-       std::cout << "--------------------------------------------" << std::endl;
-  #endif
-
-  if((Timing::getInstance())->isActive()) {
-	(Timing::getInstance())->start(context_id);
-  }
-
-  /////////////////////////////////////////////////////////////////
-  //
-  // Parsing Programm given as param into idb and edb
-  //
-  /////////////////////////////////////////////////////////////////
-
-  //HexParserDriver driver;
-  HexParserDriver driver;
-  Program idb;
-  /// stores the facts of the program
-  AtomSet edb;
-  driver.parse(param, idb, edb);
-
-  /////////////////////////////////////////////////////////////////
-  //
-  // add additional rules to the program
-  //
-  /////////////////////////////////////////////////////////////////
-
-  // add Atomsets b<i> as facts to program
-  for (set<string>::iterator inputit = bset.begin(); inputit != bset.end(); ++inputit) {
-    //*inputit
-    #ifdef DEBUG
-      cout << "added input belief: " << *inputit << endl;
-    #endif
-    edb.insert(AtomPtr(new Atom(Tuple(1, Term(*inputit)))));
-  }
-
-  // Rules of Programm
-  RuleHead_t h;
-  RuleBody_t b;
-  h.clear();
-
-  // add the intersection of A and O as Constraint ":- not x."
-  std::insert_iterator<std::set<std::string> > aointer_it(aointerset, aointerset.begin());
-  set_intersection(aset.begin(), aset.end(), oset.begin(), oset.end(), aointer_it);
-  for (set<string>::iterator interit = aointerset.begin(); interit != aointerset.end(); ++interit) {
-    b.clear();
-    b.insert(new Literal(AtomPtr(new Atom(*interit)), true));
-    #ifdef DEBUG
-      cout << "added inter Rule: :- not " << *interit << endl;
-    #endif
-    Rule *r = new Rule(h,b);
-    idb.addRule(r);
-  }
-
-  // add the difference of O and A as Constraint ":- x."
-  std::insert_iterator<std::set<std::string> > ominusaset_it(ominusaset, ominusaset.begin());
-  set_difference(oset.begin(), oset.end(), aset.begin(), aset.end(), ominusaset_it);
-  for (set<string>::iterator aodiffit = ominusaset.begin(); aodiffit != ominusaset.end(); ++aodiffit) {
-    b.clear();
-    b.insert(new Literal(AtomPtr(new Atom(*aodiffit)), false));
-    #ifdef DEBUG
-      cout << "added diff set Rule: :- " << *aodiffit << endl;
-    #endif
-    idb.addRule(new Rule(h,b));
-  }
-
-  /////////////////////////////////////////////////////////////////
-  //
-  // Solve Program
-  //
-  /////////////////////////////////////////////////////////////////
-  #ifdef DEBUG
-    cout << "Start solving dlv program: " << endl;
-    const Rule *r;
-    int i=0;
-    for (Program::const_iterator progit = idb.begin(); progit != idb.end(); ++i, ++progit) {
-      r=*(progit);
-      cout << *r;
-    }
-
-    //cout << (*edb).getArgument(1).getSring();
-    for (AtomSet::const_iterator ai = edb.begin(); ai != edb.end(); ++ai) {
-      cout << *ai << endl;
-    }
-    cout << "solve ==========================" << endl;
-  #endif
-
-  std::vector<AtomSet> answersets;
-  std::vector<AtomSet>::const_iterator as;
-  {
-    typedef ASPSolverManager::SoftwareConfiguration<ASPSolver::DLVSoftware> DLVConfiguration;
-    DLVConfiguration dlv;
-    dlv.options.includeFacts = true;
-    ASPSolverManager::Instance().solve(dlv, idb, edb, answersets);
-  }
-
-  if((Timing::getInstance())->isActive()) {
-	(Timing::getInstance())->stop(context_id);
-  }
-
-  #ifdef DEBUG
-       ResultContainer* result = new ResultContainer();
-   
-       for (as = answersets.begin(); as!=answersets.end(); ++as) {
-         result->addSet(*as);
-       }
-   
-       OutputBuilder *outputbuilder = new TextOutputBuilder();
-       result->print(std::cout, outputbuilder);
-   
-       cout << "-------------------------------------------" << endl;
-
-       cout << "are there Answersets?????? " << endl;
-       cout << "Answerset size: " << answersets.size() << endl;
-  #endif
-
-  if (answersets.size() > 0) {
-    Tuple out;
-    answer.addTuple(out);
-  }
-  #endif
 }
 
-  } // namespace mcsdiagexpl
+} // namespace mcsdiagexpl
 } // namespace dlvhex

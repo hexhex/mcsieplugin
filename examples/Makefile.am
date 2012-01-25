@@ -1,4 +1,5 @@
-EXTRA_DIST = mcsequilibriumtests.test \
+EXTRA_DIST = \
+  mcsie.test \
   test1/dlvctx_master.hex \
   test1/testctx_master.hex \
   test1/dlvctx_ctx1.dlv \
@@ -169,26 +170,26 @@ EXTRA_DIST = mcsequilibriumtests.test \
   independent_inc1/dmem_opeq.out
 
 check_LTLIBRARIES = \
-			libdlvhexmcsmedexample.la\
-			libdlvhexmcstestcontext1.la\
-			libdlvhexmcstestcontext2.la\
-			libdlvhexmcstestcontext3.la\
-			libdlvhexmcsbenchmark1.la\
-			libdlvhexmcsbenchmark2.la\
-			libdlvhexmcsbenchmark3.la\
-			libdlvhexmcsbenchmark4.la\
-			libdlvhexmcsbenchmark5.la\
-			libdlvhexmcsbenchmark6.la\
-			libdlvhexmcsbenchmark7.la\
-			libdlvhexmcsbenchmark8.la\
-			libdlvhexmcsbenchmark9.la\
-			libdlvhexmcsbenchmark10.la\
-			libdlvhexmcsbenchmark11.la
+  libdlvhexmcsmedexample.la\
+  libdlvhexmcstestcontext1.la\
+  libdlvhexmcstestcontext2.la\
+  libdlvhexmcstestcontext3.la\
+  libdlvhexmcsbenchmark1.la\
+  libdlvhexmcsbenchmark2.la\
+  libdlvhexmcsbenchmark3.la\
+  libdlvhexmcsbenchmark4.la\
+  libdlvhexmcsbenchmark5.la\
+  libdlvhexmcsbenchmark6.la\
+  libdlvhexmcsbenchmark7.la\
+  libdlvhexmcsbenchmark8.la\
+  libdlvhexmcsbenchmark9.la\
+  libdlvhexmcsbenchmark10.la\
+  libdlvhexmcsbenchmark11.la
 
 AM_CPPFLAGS = \
-	-I$(top_srcdir)/include \
-        $(BOOST_CPPFLAGS) \
-	$(DLVHEX_CFLAGS)
+  -I$(top_srcdir)/include \
+  $(BOOST_CPPFLAGS) \
+  $(DLVHEX_CFLAGS)
 
 libdlvhexmcsmedexample_la_SOURCES = medExample/Context3.cpp
 libdlvhexmcsmedexample_la_LDFLAGS = -avoid-version -module -rpath $(plugindir)
