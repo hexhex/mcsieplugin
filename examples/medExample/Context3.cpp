@@ -54,9 +54,9 @@ Context3::acc(
   return ret;
 }
 
-void MedExamplePluginContext3::registerAtoms()
+void MedExamplePluginContext3::registerAtoms(ProgramCtxData& pcd) const
 {
-	registerAtom<Context3>();
+	registerAtom<Context3>(pcd);
 }
 
 } // anonymous namespace

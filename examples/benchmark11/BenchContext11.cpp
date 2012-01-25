@@ -71,8 +71,8 @@ namespace
     return ret;
   }
 
-  void BenchmarkPlugin11::registerAtoms() {
-    registerAtom<BenchContext1>();
-    registerAtom<BenchContext2>();
+  void BenchmarkPlugin11::registerAtoms(ProgramCtxData& pcd) const {
+    registerAtom<BenchContext1>(pcd);
+    registerAtom<BenchContext2>(pcd);
   }
 }

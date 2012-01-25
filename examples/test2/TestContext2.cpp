@@ -50,8 +50,8 @@ namespace
     return ret;
   }
 
-  void TestPlugin2::registerAtoms() {
-    registerAtom<TestContext1>();
+  void TestPlugin2::registerAtoms(ProgramCtxData& pcd) const {
+    registerAtom<TestContext1>(pcd);
   }
 
 }

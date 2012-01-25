@@ -83,9 +83,9 @@ namespace
     return ret;
   }
 
-  void TestPlugin3::registerAtoms() {
-    registerAtom<TestContext1>();
-    registerAtom<TestContext2>();
+  void TestPlugin3::registerAtoms(ProgramCtxData& pcd) const {
+    registerAtom<TestContext1>(pcd);
+    registerAtom<TestContext2>(pcd);
   }
 
 }

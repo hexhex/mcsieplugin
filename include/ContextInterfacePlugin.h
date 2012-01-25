@@ -38,18 +38,18 @@
 namespace {\
   class classname : public dlvhex::mcsdiagexpl::BaseContextPlugin {\
     public:\
+      typedef dlvhex::mcsdiagexpl::ProgramCtxData ProgramCtxData; \
       classname();\
-      virtual void registerAtoms();\
+      virtual void registerAtoms(ProgramCtxData& pcd) const;\
   };\
-  classname::classname() {};\
+  classname::classname() { \
+    setNameVersion(#classname,major,minor,micro);\
+  };\
   classname thePlugin;\
 }\
 \
   extern "C"\
   void* PLUGINIMPORTFUNCTION() {\
-    thePlugin.setPluginName(#classname);\
-    thePlugin.setVersion(major,minor,micro);\
-\
     return reinterpret_cast<void*>(&thePlugin);\
   }
 #endif //_CONTEXTINTERFACEPLUGIN_H_
