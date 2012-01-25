@@ -57,6 +57,12 @@ public:
   virtual ~BaseContextAtom() { }
 
   virtual void retrieve(const Query& query, Answer& answer) = 0;
+
+protected:
+  typedef std::set<std::string> StringSet;
+  virtual void convertQueryToStringSets(
+      const Query& query,
+      StringSet& aset, StringSet& bset, StringSet& oset);
 };
 typedef boost::shared_ptr<BaseContextAtom>
         ContextAtomPtr;

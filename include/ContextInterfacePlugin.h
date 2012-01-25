@@ -34,7 +34,7 @@
 
 #include "BaseContextPlugin.h"
 
-#define DLVHEX_MCSEQUILIBRIUM_PLUGIN(classname,major,minor,micro) \
+#define DLVHEX_MCSEQUILIBRIUM_PLUGIN(abimajor,abiminor,abimicro,classname,major,minor,micro) \
 namespace {\
   class classname : public dlvhex::mcsdiagexpl::BaseContextPlugin {\
     public:\
@@ -48,8 +48,13 @@ namespace {\
   classname thePlugin;\
 }\
 \
-  extern "C"\
-  void* PLUGINIMPORTFUNCTION() {\
-    return reinterpret_cast<void*>(&thePlugin);\
-  }
+extern "C" \
+int PLUGINABIVERSIONFUNCTION() \
+{ \
+  return abimajor*10000+abiminor*100+abimicro; \
+} \
+extern "C"\
+void* PLUGINIMPORTFUNCTION() {\
+  return reinterpret_cast<void*>(&thePlugin);\
+}
 #endif //_CONTEXTINTERFACEPLUGIN_H_

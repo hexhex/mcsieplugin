@@ -1,15 +1,17 @@
-lib_LTLIBRARIES = libldlvhexmcsdiagexpl.la
-plugin_LTLIBRARIES = libdlvhexmcsdiagexpl.la 
+lib_LTLIBRARIES = libdlvhex-mcsie.la
+plugin_LTLIBRARIES = libdlvhexplugin-mcsie.la 
 
 # most parts of the implementation are in here
 # this is not a plugin library but a regular shared library with a version
 #
 # the reason for that is, that additional context semantics can be implemented
-# in additional plugins which then depend on libldlvhexmcsdiagexpl
+# in additional plugins which then depend on libdlvhex-mcsie
 # see the testcases for examples of such additional plugins
-libldlvhexmcsdiagexpl_la_SOURCES = \
+libdlvhex_mcsie_la_SOURCES = \
   ProgramCtxData.cpp \
   BaseContextPlugin.cpp \
+  BaseContextAtom.cpp \
+  ACC_ContextAtom.cpp \
   DLV_ASP_ContextAtom.cpp \
   InputConverter.cpp \
   SaturationMetaAtom.cpp
@@ -21,7 +23,6 @@ nopfoo = \
   BridgeRule.cpp \
   BridgeRuleEntry.cpp \
   ParseContext.cpp \
-  ACC_ContextAtom.cpp \
   OutputRewriter.cpp \
   EquilibriumPrintVisitor.cpp \
   DiagExplPrintVisitor.cpp \
@@ -32,14 +33,14 @@ nopfoo = \
 # <http://www.gnu.org/software/libtool/manual.html#Versioning>, and
 # the USENIX paper `Library Interface Versioning in Solaris and Linux'
 # <http://www.usenix.org/publications/library/proceedings/als00/2000papers/papers/full_papers/browndavid/browndavid.pdf>
-libldlvhexmcsdiagexpl_la_LDFLAGS = -version-info 2:0:0
+libdlvhex_mcsie_la_LDFLAGS = -version-info 2:0:0
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
   $(BOOST_CPPFLAGS) \
 	$(DLVHEX_CFLAGS)
 
-# the plugin library module, which links against libldlvhexmcsdiagexpl
-libdlvhexmcsdiagexpl_la_SOURCES = MCSIEPlugin.cpp
-libdlvhexmcsdiagexpl_la_LDFLAGS = -avoid-version -module
-libdlvhexmcsdiagexpl_la_LIBADD = libldlvhexmcsdiagexpl.la
+# the plugin library module, which links against libdlvhex-mcsie
+libdlvhexplugin_mcsie_la_SOURCES = MCSIEPlugin.cpp
+libdlvhexplugin_mcsie_la_LDFLAGS = -avoid-version -module
+libdlvhexplugin_mcsie_la_LIBADD = libdlvhex-mcsie.la

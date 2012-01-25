@@ -34,67 +34,85 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "ACC_ContextAtom.h"
-#include "Timing.h"
+//#include "Timing.h"
+
+#include <dlvhex2/Logger.h>
+#include <dlvhex2/Benchmarking.h>
+#include <dlvhex2/Registry.h>
+
 #include <ostream>
 
 namespace dlvhex {
-  namespace mcsdiagexpl {
+namespace mcsdiagexpl {
 
-    void
-    ACC_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginError) {
-      bool accept = false;
-      std::set<std::string> oset,aset,bset,interset;
-      std::set<std::set<std::string> > accset;
+void
+ACC_ContextAtom::retrieve(const Query& query, Answer& answer)
+{
+  DBGLOG_SCOPE(DBG,"ACA::r",false);
+  DBGLOG(DBG,"ACC_ContextAtom::retrieve");
 
-      /////////////////////////////////////////////////////////////////
-      //
-      // get the parameter out of the External Atom
-      // get the belief set's out of the External Atom an fill in the
-      // stringset's
-      //
-      /////////////////////////////////////////////////////////////////
-      std::string param = query.getInputTuple()[4].getUnquotedString();
-      convertQueryToStringSets(query,aset,bset,oset);
+  // query.input is tuple [context_id,belief_pred,input_pred,outputs_pred,program]
 
-      /////////////////////////////////////////////////////////////////
-      //
-      // get accepted set of beliefsets
-      //
-      /////////////////////////////////////////////////////////////////
+  bool accept = false;
 
-      if((Timing::getInstance())->isActive()) {
-	(Timing::getInstance())->start(context_id);
-      }
-      accset = acc(param,bset);
+  /////////////////////////////////////////////////////////////////
+  //
+  // get the parameter out of the External Atom
+  // get the belief set's out of the External Atom an fill in the
+  // stringset's
+  //
+  /////////////////////////////////////////////////////////////////
+  const std::string& param = registry->terms.getByID(query.input[4]).symbol;
+  // aset = belief_pred, bset = inputs_pred, oset = outputs_pred
+  StringSet aset, bset, oset;
+  convertQueryToStringSets(query,aset,bset,oset);
 
-      if((Timing::getInstance())->isActive()) {
-	(Timing::getInstance())->stop(context_id);
-      }
-      /////////////////////////////////////////////////////////////////
-      //
-      // Iterate throw the accepted set's, 
-      // build intersection with Output-beliefs
-      // and compare to beliefs in Bridgerulebody
-      // if there's at least one set equal, the answerset is accepted.
-      //
-      /////////////////////////////////////////////////////////////////
-      for (std::set<std::set<std::string> >::iterator setit = accset.begin(); 
-		((setit != accset.end()) && (!accept)); ++setit) {
-	interset.clear();
-	std::insert_iterator<std::set<std::string> > out_it(interset, interset.begin());
-        set_intersection((*setit).begin(), (*setit).end(), oset.begin(), oset.end(), out_it);
-        if (aset.size() == interset.size()) {
-          if (equal(aset.begin(),aset.end(),interset.begin())) {
-            accept = true;
-          } 
-        }
-      }
+  /////////////////////////////////////////////////////////////////
+  //
+  // get accepted set of beliefsets
+  //
+  /////////////////////////////////////////////////////////////////
 
-      if (accept) {
-        Tuple out;
-	answer.addTuple(out);
-      }
-    } // end ACC_ContextAtom::retrieve()
+  //if((Timing::getInstance())->isActive()) {
+  //  (Timing::getInstance())->start(context_id);
+  //}
+  std::set<std::set<std::string> > accset;
+  {
+    DLVHEX_BENCHMARK_REGISTER_AND_SCOPE(sid,"ACC_ContextAtom call acc()");
+    accset = acc(param,bset);
+  }
+  //if((Timing::getInstance())->isActive()) {
+  //  (Timing::getInstance())->stop(context_id);
+  //}
 
-  } // namespace mcsdiagexpl
+  /////////////////////////////////////////////////////////////////
+  //
+  // Iterate throw the accepted set's, 
+  // build intersection with Output-beliefs
+  // and compare to beliefs in Bridgerulebody
+  // if there's at least one set equal, the answerset is accepted.
+  //
+  /////////////////////////////////////////////////////////////////
+  for (std::set<StringSet>::iterator setit = accset.begin(); 
+            ((setit != accset.end()) && (!accept)); ++setit) {
+    StringSet interset;
+    std::insert_iterator<StringSet> out_it(interset, interset.begin());
+    set_intersection((*setit).begin(), (*setit).end(), oset.begin(), oset.end(), out_it);
+    if (aset.size() == interset.size()) {
+      if (equal(aset.begin(),aset.end(),interset.begin())) {
+        // accept -> add tuple
+        answer.get().push_back(Tuple());
+        // can exit now
+        return;
+      } 
+    }
+  }
+
+  // did not accept -> mark as used nevertheless
+  answer.use();
+}
+
+} // namespace mcsdiagexpl
 } // namespace dlvhex
+
+// vim:ts=8:

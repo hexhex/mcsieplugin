@@ -2,6 +2,7 @@
  * Calculate Equilibrium Semantics of Multi Context Systems in dlvhex
  *
  * Copyright (C) 2009,2010  Markus Boegl
+ * Copyright (C) 2011,2012  Peter Schueller
  * 
  * This file is part of dlvhex-mcs-equilibrium-plugin.
  *
@@ -25,6 +26,7 @@
 /**
  * @file   DLV_ASP_ContextAtom.cpp
  * @author Markus Boegl
+ * @author Peter Schueller
  * @date   Sun Jan 24 13:38:47 2010
  * 
  * @brief  Context to use ASP Programs
@@ -54,10 +56,6 @@ namespace dlvhex {
 namespace mcsdiagexpl {
 
 using namespace std;
-
-void printSet (std::string s) {
-  std::cout << s << std::endl;
-}
 
 void
 DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer)
@@ -94,46 +92,9 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer)
       printManyToString<RawPrinter>(kbctx.idb,"\n",kbctx.registry()) << std::endl <<
       *kbctx.edb << std::endl);
 
-  // add constraints for outputs to program
-  // convert query to string sets
-  typedef std::set<std::string> StringSet;
-  StringSet aset, bset, oset; // aset = belief_pred, bset = inputs_pred, oset = outputs_pred
-  {
-    ID apredid = query.input[1];
-		ID inputsPredID = query.input[2];
-    ID opredid = query.input[3];
-
-    const Interpretation::Storage& storage = query.interpretation->getStorage();
-    Interpretation::Storage::enumerator it;
-    ID oaid(ID::MAINKIND_ATOM | ID::SUBKIND_ATOM_ORDINARYG, 0);
-    for(it = storage.first(); it != storage.end(); ++it)
-    {
-      // create ID
-      oaid.address = *it;
-      // lookup
-      const OrdinaryAtom& oa = registry->ogatoms.getByID(oaid);
-      assert(oa.tuple.size() == 2);
-      DBGLOG(DBG,"got term " << oa.tuple[1]);
-      const Term& term = registry->terms.getByID(oa.tuple[1]);
-      DBGLOG(DBG,"this is symbol " << term.symbol);
-
-      if( oa.tuple[0] == apredid )
-      {
-        aset.insert(term.symbol);
-      }
-      else if( oa.tuple[0] == opredid )
-      {
-        oset.insert(term.symbol);
-      }
-      else if( oa.tuple[0] == inputsPredID )
-      {
-        bset.insert(term.symbol);
-      }
-    }
-  }
-  LOG(DBG,"got output beliefs: " << printrange(oset));
-  LOG(DBG,"got present output beliefs: " << printrange(aset));
-  LOG(DBG,"got bridge rule inputs: " << printrange(bset));
+  // aset = belief_pred, bset = inputs_pred, oset = outputs_pred
+  StringSet aset, bset, oset;
+  convertQueryToStringSets(query,aset,bset,oset);
 
   // add inputs (= bridge rule heads) to program
   {
@@ -245,12 +206,14 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer)
     if( firstAnswerSet != 0 )
     {
       LOG(DBG,"got answer set " << *firstAnswerSet->interpretation);
-      Tuple t;
-      answer.get().push_back(t);
+      // accept -> add tuple
+      answer.get().push_back(Tuple());
     }
     else
     {
       LOG(DBG,"got no answer set!");
+      // did not accept -> mark as used nevertheless
+      answer.use();
     }
   }
 }

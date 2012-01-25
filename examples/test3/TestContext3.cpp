@@ -33,7 +33,7 @@
 #include "ContextInterfaceAtom.h"
 #include "ContextInterfacePlugin.h"
 
-DLVHEX_MCSEQUILIBRIUM_PLUGIN(TestPlugin3,0,1,0)
+DLVHEX_MCSEQUILIBRIUM_PLUGIN(7,0,0,TestPlugin3,0,1,0)
 
 namespace
 {

@@ -170,83 +170,97 @@ EXTRA_DIST = \
   independent_inc1/dmem_opeq.out
 
 check_LTLIBRARIES = \
-  libdlvhexmcsmedexample.la\
-  libdlvhexmcstestcontext1.la\
-  libdlvhexmcstestcontext2.la\
-  libdlvhexmcstestcontext3.la\
-  libdlvhexmcsbenchmark1.la\
-  libdlvhexmcsbenchmark2.la\
-  libdlvhexmcsbenchmark3.la\
-  libdlvhexmcsbenchmark4.la\
-  libdlvhexmcsbenchmark5.la\
-  libdlvhexmcsbenchmark6.la\
-  libdlvhexmcsbenchmark7.la\
-  libdlvhexmcsbenchmark8.la\
-  libdlvhexmcsbenchmark9.la\
-  libdlvhexmcsbenchmark10.la\
-  libdlvhexmcsbenchmark11.la
+  libdlvhexplugin-mcsie-medexample.la \
+  libdlvhexplugin-mcsie-testcontext1.la\
+  libdlvhexplugin-mcsie-testcontext2.la\
+  libdlvhexplugin-mcsie-testcontext3.la\
+  libdlvhexplugin-mcsie-test1.la\
+  libdlvhexplugin-mcsie-test2.la\
+  libdlvhexplugin-mcsie-test3.la\
+  libdlvhexplugin-mcsie-test4.la\
+  libdlvhexplugin-mcsie-test5.la\
+  libdlvhexplugin-mcsie-test6.la\
+  libdlvhexplugin-mcsie-test7.la\
+  libdlvhexplugin-mcsie-test8.la\
+  libdlvhexplugin-mcsie-test9.la\
+  libdlvhexplugin-mcsie-test10.la\
+  libdlvhexplugin-mcsie-test11.la
 
 AM_CPPFLAGS = \
   -I$(top_srcdir)/include \
   $(BOOST_CPPFLAGS) \
   $(DLVHEX_CFLAGS)
 
-libdlvhexmcsmedexample_la_SOURCES = medExample/Context3.cpp
-libdlvhexmcsmedexample_la_LDFLAGS = -avoid-version -module -rpath $(plugindir)
-libdlvhexmcsmedexample_la_LIBADD = -L$(top_builddir)/src/ -lldlvhexmcsdiagexpl
 
-libdlvhexmcstestcontext1_la_SOURCES = test1/TestContext1.cpp
-libdlvhexmcstestcontext1_la_LDFLAGS = -avoid-version -module -rpath $(plugindir)
-libdlvhexmcstestcontext1_la_LIBADD = -L$(top_builddir)/src/ -lldlvhexmcsdiagexpl
+# link statically to test if it is loadable
+TESTSTATICLIBS = ${top_builddir}/src/libdlvhex-mcsie.la $(DLVHEX_LIBS)
+COMMONLDFLAGS = -avoid-version -module -L$(top_builddir)/src/ -rpath /
+COMMONLIBADD = -ldlvhex-mcsie
 
-libdlvhexmcstestcontext2_la_SOURCES = test2/TestContext2.cpp
-libdlvhexmcstestcontext2_la_LDFLAGS = -avoid-version -module -rpath $(plugindir)
-libdlvhexmcstestcontext2_la_LIBADD = -L$(top_builddir)/src/ -lldlvhexmcsdiagexpl
+# static testcases (these only check whether they can be linked)
+check_PROGRAMS = \
+  TestStatic-mcsie-medexample
 
-libdlvhexmcstestcontext3_la_SOURCES = test3/TestContext3.cpp
-libdlvhexmcstestcontext3_la_LDFLAGS = -avoid-version -module -rpath $(plugindir)
-libdlvhexmcstestcontext3_la_LIBADD = -L$(top_builddir)/src/ -lldlvhexmcsdiagexpl
+# static testcase (if symbols are missing, this fails with a link error)
+TestStatic_mcsie_medexample_SOURCES = dummymain.cpp
+TestStatic_mcsie_medexample_LDADD = ${top_builddir}/examples/libdlvhexplugin-mcsie-medexample.la $(TESTSTATICLIBS)
+# test plugin (if symbols are missing, this fails with "no such file" from dlerror())
+libdlvhexplugin_mcsie_medexample_la_SOURCES = medExample/Context3.cpp
+libdlvhexplugin_mcsie_medexample_la_LDFLAGS = $(COMMONLDFLAGS)
+libdlvhexplugin_mcsie_medexample_la_LIBADD = $(COMMONLIBADD)
 
-libdlvhexmcsbenchmark1_la_SOURCES = benchmark1/BenchContext1.cpp
-libdlvhexmcsbenchmark1_la_LDFLAGS = -avoid-version -module -rpath $(plugindir)
-libdlvhexmcsbenchmark1_la_LIBADD = -L$(top_builddir)/src/ -lldlvhexmcsdiagexpl
+libdlvhexplugin_mcsie_testcontext1_la_SOURCES = test1/TestContext1.cpp
+libdlvhexplugin_mcsie_testcontext1_la_LDFLAGS = $(COMMONLDFLAGS)
+libdlvhexplugin_mcsie_testcontext1_la_LIBADD = $(COMMONLIBADD)
 
-libdlvhexmcsbenchmark2_la_SOURCES = benchmark2/BenchContext2.cpp
-libdlvhexmcsbenchmark2_la_LDFLAGS = -avoid-version -module -rpath $(plugindir)
-libdlvhexmcsbenchmark2_la_LIBADD = -L$(top_builddir)/src/ -lldlvhexmcsdiagexpl
+libdlvhexplugin_mcsie_testcontext2_la_SOURCES = test2/TestContext2.cpp
+libdlvhexplugin_mcsie_testcontext2_la_LDFLAGS = $(COMMONLDFLAGS)
+libdlvhexplugin_mcsie_testcontext2_la_LIBADD = $(COMMONLIBADD)
 
-libdlvhexmcsbenchmark3_la_SOURCES = benchmark3/BenchContext3.cpp
-libdlvhexmcsbenchmark3_la_LDFLAGS = -avoid-version -module -rpath $(plugindir)
-libdlvhexmcsbenchmark3_la_LIBADD = -L$(top_builddir)/src/ -lldlvhexmcsdiagexpl
+libdlvhexplugin_mcsie_testcontext3_la_SOURCES = test3/TestContext3.cpp
+libdlvhexplugin_mcsie_testcontext3_la_LDFLAGS = $(COMMONLDFLAGS)
+libdlvhexplugin_mcsie_testcontext3_la_LIBADD = $(COMMONLIBADD)
 
-libdlvhexmcsbenchmark4_la_SOURCES = benchmark4/BenchContext4.cpp
-libdlvhexmcsbenchmark4_la_LDFLAGS = -avoid-version -module -rpath $(plugindir)
-libdlvhexmcsbenchmark4_la_LIBADD = -L$(top_builddir)/src/ -lldlvhexmcsdiagexpl
+libdlvhexplugin_mcsie_test1_la_SOURCES = benchmark1/BenchContext1.cpp
+libdlvhexplugin_mcsie_test1_la_LDFLAGS = $(COMMONLDFLAGS)
+libdlvhexplugin_mcsie_test1_la_LIBADD = $(COMMONLIBADD)
 
-libdlvhexmcsbenchmark5_la_SOURCES = benchmark5/BenchContext5.cpp
-libdlvhexmcsbenchmark5_la_LDFLAGS = -avoid-version -module -rpath $(plugindir)
-libdlvhexmcsbenchmark5_la_LIBADD = -L$(top_builddir)/src/ -lldlvhexmcsdiagexpl
+libdlvhexplugin_mcsie_test2_la_SOURCES = benchmark2/BenchContext2.cpp
+libdlvhexplugin_mcsie_test2_la_LDFLAGS = $(COMMONLDFLAGS)
+libdlvhexplugin_mcsie_test2_la_LIBADD = $(COMMONLIBADD)
 
-libdlvhexmcsbenchmark6_la_SOURCES = benchmark6/BenchContext6.cpp
-libdlvhexmcsbenchmark6_la_LDFLAGS = -avoid-version -module -rpath $(plugindir)
-libdlvhexmcsbenchmark6_la_LIBADD = -L$(top_builddir)/src/ -lldlvhexmcsdiagexpl
+libdlvhexplugin_mcsie_test3_la_SOURCES = benchmark3/BenchContext3.cpp
+libdlvhexplugin_mcsie_test3_la_LDFLAGS = $(COMMONLDFLAGS)
+libdlvhexplugin_mcsie_test3_la_LIBADD = $(COMMONLIBADD)
 
-libdlvhexmcsbenchmark7_la_SOURCES = benchmark7/BenchContext7.cpp
-libdlvhexmcsbenchmark7_la_LDFLAGS = -avoid-version -module -rpath $(plugindir)
-libdlvhexmcsbenchmark7_la_LIBADD = -L$(top_builddir)/src/ -lldlvhexmcsdiagexpl
+libdlvhexplugin_mcsie_test4_la_SOURCES = benchmark4/BenchContext4.cpp
+libdlvhexplugin_mcsie_test4_la_LDFLAGS = $(COMMONLDFLAGS)
+libdlvhexplugin_mcsie_test4_la_LIBADD = $(COMMONLIBADD)
 
-libdlvhexmcsbenchmark8_la_SOURCES = benchmark8/BenchContext8.cpp
-libdlvhexmcsbenchmark8_la_LDFLAGS = -avoid-version -module -rpath $(plugindir)
-libdlvhexmcsbenchmark8_la_LIBADD = -L$(top_builddir)/src/ -lldlvhexmcsdiagexpl
+libdlvhexplugin_mcsie_test5_la_SOURCES = benchmark5/BenchContext5.cpp
+libdlvhexplugin_mcsie_test5_la_LDFLAGS = $(COMMONLDFLAGS)
+libdlvhexplugin_mcsie_test5_la_LIBADD = $(COMMONLIBADD)
 
-libdlvhexmcsbenchmark9_la_SOURCES = benchmark9/BenchContext9.cpp
-libdlvhexmcsbenchmark9_la_LDFLAGS = -avoid-version -module -rpath $(plugindir)
-libdlvhexmcsbenchmark9_la_LIBADD = -L$(top_builddir)/src/ -lldlvhexmcsdiagexpl
+libdlvhexplugin_mcsie_test6_la_SOURCES = benchmark6/BenchContext6.cpp
+libdlvhexplugin_mcsie_test6_la_LDFLAGS = $(COMMONLDFLAGS)
+libdlvhexplugin_mcsie_test6_la_LIBADD = $(COMMONLIBADD)
 
-libdlvhexmcsbenchmark10_la_SOURCES = benchmark10/BenchContext10.cpp
-libdlvhexmcsbenchmark10_la_LDFLAGS = -avoid-version -module -rpath $(plugindir)
-libdlvhexmcsbenchmark10_la_LIBADD = -L$(top_builddir)/src/ -lldlvhexmcsdiagexpl
+libdlvhexplugin_mcsie_test7_la_SOURCES = benchmark7/BenchContext7.cpp
+libdlvhexplugin_mcsie_test7_la_LDFLAGS = $(COMMONLDFLAGS)
+libdlvhexplugin_mcsie_test7_la_LIBADD = $(COMMONLIBADD)
 
-libdlvhexmcsbenchmark11_la_SOURCES = benchmark11/BenchContext11.cpp
-libdlvhexmcsbenchmark11_la_LDFLAGS = -avoid-version -module -rpath $(plugindir)
-libdlvhexmcsbenchmark11_la_LIBADD = -L$(top_builddir)/src/ -lldlvhexmcsdiagexpl
+libdlvhexplugin_mcsie_test8_la_SOURCES = benchmark8/BenchContext8.cpp
+libdlvhexplugin_mcsie_test8_la_LDFLAGS = $(COMMONLDFLAGS)
+libdlvhexplugin_mcsie_test8_la_LIBADD = $(COMMONLIBADD)
+
+libdlvhexplugin_mcsie_test9_la_SOURCES = benchmark9/BenchContext9.cpp
+libdlvhexplugin_mcsie_test9_la_LDFLAGS = $(COMMONLDFLAGS)
+libdlvhexplugin_mcsie_test9_la_LIBADD = $(COMMONLIBADD)
+
+libdlvhexplugin_mcsie_test10_la_SOURCES = benchmark10/BenchContext10.cpp
+libdlvhexplugin_mcsie_test10_la_LDFLAGS = $(COMMONLDFLAGS)
+libdlvhexplugin_mcsie_test10_la_LIBADD = $(COMMONLIBADD)
+
+libdlvhexplugin_mcsie_test11_la_SOURCES = benchmark11/BenchContext11.cpp
+libdlvhexplugin_mcsie_test11_la_LDFLAGS = $(COMMONLDFLAGS)
+libdlvhexplugin_mcsie_test11_la_LIBADD = $(COMMONLIBADD)

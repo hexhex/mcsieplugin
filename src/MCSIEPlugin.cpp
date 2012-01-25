@@ -128,15 +128,14 @@ void
 MCSIEPlugin::printUsage(std::ostream& out) const
 {
   //      123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-
-  out << "MCS Inconsistency Explainer (Diagnosis, Explanation, Equilibria) Plugin:" << std::endl << std::endl;
-  out << " --ieenable              Enable plugin" << std::endl;
-  out << " --ieexplain={D,Dm,E,Em} Select which analysis notions to compute" << std::endl;
-  out << " --ienoprintopeq         Do not print output-projected equilibria for diagnoses" << std::endl;
-  out << " --iemode={diag,expl,eq} Select mode of calculation:" << std::endl;
-  out << "          diag (default) Rewrite to guessing diagnoses + equilibria" << std::endl;
-  out << "          expl           Rewrite to saturation encoding for explanations" << std::endl;
-  out << "          eq             Rewrite to equilibria calculation" << std::endl;
-  out << std::endl;
+  out << "     MCS Inconsistency Explainer (Diagnosis, Explanation, Equilibria)" << std::endl;
+  out << "     --ieenable              Enable plugin" << std::endl;
+  out << "     --ieexplain={D,Dm,E,Em} Select which analysis notions to compute" << std::endl;
+  out << "     --ienoprintopeq         Do not print output-projected equilibria for diagnoses" << std::endl;
+  out << "     --iemode={diag,expl,eq} Select mode of calculation:" << std::endl;
+  out << "              diag (default) Rewrite to guessing diagnoses + equilibria" << std::endl;
+  out << "              expl           Rewrite to saturation encoding for explanations" << std::endl;
+  out << "              eq             Rewrite to equilibria calculation" << std::endl;
 }
 
 void 
@@ -247,6 +246,8 @@ MCSIEPlugin theMCSIEPlugin;
 
 } // namespace mcsdiagexpl
 } // namespace dlvhex
+
+IMPLEMENT_PLUGINABIVERSIONFUNCTION
 
 extern "C"
 void* PLUGINIMPORTFUNCTION()
