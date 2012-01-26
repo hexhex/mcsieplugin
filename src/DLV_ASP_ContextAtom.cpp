@@ -67,7 +67,7 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer)
 
   // we use an extra registry for this external program
   ProgramCtx kbctx;
-  kbctx.setupRegistry(RegistryPtr(new Registry()));
+  kbctx.setupRegistry(RegistryPtr(new Registry));
 
   // parse kb into kbctx
   {

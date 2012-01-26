@@ -29,10 +29,15 @@ BaseContextPlugin::createAtoms(ProgramCtx& ctx) const
   MCSIE::CtxData& pcd = ctx.getPluginData<MCSIE>();
   if( pcd.isEnabled() )
   {
+    // get number of currently loaded atoms
+    // (those are the ones loded by any MCSIE BaseContextPlugin)
+    size_t loaded_count = pcd.getContextAtoms().size();
+    // register additional ones
     registerAtoms(pcd);
-    // convert and copy to temporary
+    // convert and copy all new ones to to temporary which will be returned
     std::vector<PluginAtomPtr> ret(
-        pcd.getContextAtoms().begin(), pcd.getContextAtoms().end());
+        pcd.getContextAtoms().begin()+loaded_count,
+        pcd.getContextAtoms().end());
     return ret;
   }
   else
