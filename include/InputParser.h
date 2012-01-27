@@ -23,31 +23,29 @@
 
 
 /**
- * @file   ParserDriver.h
+ * @file   InputParser.h
  * @author Markus Boegl
+ * @author Peter Schueller
  * @date   Sun Jan 24 13:50:13 2010
  * 
- * @brief  Defines Grammer of the Input File
+ * @brief  Parses input file.
  */
 #ifndef _DLVHEX_MCSDIAGEXPL_INPUTPARSERDRIVER_H_
 #define _DLVHEX_MCSDIAGEXPL_INPUTPARSERDRIVER_H_
 
-#undef BOOST_SPIRIT_DEBUG
-
-#ifdef BOOST_SPIRIT_DEBUG
-# define BOOST_SPIRIT_DEBUG_OUT std::cerr
-#endif
-
+/*
 #include <boost/spirit/include/classic_core.hpp>
 #include <boost/spirit/include/classic_chset.hpp>
 #include <boost/spirit/include/classic_confix.hpp>
 #include <boost/spirit/include/classic_parse_tree.hpp>
 #include <boost/spirit/include/classic_ast.hpp>
+*/
 
 
 namespace dlvhex {
- namespace mcsdiagexpl {
+namespace mcsdiagexpl {
 
+  # if 0
 
 ////////////////////////////////////////////////////////////////////////////
 //
@@ -172,6 +170,7 @@ MCSdescriptionGrammar::definition<ScannerT>::definition(MCSdescriptionGrammar co
   BOOST_SPIRIT_DEBUG_NODE(ruleid);
   #endif
 };
+#endif
 
 } // END namespace mcsdiagexpl
 } // END namespace dlvhex

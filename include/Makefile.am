@@ -1,25 +1,26 @@
-LIBLDLVHEXMCSDIAGEXPL_HDRS = \
+MCSIEHEADERS = \
+		 ContextInterfacePlugin.h \
+		 ContextInterfaceAtom.h \
 		 BaseContextAtom.h \
 		 ACC_ContextAtom.h \
-		 ContextInterfaceAtom.h \
-		 BaseContextPlugin.h \
-		 ContextInterfacePlugin.h
+		 BaseContextPlugin.h
 
-pkginclude_HEADERS = $(LIBLDLVHEXMCSDIAGEXPL_HDRS)
+pkginclude_HEADERS = $(MCSIEHEADERS)
 
 noinst_HEADERS = \
 		 MCSIEPlugin.h \
-		 InputConverter.h \
-		 InputParserDriver.h \
+		 DLV_ASP_ContextAtom.h \
+		 InputParser.h \
+		 InputConverterDiagnoses.h \
+		 InputConverterExplanations.h \
+		 InputConverterOPEquilibria.h 
+
+foo = \
 		 BridgeRule.h \
 		 BridgeRuleEntry.h \
 		 ParseContext.h \
-		 DLV_ASP_ContextAtom.h \
 		 OutputRewriter.h \
 		 EquilibriumPrintVisitor.h \
 		 DiagExplPrintVisitor.h \
 		 ExplanationPrintVisitor.h \
-		 Timing.h \
-		 InputConverterHelper.h \
-		 InputConverterDiagnosis.h \
-		 InputConverterExplanations.h
+		 Timing.h

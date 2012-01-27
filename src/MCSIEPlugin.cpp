@@ -38,7 +38,9 @@
 #include "ProgramCtxData.h"
 #include "SaturationMetaAtom.h"
 #include "DLV_ASP_ContextAtom.h"
-//#include "Timing.h"
+#include "InputConverterDiagnoses.h"
+#include "InputConverterExplanations.h"
+#include "InputConverterOPEquilibria.h"
 
 #include <dlvhex2/ProgramCtx.h>
 #include <dlvhex2/Logger.h>
@@ -54,16 +56,11 @@ MCSIEPlugin::MCSIEPlugin()
       MCSIEPLUGIN_VERSION_MAJOR,
       MCSIEPLUGIN_VERSION_MINOR,
       MCSIEPLUGIN_VERSION_MICRO);
-//    : mcseconverter(new InputConverter()), equilibriumOB(new OutputRewriter()) 
 }
 
 
 MCSIEPlugin::~MCSIEPlugin()
 {
- //   delete mcseconverter;
-    // do not delete the equilibriumOB here because the
-    // OutputBuilder will be deleted by dlvhex
-    // and if you delete it here, there will be an error
 }
 
 #if 0
@@ -94,14 +91,31 @@ MCSIEPlugin::createOutputBuilder() {
 }
 
 
-PluginConverter*
-MCSIEPlugin::createConverter() {
-    if( Global::getInstance()->isRewritingEnabled() )
-      return mcseconverter;
-    else
-      return 0;
-}
 #endif
+
+PluginConverterPtr
+MCSIEPlugin::createConverter(ProgramCtx& ctx)
+{
+  ProgramCtxData& pcd = ctx.getPluginData<MCSIE>();
+  if( pcd.isEnabled() )
+  {
+    switch(pcd.getMode())
+    {
+    case ProgramCtxData::DIAGREWRITING:
+      return PluginConverterPtr(new InputConverterDiagnoses(pcd));
+    case ProgramCtxData::EXPLREWRITING:
+      return PluginConverterPtr(new InputConverterExplanations(pcd));
+    case ProgramCtxData::EQREWRITING:
+      return PluginConverterPtr(new InputConverterOPEquilibria(pcd));
+    default:
+      throw PluginError("MCSIEPlugin::createConverter encountered unknown mode!");
+    }
+  }
+  else
+  {
+    return PluginConverterPtr();
+  }
+}
 
 void 
 MCSIEPlugin::registerAtoms(ProgramCtxData& pcd) const
@@ -114,14 +128,21 @@ MCSIEPlugin::registerAtoms(ProgramCtxData& pcd) const
 std::vector<PluginAtomPtr>
 MCSIEPlugin::createAtoms(ProgramCtx& ctx) const
 {
-  // get context atoms
-  std::vector<PluginAtomPtr> atoms(
-      BaseContextPlugin::createAtoms(ctx));
+  MCSIE::CtxData& pcd = ctx.getPluginData<MCSIE>();
+  if( pcd.isEnabled() )
+  {
+    // get context atoms
+    std::vector<PluginAtomPtr> atoms(
+        BaseContextPlugin::createAtoms(ctx));
 
-  // register additional atoms
-  atoms.push_back(PluginAtomPtr(new SaturationMetaAtom));
-
-  return atoms;
+    // register additional atoms
+    atoms.push_back(PluginAtomPtr(new SaturationMetaAtom));
+    return atoms;
+  }
+  else
+  {
+    return std::vector<PluginAtomPtr>();
+  }
 }
 
 void

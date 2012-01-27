@@ -23,45 +23,54 @@
 
 
 /**
- * @file   QiConverter.h
+ * @file   InputConverterDiagnoses.h
+ * @author Markus Boegl
  * @author Gerald Weidinger (refactored)
+ * @author Peter Schueller (refactored)
  * @date   Sun Dez 28 13:34:49 2010
  * 
- * @brief  Converts the Input file for the calculation over dignosis.
+ * @brief  Realizes rewriting to obtain diagnoses (via guess and check).
  */
 #ifndef _DLVHEX_MCSDIAGEXPL_INPUTCONVERTERDIAGNOSIS_H_
 #define _DLVHEX_MCSDIAGEXPL_INPUTCONVERTERDIAGNOSIS_H_
 
-#include <dlvhex/PluginInterface.h>
-#include "InputParserDriver.h"
-#include "BridgeRule.h"
-#include "ParseContext.h"
-#include "InputConverterHelper.h"
+#include <dlvhex2/PluginInterface.h>
+#include "ProgramCtxData.h"
+//#include "BridgeRule.h"
+//#include "ParseContext.h"
 
 namespace dlvhex {
-  namespace mcsdiagexpl {
+namespace mcsdiagexpl {
 
-    class InputConverterDiagnosis {
-      public:
-	InputConverterDiagnosis() {};
-	static InputConverterDiagnosis* getInstance();
-	typedef boost::spirit::classic::node_val_data_factory<> factory_t;
-	typedef const char* iterator_t;
-	typedef boost::spirit::classic::tree_match<iterator_t, factory_t>::node_t node_t;
+class InputConverterDiagnoses:
+  public PluginConverter
+{
+public:
+  InputConverterDiagnoses(ProgramCtxData& pcd): pcd(pcd) {}
+  virtual ~InputConverterDiagnoses() {}
 
-	void convertParseTreeToDLVProgram(node_t& node, std::ostream& o);
+  virtual void convert(std::istream& i, std::ostream& o);
+  /*
+  static InputConverterDiagnosis* getInstance();
+  typedef boost::spirit::classic::node_val_data_factory<> factory_t;
+  typedef const char* iterator_t;
+  typedef boost::spirit::classic::tree_match<iterator_t, factory_t>::node_t node_t;
 
-      
-      private:
-	std::vector<BridgeRule> bridgerules;
-	std::vector<ParseContext> context;
-	static InputConverterDiagnosis *icd;
-	void writeProgram(std::ostream& o, BridgeRule br);
-	
-	
+  void convertParseTreeToDLVProgram(node_t& node, std::ostream& o);
 
-    }; // END class InputConverter
-  }  // END namespace mcsdiagexpl
+
+private:
+  std::vector<BridgeRule> bridgerules;
+  std::vector<ParseContext> context;
+  static InputConverterDiagnosis *icd;
+  void writeProgram(std::ostream& o, BridgeRule br);
+  */
+protected:
+  ProgramCtxData& pcd;
+};
+
+}  // END namespace mcsdiagexpl
 } // END namespace dlvhex
 
 #endif // _DLVHEX_MCSDIAGEXPL_INPUTCONVERTER_H
+// vim:ts=8:

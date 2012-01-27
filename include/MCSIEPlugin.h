@@ -67,10 +67,10 @@ public:
 
   virtual void printUsage(std::ostream& o) const;
   virtual void processOptions(std::list<const char*>& pluginOptions, ProgramCtx& ctx);
+  virtual PluginConverterPtr createConverter(ProgramCtx&);
   /*
   virtual void setupProgramCtx(ProgramCtx& pc);
   virtual OutputBuilder* createOutputBuilder();
-  virtual PluginConverter* createConverter();
   virtual void setOptions(bool doHelp, std::vector<std::string>& argv, std::ostream& out);
   */
 
