@@ -184,66 +184,6 @@ void InputConverterOPEquilibria::convert(std::istream& i, std::ostream& o)
      }
    }
 
-#endif
-#if 0
-   	InputConverterDiagnosis* InputConverterDiagnosis::icd = NULL;
-
-	InputConverterDiagnosis*
-	InputConverterDiagnosis::getInstance() {
-		if (icd == NULL) {
-		  icd = new InputConverterDiagnosis();
-		  //e->init();
-		}
-		return icd;
-	}
-
-   void
-   InputConverterDiagnosis::convertParseTreeToDLVProgram(node_t& node, std::ostream& o) {
-	InputConverterHelper* ich = InputConverterHelper::getInstance();
-
-     if (!(node.value.id() == MCSdescriptionGrammar::Root)) {
-       throw PluginError("MCS Equilibrium Plugin: Inputfile syntax error!");
-     }
-     bridgerules.clear();
-     context.clear();
-
-     for (node_t::tree_iterator it = node.children.begin(); 
-       it != node.children.end(); ++it) {
-       node_t& at = *it;
-       #ifdef DEBUG
-	std::cout << "Val ID: " << MCSdescriptionGrammar::RuleID << std::endl;
-       #endif
-       if (at.value.id() == MCSdescriptionGrammar::BridgeRule) {
-	 #ifdef DEBUG
-           printSpiritPT(std::cout, at, "BridgeRule");
-	 #endif
-         //create new Bridgerule elem and fill the vector with elements
-	 BridgeRule bridgeRule = BridgeRule();
-         ich->convertBridgeRule(at,bridgeRule);
-         bridgerules.push_back(bridgeRule);
-       } //end if-rule Bridgerule
-       ////////////////////////////////////////////
-       // If the Bridgerule is only a fact,      //
-       // there is only a RuleHeadElement        //
-       ////////////////////////////////////////////
-       if (at.value.id() == MCSdescriptionGrammar::RuleHeadElem) {
-	 #ifdef DEBUG
-           printSpiritPT(std::cout, at, "BridgeRuleFact");
-	 #endif
-         //create new Bridgerule elem and fill the vector with elements
-	 BridgeRule bridgeRule = BridgeRule(true);
-         ich->convertBridgeRuleFact(at,bridgeRule);;
-         bridgerules.push_back(bridgeRule);
-       } //end if-rule Bridgerule
-       if (at.value.id() == MCSdescriptionGrammar::Context) {
-         ParseContext c = ParseContext();
-         ich->convertContext(at,c);
-         context.push_back(c);
-	 #ifdef DEBUG
-	   printSpiritPT(std::cout, at, "Context");
-         #endif
-       } //end if-rule Context		
-     } // end for-loop over all children of root
 
      ////////////////////////////////////////////////
      // write the Parsed Program in the out stream //

@@ -56,5 +56,10 @@ namespace dlvhex {
        out << "(" << ContextID() << ":" << Fact() << ")";
    }
 
+  std::ostream& printBridgeRuleEntryAsASPHelperAtom(std::ostream& o, const char* prefix, const BridgeRuleEntry& entry)
+  {
+    return o << prefix << entry.ContextID() << "(" << entry.Fact() << ")";
+  }
+
   } // namespace mcsdiagexpl
 } // namespace dlvhex

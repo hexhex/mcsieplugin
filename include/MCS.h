@@ -49,6 +49,9 @@ struct MCS:
   std::ostream& print(std::ostream&) const;
 };
 
+typedef std::vector<BridgeRule>::const_iterator BridgeRuleIterator;
+typedef std::vector<Context>::const_iterator ContextIterator;
+
 } // END namespace mcsdiagexpl
 } // END namespace dlvhex
 

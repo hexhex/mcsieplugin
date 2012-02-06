@@ -59,6 +59,13 @@ public:
   std::ostream& print(std::ostream&) const;
 };
 
+std::ostream& printBridgeRuleEntryAsASPHelperAtom(std::ostream& o, const char* prefix, const BridgeRuleEntry& entry);
+
+inline print_container* asAtom(const char* prefix, const BridgeRuleEntry& entry)
+{
+  return print_function(boost::bind(&printBridgeRuleEntryAsASPHelperAtom, _1, prefix, entry));
+}
+
 }  // END namespace mcsdiagexpl
 } // END namespace dlvhex
 #endif // _DLVHEX_MCSDIAGEXPL_BRIDGERULEENTRY_H

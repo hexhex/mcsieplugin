@@ -58,11 +58,14 @@ public:
   void setHeadRule(std::string rid, int cid, std::string f);
   void addBodyRule(int id, std::string f, bool n);
 
-  BridgeRuleEntry Head() const { return head; }
+  const BridgeRuleEntry& Head() const { return head; }
   const std::vector<BridgeRuleEntry>& Body() const { return body; }
+  const std::string& Id() const { return ruleid; }
 
   std::ostream& print(std::ostream&) const;
 };
+
+typedef std::vector<BridgeRuleEntry>::const_iterator BridgeRuleEntryIterator;
 
 }  // END namespace mcsdiagexpl
 } // END namespace dlvhex
