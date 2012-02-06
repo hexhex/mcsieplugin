@@ -2,6 +2,7 @@
  * Calculate Equilibrium Semantics of Multi Context Systems in dlvhex
  *
  * Copyright (C) 2009,2010  Markus Boegl
+ * Copyright (C) 2010,2011  Gerald Weidinger
  * 
  * This file is part of dlvhex-mcs-equilibrium-plugin.
  *
@@ -23,38 +24,47 @@
 
 
 /**
- * @file   BridgeRuleEntry.cpp
- * @author Markus Boegl
- * @author Peter Schueller
- * @date   Sun Jan 24 13:30:12 2010
+ * @file     MCS.cpp
+ * @author   Peter Schueller
+ * @date     Sun Feb 24 13:31:57 2011
  * 
- * @brief  Bridge rule head or body literal representation
+ * @brief    MCS Representation
  */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#include "BridgeRuleEntry.h"
+#include "MCS.h"
+
 #include <ostream>
 
 namespace dlvhex {
-  namespace mcsdiagexpl {
+namespace mcsdiagexpl {
 
-   BridgeRuleEntry::BridgeRuleEntry(int id, std::string f, bool n)
-    : contextid(id), fact(f), neg(n) {
-   }//BridgeRuleEntry End
+std::ostream& MCS::print(std::ostream&o) const
+{
+  o << "MCS:\n";
+  o << "  contexts:\n";
+  {
+    for(std::vector<Context>::const_iterator itc = contexts.begin();
+        itc != contexts.end(); ++itc)
+    {
+      o << "    " << *itc << "\n";
+    }
+  }
+  o << "  bridge rules:\n";
+  {
+    for(std::vector<BridgeRule>::const_iterator itr = rules.begin();
+        itr != rules.end(); ++itr)
+    {
+      o << "    " << *itr << "\n";
+    }
+  }
+  return
+    o << "END MCS\n";
+}
 
-   BridgeRuleEntry::BridgeRuleEntry()
-     : contextid(0), fact(""), neg(false) {
-   }//BridgeRuleEntry End
-
-   std::ostream&
-   BridgeRuleEntry::print(std::ostream& out) const {
-     if( neg )
-       out << "not ";
-     return
-       out << "(" << ContextID() << ":" << Fact() << ")";
-   }
-
-  } // namespace mcsdiagexpl
+} // namespace mcsdiagexpl
 } // namespace dlvhex
+
+// vim:ts=2:sw=2:

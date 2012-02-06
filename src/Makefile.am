@@ -12,18 +12,18 @@ libdlvhex_mcsie_la_SOURCES = \
   BaseContextPlugin.cpp \
   BaseContextAtom.cpp \
   BridgeRule.cpp \
+  BridgeRuleEntry.cpp \
   Context.cpp \
   DLV_ASP_ContextAtom.cpp \
   InputConverterDiagnoses.cpp \
   InputConverterExplanations.cpp \
   InputConverterOPEquilibria.cpp \
   InputParser.cpp \
+  MCS.cpp \
   ProgramCtxData.cpp \
   SaturationMetaAtom.cpp
 
 nopfoo = \
-  InputConverterHelper.cpp \
-  BridgeRuleEntry.cpp \
   OutputRewriter.cpp \
   EquilibriumPrintVisitor.cpp \
   DiagExplPrintVisitor.cpp \

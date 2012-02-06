@@ -59,6 +59,9 @@
 #include <iostream>
 #include <sstream>
 
+namespace dlvhex {
+namespace mcsdiagexpl {
+
 namespace
 {
 
@@ -190,10 +193,143 @@ MCSdescriptionGrammar::definition<ScannerT>::definition(MCSdescriptionGrammar co
   #endif
 };
 
-} // anonymous namespace
+void
+convertBridgeRuleElem(node_t& at, std::string& ruleid, int& contextid, std::string& fact) {
+    node_t* n = &at;
+    node_t::tree_iterator it = at.children.begin();
+    node_t& bat = *it;
+    //std::cout << "bat children size: " << std::string(bat.value.begin(), bat.value.end()) << std::endl;
+    if (bat.value.id() == MCSdescriptionGrammar::RuleID) {
+	    ruleid = std::string(bat.value.begin(), bat.value.end());
+	    ++it;
+	    bat = *it;
+    } else ruleid = std::string("");
+    assert(bat.value.id() == MCSdescriptionGrammar::RuleNum);
+    contextid = atoi(std::string(bat.value.begin(), bat.value.end()).c_str());
+    ++it;
+    bat = *it;
+    assert(bat.value.id() == MCSdescriptionGrammar::Fact);
+    fact = std::string(bat.value.begin(), bat.value.end());
+} // end convertBridgeRuleElem
 
-namespace dlvhex {
-namespace mcsdiagexpl {
+void
+convertBridgeRuleFact(node_t& at, BridgeRule& brule) {
+   int cid;
+   std::string f,rid;
+   if (at.value.id() == MCSdescriptionGrammar::RuleHeadElem) {
+       DBGLOG(DBG,"HeadElem");
+       assert(at.children.size() == 3);
+       convertBridgeRuleElem(at,rid,cid,f);
+       brule.setHeadRule(rid,cid,f);
+   }//end if-rule bridgeruleheadelem
+}// End MCSequilibriumConverter::convertBridgeExplanationUnit::getInstance()->Rule()
+
+void
+convertBridgeRule(node_t& at, BridgeRule& brule) {
+   int cid;
+   std::string f, rid;
+   for (node_t::tree_iterator ait = at.children.begin(); ait != at.children.end(); ++ait) {
+     node_t& bat = *ait;
+     ////////////////////////////////////////////
+     // get the Head of the BridgeRule         //
+     ////////////////////////////////////////////
+     if (bat.value.id() == MCSdescriptionGrammar::RuleHeadElem) {
+       DBGLOG(DBG,"HeadElem");
+       assert(bat.children.size()==3);
+       convertBridgeRuleElem(bat,rid,cid,f);
+       brule.setHeadRule(rid,cid,f);
+     }//end if-rule bridgeruleheadelem
+     ////////////////////////////////////////////
+     // there are more than 1 rule in the body //
+     ////////////////////////////////////////////
+     if (bat.value.id() == MCSdescriptionGrammar::RuleBody) {
+       for (node_t::tree_iterator bit = bat.children.begin(); bit != bat.children.end(); ++bit) {
+	 node_t& bbeat = *bit;
+	 if (bbeat.value.id() == MCSdescriptionGrammar::RuleElem) {
+	   assert(bbeat.children.size()==2);
+	   convertBridgeRuleElem(bbeat,rid,cid,f);
+	   brule.addBodyRule(cid,f,false);
+	 }//end if-rule for RuleElem in BridgeRuleBody
+	 if (bbeat.value.id() == MCSdescriptionGrammar::NegRuleElem) {
+	   assert(bbeat.children.size()==2);
+	   convertBridgeRuleElem(bbeat,rid,cid,f);
+	   brule.addBodyRule(cid,f,true);
+	 }//end if-rule for negated RuleElem in BridgeRuleBody
+       }// end for-loop over RuleBodyElems
+     }//end if-rule RuleBodyElems
+
+     ////////////////////////////////////////////
+     // there is only 1 rule in the body       //
+     ////////////////////////////////////////////
+     if (bat.value.id() == MCSdescriptionGrammar::RuleElem) {
+       DBGLOG(DBG,"RuleElem");
+       assert(bat.children.size()==2);
+       convertBridgeRuleElem(bat,rid,cid,f);
+       brule.addBodyRule(cid,f,false);
+     }//end if-rule for RuleElem in BridgeRuleBody
+     if (bat.value.id() == MCSdescriptionGrammar::NegRuleElem) {
+       DBGLOG(DBG,"NegRuleElem");
+       assert(bat.children.size()==2);
+       convertBridgeRuleElem(bat,rid,cid,f);
+       brule.addBodyRule(cid,f,true);
+     }//end if-rule for negated RuleElem in BridgeRuleBody
+   } //end for-loop over bridgerules
+}// End MCSequilibriumConverter::convertBridgeRule()
+
+void
+convertContext(node_t& at, Context& context) {
+   int id;
+   std::string extatom;
+   std::string param;
+
+   assert(at.children.size() == 3);
+   node_t::tree_iterator it = at.children.begin();
+   node_t& bat = *it;
+   assert(bat.value.id() == MCSdescriptionGrammar::ContextNum);
+   id = atoi(std::string(bat.value.begin(), bat.value.end()).c_str());
+   ++it;
+   bat = *it;
+   assert(bat.value.id() == MCSdescriptionGrammar::ExtAtom);
+   extatom = std::string(bat.value.begin(), bat.value.end());
+   ++it;
+   bat = *it;
+   assert(bat.value.id() == MCSdescriptionGrammar::Param);
+   param = std::string(bat.value.begin(), bat.value.end());
+   context = Context(id,extatom,param);
+}// END MCSequilibriumConverter::convertContext
+
+void convertParseTree(node_t& node, MCS& out)
+{
+  assert(node.value.id() == MCSdescriptionGrammar::Root);
+
+  for(node_t::tree_iterator it = node.children.begin(); 
+     it != node.children.end(); ++it) {
+   node_t& at = *it;
+   if (at.value.id() == MCSdescriptionGrammar::BridgeRule) {
+     DBGLOG(DBG,"BridgeRule");
+     //create new Bridgerule elem and fill the vector with elements
+     out.rules.push_back(BridgeRule());
+     convertBridgeRule(at,out.rules.back());
+   } //end if-rule Bridgerule
+   ////////////////////////////////////////////
+   // If the Bridgerule is only a fact,      //
+   // there is only a RuleHeadElement        //
+   ////////////////////////////////////////////
+   if (at.value.id() == MCSdescriptionGrammar::RuleHeadElem) {
+     DBGLOG(DBG,"BridgeRuleFact");
+     //create new Bridgerule elem and fill the vector with elements
+     out.rules.push_back(BridgeRule(true));
+     convertBridgeRuleFact(at,out.rules.back());
+   } //end if-rule Bridgerule
+   if (at.value.id() == MCSdescriptionGrammar::Context) {
+     DBGLOG(DBG,"Context");
+     out.contexts.push_back(Context());
+     convertContext(at,out.contexts.back());
+   } //end if-rule Context		
+  } // end for-loop over all children of root
+} // void convertParseTree(node_t& node, MCS& out)
+
+} // anonymous namespace
 
 void InputParser::parse(std::istream& i, MCS& out)
 {
@@ -215,30 +351,10 @@ void InputParser::parse(std::istream& i, MCS& out)
  // if there's not 1 tree in the result of the parser, this is a bug
  assert(info.trees.size() == 1);
 
- // store parse tree into MCS& out
-#if 0
- // Convert the Parse Tree to a asp program
- std::stringstream ss;
- if (!Global::getInstance()->isCalculationOverExplanations()){
-    InputConverterDiagnosis::getInstance()->convertParseTreeToDLVProgram(*info.trees.begin(), ss);
- }else{
-    if (Global::getInstance()->isDiag()){
-            //The calculation over explanations produces a superset of the actual diagnosis. some of the contained tuples may not be diagnosis.
-            //If you want to print out the found superset remove this code, and enable the output code for diaagnosis in Outputrewriter.cpp
-            std::cout << "A calculation over explanations cannot produce D, please choose an other value for parameter --ieexplain!" << std::endl;
-            exit(0);
-    }
-    InputConverterExplanations::getInstance()->convertParseTreeToDLVProgram(*info.trees.begin(), ss);	
- }
+ convertParseTree(info.trees.front(), out);
 
- #ifdef DEBUG
-   std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << std::endl;
-   std::cout << "Converted DLV Program: " << std::endl;
-   std::cout << ss.str();
-   std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << std::endl;
- #endif
- o << ss.rdbuf();
-#endif
+ // store parse tree into MCS& out
+ LOG(DBG,"parsed MCS representation:\n" << out);
 }
 
 } // namespace mcsdiagexpl

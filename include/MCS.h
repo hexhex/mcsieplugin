@@ -33,13 +33,20 @@
 #include "BridgeRule.h"
 #include "Context.h"
 
+#include <dlvhex2/Printhelpers.h>
+
+#include <vector>
+
 namespace dlvhex {
 namespace mcsdiagexpl {
 
-struct MCS
+struct MCS:
+  public ostream_printable<MCS>
 {
   std::vector<BridgeRule> rules;
   std::vector<Context> contexts;
+
+  std::ostream& print(std::ostream&) const;
 };
 
 } // END namespace mcsdiagexpl
