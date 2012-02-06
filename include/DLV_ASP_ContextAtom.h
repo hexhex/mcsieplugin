@@ -37,10 +37,12 @@
 namespace dlvhex {
   namespace mcsdiagexpl {
 
-    class DLV_ASP_ContextAtom : public BaseContextAtom {
-
-      public:
-        DLV_ASP_ContextAtom() : BaseContextAtom("dlv_asp_context_acc") {};
+    class DLV_ASP_ContextAtom:
+      public BaseContextAtom
+    {
+    public:
+        DLV_ASP_ContextAtom(ProgramCtxData& pcd):
+          BaseContextAtom("dlv_asp_context_acc", pcd) {};
         void retrieve(const Query& query, Answer& answer);
     };
 

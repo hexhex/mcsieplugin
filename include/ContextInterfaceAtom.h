@@ -32,14 +32,15 @@
 #ifndef _CONTEXTINTERFACEATOM_H_
 #define _CONTEXTINTERFACEATOM_H_
 
+#include "ProgramCtxData.h"
 #include "ACC_ContextAtom.h"
 
 #define DLVHEX_MCSEQUILIBRIUM_CONTEXT(classname,funcname) \
   class classname : public dlvhex::mcsdiagexpl::ACC_ContextAtom {\
     public:\
-      classname();\
+      classname(dlvhex::mcsdiagexpl::ProgramCtxData& pcd);\
       virtual std::set<std::set<std::string> > acc(const std::string& param, const std::set<std::string>& input);\
   };\
-  classname::classname(): ACC_ContextAtom(funcname) {};
+  classname::classname(dlvhex::mcsdiagexpl::ProgramCtxData& pcd): ACC_ContextAtom(funcname, pcd) {};
 
 #endif // _CONTEXTINTERFACEATOM_H_

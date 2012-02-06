@@ -34,7 +34,6 @@
 #define _DLVHEX_MCSDIAGEXPL_PROGRAMCTXDATA_H_
 
 #include <dlvhex2/PluginInterface.h>
-#include "BaseContextAtom.h"
 #include "MCS.h"
 
 #include <ostream>
@@ -45,6 +44,10 @@ namespace dlvhex
 {
 namespace mcsdiagexpl
 {
+
+class BaseContextAtom;
+typedef boost::shared_ptr<BaseContextAtom>
+        ContextAtomPtr;
 
 // this class serves as a wrapper around CtxData
 // it is independent from MCSIEPlugin
@@ -95,6 +98,11 @@ public:
     MCS& mcs()
       { return mcs_; }
 
+    const std::string& path() const
+      { return path_; }
+    void setPath(const std::string& path)
+      { path_ = path; }
+
   protected:
     // whether plugin is enabled
     bool enabled;
@@ -102,6 +110,9 @@ public:
     Mode mode;
     // what to display/calculate
     bool diagnose, explanation, mindiag, minexpl, printopeq;
+
+    // path prefix
+    std::string path_;
 
     // MCSIE context atoms registered by MCSIE and MCSIE plugins
     std::vector<ContextAtomPtr> contextAtoms;

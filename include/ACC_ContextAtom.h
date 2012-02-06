@@ -35,19 +35,21 @@
 #include "BaseContextAtom.h"
 
 namespace dlvhex {
-  namespace mcsdiagexpl {
+namespace mcsdiagexpl {
 
-    class ACC_ContextAtom : public BaseContextAtom {
+class ACC_ContextAtom:
+  public BaseContextAtom
+{
+public:
+  ACC_ContextAtom(std::string name, ProgramCtxData& pcd):
+    BaseContextAtom(name, pcd) {};
 
-      public:
-        ACC_ContextAtom(std::string name): BaseContextAtom(name) {};
+  virtual void retrieve(const Query& query, Answer& answer) throw (PluginError);
 
-        virtual void 
-	retrieve(const Query& query, Answer& answer) throw (PluginError);
+  virtual std::set<std::set<std::string> >
+  acc(const std::string& param, const std::set<std::string>& input) = 0;
+};
 
-	virtual std::set<std::set<std::string> > 
-	acc(const std::string& param, const std::set<std::string>& input) = 0;
-    };
-  } // namespace mcsdiagexpl
+} // namespace mcsdiagexpl
 } // namespace dlvhex
 #endif // _DLVHEX_MCSEQUILIBRIUM_ACC_CONTEXTATOM_H

@@ -76,7 +76,10 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer)
 
     // remove quotes
     assert(programStr[0] == '"' && programStr[programStr.size()-1] == '"');
-    std::string program = programStr.substr(1, programStr.size()-2);
+    std::string program;
+    if( !pcd.path().empty() )
+      program += pcd.path();
+    program += programStr.substr(1, programStr.size()-2);
 
     LOG(DBG,"parsing context kb for program '" << program << "'");
 

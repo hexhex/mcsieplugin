@@ -33,10 +33,6 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "InputConverterOPEquilibria.h"
-//#include "dlvhex/SpiritDebugging.h"
-//#include "BridgeRuleEntry.h"
-//#include "Global.h"
-//#include "InputConverterDiagnosis.h"
 
 
 #include <iostream>
@@ -45,254 +41,88 @@
 namespace dlvhex {
 namespace mcsdiagexpl {
 
-void InputConverterOPEquilibria::convert(std::istream& i, std::ostream& o)
+namespace
 {
-  throw std::runtime_error("todo InputConverterOPEquilibria?::convert");
+
+void writeBridgeRule(std::ostream& o, const BridgeRule& r);
+void writeContext(std::ostream& o, const Context& c);
+void writeProgram(std::ostream& o, const MCS& m);
+
+void writeProgram(std::ostream& o, const MCS& m)
+{
+  for(BridgeRuleIterator it = m.rules.begin();
+      it != m.rules.end(); ++it)
+  {
+    writeBridgeRule(o, *it);
+  }
+  for(ContextIterator it = m.contexts.begin();
+      it != m.contexts.end(); ++it)
+  {
+    writeContext(o, *it);
+  }
 }
 
-#if 0
- context print
+void writeContext(std::ostream& out, const Context& context)
+{
+   const int cn = context.ContextNum();
 
-     const int cn = context.ContextNum();
+   // guess outputs
+   out << "a" << cn << "(X) v na" << cn << "(X) :- o" << cn << "(X)." << std::endl;
 
-     if( Global::getInstance()->isKR2010rewriting() )
-     {
-       // guess outputs
-       out << "ma" << cn << "(X) v nma" << cn << "(X) :- o" << cn << "(X)." << std::endl;
+   // check context with constraint
+   out << ":- not &" << context.ExtAtom()
+       << "[" << cn << ",a" << cn << ",b" << cn << ",o" << cn << ","
+       << "\"" << context.Param() << "\"]()." << std::endl; 
 
-       // check context with constraint
-       out << ":- not &" << context.ExtAtom()
-           << "[" << cn << ",ma" << cn << ",mb" << cn << ",o" << cn << ","
-           << "\"" << context.Param() << "\"]()." << std::endl; 
+   // mark context as existing
+   out << "ctx(" << cn << ")." << std::endl;
+}
 
-       // mark context as existing
-       out << "ctx(" << cn << ")." << std::endl;
-     }
-     else
-     {
-       // guess input and output beliefs (after previous context has been finished)
+void writeBridgeRule(std::ostream& o, const BridgeRule& br)
+{
+  // write bridgerule in asp form
+  std::list<int> ilist;
 
-       // inputs
-       out << "mb" << cn << "(X) v nmb" << cn << "(X) :- i" << cn << "(X)";
-       out << ", ok(" << (cn-1) << ")";
-       out << "." << std::endl;
+  // mark outputs: OUT_i via "o<i>(belief)"
+  for(BridgeRuleEntryIterator it = br.Body().begin(); it != br.Body().end(); ++it)
+  {
+    o << asAtom("o", *it) << ".\n";
+  }
 
-       // outputs
-       out << "ma" << cn << "(X) v nma" << cn << "(X) :- o" << cn << "(X)";
-       out << ", ok(" << (cn-1) << ")";
-       out << "." << std::endl;
+  // mark input: IN_i via "i<i>(belief)"
+  o << asAtom("i", br.Head()) << ".\n";
 
-       // context check
-       out << "ok(" << cn << ") :- &" << context.ExtAtom() 
-         << "[" << context.ContextNum()
-         << ",ma" << context.ContextNum()
-         << ",mb" << context.ContextNum() 
-         << ",o" << context.ContextNum()
-         << ",\"" << context.Param() << "\"]()";
-       out << ", ok(" << (cn-1) << ")";
-       out << "." << std::endl;
+  // output rule
+  o << asAtom("b", br.Head()) << " :- ;
 
-       // require that context check is successful
-       out << ":- not ok(" << cn << ")." << std::endl;
+  // output bridge rule body
+  for(BridgeRuleEntryIterator it = br.Body().begin();
+      it != br.Body().end(); ++it)
+  {
+    if( it != br.Body().begin() )
+      o << ", ";
+    const BridgeRuleEntry& elem = *it;
+    if( elem.Neg() )
+      o << asAtom("na", elem);
+    else
+      o << asAtom("a", elem);
+  }
 
-       // verify guessed output with output calculated via bridge rules (if all contexts are ok)
-       out << ":- mc" << cn << "(X), not mb" << cn << "(X), ok(all)." << std::endl;
-       out << ":- not mc" << cn << "(X), mb" << cn << "(X), ok(all)." << std::endl;
+  o << ".\n";
+}
 
-       // mark context as existing
-       out << "ctx(" << cn << ")." << std::endl;
-     }
-     return out;
-   }
-
-#endif
-
-#if 0
-   void 
-   BridgeRule::writeProgram(std::ostream& o) {
-     // write bridgerule in asp form
-     std::list<int> ilist;
-
-     // mark outputs: OUT_i via "o<i>(belief)"
-     for (std::vector<BridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
-       const BridgeRuleEntry& elem = *it;
-       o << "o" << elem << "." << std::endl;
-     }
-
-     if ((Global::getInstance())->isKR2010rewriting())
-     {
-       if ((Global::getInstance())->isSet()) {
-       // Only print equilibria
-         // output diagnosis disjunction
-         o << "normal(" << ruleid << ") v md1(" << ruleid << ") v md2(" << ruleid << ")." << std::endl;
-         // output d2 rule
-         o << "mb" << head << " :- md2(" << ruleid << ")." << std::endl;
-         // output d1 rule
-         o << "mb" << head << " :- not md1(" << ruleid << ")";
-         if (fact)
-           o << "." << std::endl;
-         else
-           o << ", ";
-       } else {
-         o << "mb" << head;
-         if (fact)
-           o << "." << std::endl;
-         else
-           o << " :- ";
-       }
-     }
-     else
-     {
-       // mark inputs: IN_i via "i<i>(belief)"
-       o << "i" << head << "." << std::endl;
-
-       // BR evaluation (and diagnosis guessing) (after all contexts ok, indicated by ok(all))
-       if ((Global::getInstance())->isSet())
-       {
-         // diagnosis guessing
-         o << "normal(" << ruleid << ") v md1(" << ruleid << ") v md2(" << ruleid << ") :- ok(all)." << std::endl;
-         // d2 rule
-         o << "mc" << head << " :- md2(" << ruleid << "), ok(all)." << std::endl;
-         // d1 rule
-         o << "mc" << head << " :- not md1(" << ruleid << "), ok(all)";
-         if (fact)
-           o << "." << std::endl;
-         else
-           o << ", ";
-       }
-       else
-       {
-         // else only print equilibria
-         o << "mc" << head;
-         if (fact)
-           o << "." << std::endl;
-         else
-           o << " :- ";
-       }
-     }
-
-     // output bridge rule body
-     for (std::vector<BridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
-       const BridgeRuleEntry& elem = *it;
-       if (elem.Neg())
-         o << "n";
-       o << "ma" << elem;
-       if (it+1 != body.end())
-         o << ", ";
-       else
-         o << "." << std::endl;
-     }
-   }
+} // anonymous namespace
 
 
-     ////////////////////////////////////////////////
-     // write the Parsed Program in the out stream //
-     // first write out the Rules an additional    //
-     // output of the rules, then the              //
-     // external Atom output for the context       //
-     ////////////////////////////////////////////////
-     for (std::vector<BridgeRule>::iterator it = bridgerules.begin(); it != bridgerules.end(); ++it) {
-	BridgeRule elem = *it;
-	writeProgram(o, elem);
-     }//end for-loop print bridgerules
-     int maxctx = 0;
-     for (std::vector<ParseContext>::iterator it = context.begin(); it != context.end(); ++it) {
-	ParseContext elem = *it;
-	o << elem;
-        if( elem.ContextNum() > maxctx )
-          maxctx = elem.ContextNum();
-     }//end for-loop print context
+void InputConverterOPEquilibria::convert(std::istream& i, std::ostream& o)
+{
+  InputParser p;
+  p.parse(i, pcd.mcs());
+  
+  writeProgram(o, pcd.mcs());
+}
 
-     if( !Global::getInstance()->isKR2010rewriting() )
-     {
-       // zeroe'th context is ok by default
-       o << "ok(0)." << std::endl;
-       // all contexts are ok if the last one is ok
-       o << "ok(all) :- ok(" << maxctx << ")." << std::endl;
-     }
-   } // end convertParseTreeToDLVProgram
-
-
-void 
-   InputConverterDiagnosis::writeProgram(std::ostream& o, BridgeRule br) {
-     // write bridgerule in asp form
-     std::list<int> ilist;
-
-     // mark outputs: OUT_i via "o<i>(belief)"
-     for (std::vector<BridgeRuleEntry>::iterator it = br.body.begin(); it != br.body.end(); ++it) {
-       const BridgeRuleEntry& elem = *it;
-       o << "o" << elem << "." << std::endl;
-     }
-
-     if ((Global::getInstance())->isKR2010rewriting())
-     {
-       if ((Global::getInstance())->isSet()) {
-       // Only print equilibria
-         // output diagnosis disjunction
-         o << "normal(" << br.ruleid << ") v d1(" << br.ruleid << ") v d2(" << br.ruleid << ")." << std::endl;
-         // output d2 rule
-         o << "b" << br.head << " :- d2(" << br.ruleid << ")." << std::endl;
-         // output d1 rule
-         o << "b" << br.head << " :- not d1(" << br.ruleid << ")";
-         if (br.fact)
-           o << "." << std::endl;
-         else
-           o << ", ";
-       } else {
-         o << "b" << br.head;
-         if (br.fact)
-           o << "." << std::endl;
-         else
-           o << " :- ";
-       }
-     }
-     else
-     {
-       // mark inputs: IN_i via "i<i>(belief)"
-       o << "i" << br.head << "." << std::endl;
-
-       // BR evaluation (and diagnosis guessing) (after all contexts ok, indicated by ok(all))
-       if ((Global::getInstance())->isSet())
-       {
-         // diagnosis guessing
-         o << "normal(" << br.ruleid << ") v d1(" << br.ruleid << ") v d2(" << br.ruleid << ") :- ok(all)." << std::endl;
-         // d2 rule
-         o << "c" << br.head << " :- d2(" << br.ruleid << "), ok(all)." << std::endl;
-         // d1 rule
-         o << "c" << br.head << " :- not d1(" << br.ruleid << "), ok(all)";
-         if (br.fact)
-           o << "." << std::endl;
-         else
-           o << ", ";
-       }
-       else
-       {
-         // else only print equilibria
-         o << "c" << br.head;
-         if (br.fact)
-           o << "." << std::endl;
-         else
-           o << " :- ";
-       }
-     }
-
-     // output bridge rule body
-     for (std::vector<BridgeRuleEntry>::iterator it = br.body.begin(); it != br.body.end(); ++it) {
-       const BridgeRuleEntry& elem = *it;
-       if (elem.Neg())
-         o << "n";
-       o << "a" << elem;
-       if (it+1 != br.body.end())
-         o << ", ";
-       else
-         o << "." << std::endl;
-     }
-   }
-
-
-#endif
-
-  } // namespace mcsdiagexpl
+} // namespace mcsdiagexpl
 } // namespace dlvhex
 
 // vim:ts=8:

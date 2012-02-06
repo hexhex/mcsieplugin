@@ -32,6 +32,8 @@
 #ifndef _DLVHEX_MCSDIAGEXPL_BASECONTEXTATOM_H
 #define _DLVHEX_MCSDIAGEXPL_BASECONTEXTATOM_H
 
+#include "ProgramCtxData.h"
+
 #include <dlvhex2/PluginInterface.h>
 
 #include <boost/shared_ptr.hpp>
@@ -43,8 +45,9 @@ class BaseContextAtom:
   public PluginAtom
 {
 public:
-  BaseContextAtom(std::string name):
-    PluginAtom(name, false)
+  BaseContextAtom(std::string name, ProgramCtxData& pcd):
+    PluginAtom(name, false),
+    pcd(pcd)
   {
     addInputConstant();
     addInputPredicate();
@@ -63,6 +66,8 @@ protected:
   virtual void convertQueryToStringSets(
       const Query& query,
       StringSet& aset, StringSet& bset, StringSet& oset);
+
+  ProgramCtxData& pcd;
 };
 typedef boost::shared_ptr<BaseContextAtom>
         ContextAtomPtr;

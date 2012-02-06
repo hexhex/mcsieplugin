@@ -151,6 +151,7 @@ MCSIEPlugin::printUsage(std::ostream& out) const
   //      123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-
   out << "     MCS Inconsistency Explainer (Diagnosis, Explanation, Equilibria)" << std::endl;
   out << "     --ieenable              Enable plugin" << std::endl;
+  out << "     --iepath=<path>         Path prefix for context files" << std::endl;
   out << "     --ieexplain={D,Dm,E,Em} Select which analysis notions to compute" << std::endl;
   out << "     --ienoprintopeq         Do not print output-projected equilibria for diagnoses" << std::endl;
   out << "     --iemode={diag,expl,eq} Select mode of calculation:" << std::endl;
@@ -236,6 +237,14 @@ MCSIEPlugin::processOptions(
               pcd.setprintOPEQ(false);
               found.push_back(it);
               continue;
+    }
+
+    if( option.find("--iepath=") != std::string::npos )
+    {
+        std::string path = option.substr(9);
+        pcd.setPath(path);
+        found.push_back(it);
+        continue;
     }
 
     /*

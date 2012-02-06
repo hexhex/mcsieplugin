@@ -68,11 +68,11 @@ void writeContext(std::ostream& out, const Context& context)
    const int cn = context.ContextNum();
 
    // guess outputs
-   out << "ma" << cn << "(X) v nma" << cn << "(X) :- o" << cn << "(X)." << std::endl;
+   out << "a" << cn << "(X) v na" << cn << "(X) :- o" << cn << "(X)." << std::endl;
 
    // check context with constraint
    out << ":- not &" << context.ExtAtom()
-       << "[" << cn << ",ma" << cn << ",mb" << cn << ",o" << cn << ","
+       << "[" << cn << ",a" << cn << ",b" << cn << ",o" << cn << ","
        << "\"" << context.Param() << "\"]()." << std::endl; 
 
    // mark context as existing
