@@ -25,37 +25,40 @@
 /**
  * @file   BridgeRuleEntry.h
  * @author Markus Boegl
+ * @author Peter Schueller
  * @date   Sun Jan 24 13:30:59 2010
  * 
- * @brief  BridgeRuleEntry element as elements in BridgeRules
+ * @brief  Bridge rule head or body literal representation
  */
 #ifndef _DLVHEX_MCSDIAGEXPL_BRIDGERULEENTRY_H_
 #define _DLVHEX_MCSDIAGEXPL_BRIDGERULEENTRY_H_
 
+#include <dlvhex2/Printhelpers.h>
+
 #include <string>
 
 namespace dlvhex {
-  namespace mcsdiagexpl {
+namespace mcsdiagexpl {
 
-      class BridgeRuleEntry {
-        private:
-          int contextid;
-          std::string fact;
-          bool neg;
+class BridgeRuleEntry:
+  public ostream_printable<BridgeRuleEntry>
+{
+private:
+  int contextid;
+  std::string fact;
+  bool neg;
 
-        public:
-          BridgeRuleEntry(int id, std::string f, bool n=false);
-          BridgeRuleEntry();
+public:
+  BridgeRuleEntry(int id, std::string f, bool n=false);
+  BridgeRuleEntry();
 
-          int ContextID() const { return contextid; }
-          std::string Fact() const { return fact; }
-          bool Neg() const { return neg; }
+  int ContextID() const { return contextid; }
+  std::string Fact() const { return fact; }
+  bool Neg() const { return neg; }
 
-      }; // END class BridgeRuleEntry
+  std::ostream& print(std::ostream&) const;
+};
 
-      std::ostream&
-      operator<< (std::ostream&, const BridgeRuleEntry&);
-
-  }  // END namespace mcsdiagexpl
+}  // END namespace mcsdiagexpl
 } // END namespace dlvhex
 #endif // _DLVHEX_MCSDIAGEXPL_BRIDGERULEENTRY_H

@@ -29,7 +29,7 @@
  * @author Peter Schueller (refactored)
  * @date   Sun Dez 28 13:34:49 2010
  * 
- * @brief  Realizes rewriting to obtain diagnoses (via guess and check).
+ * @brief  Realizes rewriting to obtain output projected equilibria.
  */
 #ifndef _DLVHEX_MCSDIAGEXPL_INPUTCONVERTEROPEQUILIBRIA_H_
 #define _DLVHEX_MCSDIAGEXPL_INPUTCONVERTEROPEQUILIBRIA_H_

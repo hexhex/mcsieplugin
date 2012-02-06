@@ -23,48 +23,42 @@
 
 
 /**
- * @file   	BridgeRule.h
- * @author 	Markus Boegl
- * @author 	Gerald Weidinger
- * @author 	Peter Schueller
- * @date   	Sun Feb 24 13:32:05 2011
+ * @file   Context.h
+ * @author Markus Boegl
+ * @author Peter Schueller (refactored)
+ * @date   Sun Jan 24 13:47:00 2010
  * 
- * @brief       Bridge rule representation
+ * @brief  Context element for Parsing the Input file
  */
-#ifndef _DLVHEX_MCSDIAGEXPL_BRIDGERULE_H_
-#define _DLVHEX_MCSDIAGEXPL_BRIDGERULE_H_
-
-#include "BridgeRuleEntry.h"
+#ifndef _DLVHEX_MCSDIAGEXPL_CONTEXT_H_
+#define _DLVHEX_MCSDIAGEXPL_CONTEXT_H_
 
 #include <dlvhex2/Printhelpers.h>
 
-#include <vector>
 #include <string>
 
 namespace dlvhex {
-namespace mcsdiagexpl {
+  namespace mcsdiagexpl {
 
-class BridgeRule:
-  public ostream_printable<BridgeRule>
-{
-  BridgeRuleEntry head;
-  std::vector<BridgeRuleEntry> body;
-  bool fact;
-  std::string ruleid;
+      class Context:
+        public ostream_printable<Context>
+      {
+        private:
+          int contextnum;
+          std::string extatom;
+          std::string param;
 
-public:
-  BridgeRule(bool f);
-  BridgeRule();
-  void setHeadRule(std::string rid, int cid, std::string f);
-  void addBodyRule(int id, std::string f, bool n);
+        public:
+          Context(int num, std::string e, std::string p);
+          Context();
 
-  BridgeRuleEntry Head() const { return head; }
-  const std::vector<BridgeRuleEntry>& Body() const { return body; }
+          int ContextNum() const { return contextnum; }
+          std::string ExtAtom() const { return extatom; }
+          std::string Param() const { return param; }
 
-  std::ostream& print(std::ostream&) const;
-};
+	  std::ostream& print(std::ostream&) const;
+      }; // END class Context
 
-}  // END namespace mcsdiagexpl
+  }  // END namespace mcsdiagexpl
 } // END namespace dlvhex
-
-#endif // _DLVHEX_MCSDIAGEXPL_BRIDGERULE_H_
+#endif // _DLVHEX_MCSDIAGEXPL_CONTEXT_H_

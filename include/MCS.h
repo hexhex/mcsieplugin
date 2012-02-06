@@ -1,7 +1,6 @@
-/* dlvhex-mcs-equilibrium-plugin -- Inconsistency analysis and equilibrium
- * semantics for heterogeneous nonmonotonic Multi-Context Systems in dlvhex.
- * Copyright (C) 2009,2010 Markus Boegl
- * Copyright (C) 2011 Gerald Weidinger
+/* dlvhex-mcs-equilibrium-plugin
+ * Calculate Equilibrium Semantics of Multi Context Systems in dlvhex
+ *
  * Copyright (C) 2012 Peter Schueller
  * 
  * This file is part of dlvhex-mcs-equilibrium-plugin.
@@ -23,39 +22,27 @@
  */
 
 /**
- * @file   	InputConverter.h
- * @author 	Markus Boegl
- * @author 	Gerald Weidinger
- * @author 	Peter Schueller
- * @date   	Sun Feb 24 13:34:49 2011
+ * @file   MCS.h
+ * @author Peter Schueller
  * 
- * @brief  Converts the Input file
+ * @brief  Represent MCS (parsed from input file).
  */
-#ifndef _DLVHEX_MCSDIAGEXPL_INPUTCONVERTER_H_
-#define _DLVHEX_MCSDIAGEXPL_INPUTCONVERTER_H_
+#ifndef _DLVHEX_MCSDIAGEXPL_MCS_H_
+#define _DLVHEX_MCSDIAGEXPL_MCS_H_
 
-#include <dlvhex2/PluginInterface.h>
-#include "ProgramCtxData.h"
+#include "BridgeRule.h"
+#include "Context.h"
 
-namespace dlvhex
+namespace dlvhex {
+namespace mcsdiagexpl {
+
+struct MCS
 {
-namespace mcsdiagexpl
-{
-
-class InputConverter:
-  public PluginConverter
-{
-public:
-  InputConverter(ProgramCtxData& pcd);
-
-  virtual void convert(std::istream& i, std::ostream& o);
-protected:
-  ProgramCtxData& pcd;
+  std::vector<BridgeRule> rules;
+  std::vector<Context> contexts;
 };
 
-}
-}
+} // END namespace mcsdiagexpl
+} // END namespace dlvhex
 
-#endif // _DLVHEX_MCSDIAGEXPL_INPUTCONVERTER_H
-
-// vi:ts=8:
+#endif // _DLVHEX_MCSDIAGEXPL_MCS_H_

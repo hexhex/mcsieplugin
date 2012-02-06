@@ -8,21 +8,22 @@ plugin_LTLIBRARIES = libdlvhexplugin-mcsie.la
 # in additional plugins which then depend on libdlvhex-mcsie
 # see the testcases for examples of such additional plugins
 libdlvhex_mcsie_la_SOURCES = \
-  ProgramCtxData.cpp \
+  ACC_ContextAtom.cpp \
   BaseContextPlugin.cpp \
   BaseContextAtom.cpp \
-  ACC_ContextAtom.cpp \
+  BridgeRule.cpp \
+  Context.cpp \
   DLV_ASP_ContextAtom.cpp \
-  InputConverter.cpp \
+  InputConverterDiagnoses.cpp \
+  InputConverterExplanations.cpp \
+  InputConverterOPEquilibria.cpp \
+  InputParser.cpp \
+  ProgramCtxData.cpp \
   SaturationMetaAtom.cpp
 
 nopfoo = \
   InputConverterHelper.cpp \
-  InputConverterDiagnosis.cpp \
-  InputConverterExplanations.cpp \
-  BridgeRule.cpp \
   BridgeRuleEntry.cpp \
-  ParseContext.cpp \
   OutputRewriter.cpp \
   EquilibriumPrintVisitor.cpp \
   DiagExplPrintVisitor.cpp \

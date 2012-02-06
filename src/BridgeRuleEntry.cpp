@@ -25,9 +25,10 @@
 /**
  * @file   BridgeRuleEntry.cpp
  * @author Markus Boegl
+ * @author Peter Schueller
  * @date   Sun Jan 24 13:30:12 2010
  * 
- * @brief  BridgeRuleEntry element as elements in BridgeRules
+ * @brief  Bridge rule head or body literal representation
  */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -48,9 +49,11 @@ namespace dlvhex {
    }//BridgeRuleEntry End
 
    std::ostream&
-   operator<< (std::ostream& out, const BridgeRuleEntry& ruleentry) {
-     out << ruleentry.ContextID() << "(" << ruleentry.Fact() << ")";
-     return out;
+   BridgeRuleEntry::print(std::ostream& out) const {
+     if( neg )
+       out << "not ";
+     return
+			 out << "(" << ContextID() << ":" << ruleentry.Fact() << ")";
    }
 
   } // namespace mcsdiagexpl

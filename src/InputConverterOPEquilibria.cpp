@@ -21,34 +21,171 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
 /**
- * @file   	Converter.cpp
- * @author 	Markus Boegl
- * @author 	Gerald Weidinger
- * @date   	Sun Jan 08 13:34:29 2011
+ * @file   InputConverterOPEquilibria.cpp
+ * @author Peter Schueller
  * 
- * @brief  	Converts the Input file when calculating over Diagnosis
+ * @brief  Realizes rewriting to obtain output projected equilibria.
  */
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-//#define DEBUG
-
-#include "InputConverter.h"
-#include "dlvhex/SpiritDebugging.h"
-#include "BridgeRuleEntry.h"
-#include "Global.h"
-#include "InputConverterDiagnosis.h"
+#include "InputConverterOPEquilibria.h"
+//#include "dlvhex/SpiritDebugging.h"
+//#include "BridgeRuleEntry.h"
+//#include "Global.h"
+//#include "InputConverterDiagnosis.h"
 
 
 #include <iostream>
 #include <sstream>
 
 namespace dlvhex {
-  namespace mcsdiagexpl {
+namespace mcsdiagexpl {
 
+void InputConverterOPEquilibria::convert(std::istream& i, std::ostream& o)
+{
+  throw std::runtime_error("todo InputConverterOPEquilibria?::convert");
+}
+
+#if 0
+ context print
+
+     const int cn = context.ContextNum();
+
+     if( Global::getInstance()->isKR2010rewriting() )
+     {
+       // guess outputs
+       out << "ma" << cn << "(X) v nma" << cn << "(X) :- o" << cn << "(X)." << std::endl;
+
+       // check context with constraint
+       out << ":- not &" << context.ExtAtom()
+           << "[" << cn << ",ma" << cn << ",mb" << cn << ",o" << cn << ","
+           << "\"" << context.Param() << "\"]()." << std::endl; 
+
+       // mark context as existing
+       out << "ctx(" << cn << ")." << std::endl;
+     }
+     else
+     {
+       // guess input and output beliefs (after previous context has been finished)
+
+       // inputs
+       out << "mb" << cn << "(X) v nmb" << cn << "(X) :- i" << cn << "(X)";
+       out << ", ok(" << (cn-1) << ")";
+       out << "." << std::endl;
+
+       // outputs
+       out << "ma" << cn << "(X) v nma" << cn << "(X) :- o" << cn << "(X)";
+       out << ", ok(" << (cn-1) << ")";
+       out << "." << std::endl;
+
+       // context check
+       out << "ok(" << cn << ") :- &" << context.ExtAtom() 
+         << "[" << context.ContextNum()
+         << ",ma" << context.ContextNum()
+         << ",mb" << context.ContextNum() 
+         << ",o" << context.ContextNum()
+         << ",\"" << context.Param() << "\"]()";
+       out << ", ok(" << (cn-1) << ")";
+       out << "." << std::endl;
+
+       // require that context check is successful
+       out << ":- not ok(" << cn << ")." << std::endl;
+
+       // verify guessed output with output calculated via bridge rules (if all contexts are ok)
+       out << ":- mc" << cn << "(X), not mb" << cn << "(X), ok(all)." << std::endl;
+       out << ":- not mc" << cn << "(X), mb" << cn << "(X), ok(all)." << std::endl;
+
+       // mark context as existing
+       out << "ctx(" << cn << ")." << std::endl;
+     }
+     return out;
+   }
+
+#endif
+
+#if 0
+   void 
+   BridgeRule::writeProgram(std::ostream& o) {
+     // write bridgerule in asp form
+     std::list<int> ilist;
+
+     // mark outputs: OUT_i via "o<i>(belief)"
+     for (std::vector<BridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
+       const BridgeRuleEntry& elem = *it;
+       o << "o" << elem << "." << std::endl;
+     }
+
+     if ((Global::getInstance())->isKR2010rewriting())
+     {
+       if ((Global::getInstance())->isSet()) {
+       // Only print equilibria
+         // output diagnosis disjunction
+         o << "normal(" << ruleid << ") v md1(" << ruleid << ") v md2(" << ruleid << ")." << std::endl;
+         // output d2 rule
+         o << "mb" << head << " :- md2(" << ruleid << ")." << std::endl;
+         // output d1 rule
+         o << "mb" << head << " :- not md1(" << ruleid << ")";
+         if (fact)
+           o << "." << std::endl;
+         else
+           o << ", ";
+       } else {
+         o << "mb" << head;
+         if (fact)
+           o << "." << std::endl;
+         else
+           o << " :- ";
+       }
+     }
+     else
+     {
+       // mark inputs: IN_i via "i<i>(belief)"
+       o << "i" << head << "." << std::endl;
+
+       // BR evaluation (and diagnosis guessing) (after all contexts ok, indicated by ok(all))
+       if ((Global::getInstance())->isSet())
+       {
+         // diagnosis guessing
+         o << "normal(" << ruleid << ") v md1(" << ruleid << ") v md2(" << ruleid << ") :- ok(all)." << std::endl;
+         // d2 rule
+         o << "mc" << head << " :- md2(" << ruleid << "), ok(all)." << std::endl;
+         // d1 rule
+         o << "mc" << head << " :- not md1(" << ruleid << "), ok(all)";
+         if (fact)
+           o << "." << std::endl;
+         else
+           o << ", ";
+       }
+       else
+       {
+         // else only print equilibria
+         o << "mc" << head;
+         if (fact)
+           o << "." << std::endl;
+         else
+           o << " :- ";
+       }
+     }
+
+     // output bridge rule body
+     for (std::vector<BridgeRuleEntry>::iterator it = body.begin(); it != body.end(); ++it) {
+       const BridgeRuleEntry& elem = *it;
+       if (elem.Neg())
+         o << "n";
+       o << "ma" << elem;
+       if (it+1 != body.end())
+         o << ", ";
+       else
+         o << "." << std::endl;
+     }
+   }
+
+#endif
+#if 0
    	InputConverterDiagnosis* InputConverterDiagnosis::icd = NULL;
 
 	InputConverterDiagnosis*
@@ -213,6 +350,7 @@ void
    }
 
 
+#endif
 
   } // namespace mcsdiagexpl
 } // namespace dlvhex

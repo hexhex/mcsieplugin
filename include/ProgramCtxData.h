@@ -35,6 +35,7 @@
 
 #include <dlvhex2/PluginInterface.h>
 #include "BaseContextAtom.h"
+#include "MCS.h"
 
 #include <ostream>
 #include <sstream>
@@ -88,10 +89,11 @@ public:
       { return contextAtoms; }
     std::vector<ContextAtomPtr>& getContextAtoms()
       { return contextAtoms; }
-    /*
-    void setRuleList(std::list<std::string> rL);
-    std::list<std::string> & getRuleList();
-    */
+
+    const MCS& mcs() const
+      { return mcs_; }
+    MCS& mcs()
+      { return mcs_; }
 
   protected:
     // whether plugin is enabled
@@ -104,9 +106,8 @@ public:
     // MCSIE context atoms registered by MCSIE and MCSIE plugins
     std::vector<ContextAtomPtr> contextAtoms;
 
-    //TODO parsed MCS representation here
-
-    //std::list<std::string> ruleList;
+    // parsed MCS representation
+    MCS mcs_;
   };
 };
 typedef MCSIE::CtxData

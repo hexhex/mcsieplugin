@@ -76,50 +76,7 @@ InputConverter::InputConverter(ProgramCtxData& pcd):
  */
 void InputConverter::convert(std::istream& i, std::ostream& o)
 {
-  /*
- MCSdescriptionGrammar mcsdgram;
- std::ostringstream buf;
- buf << i.rdbuf();
- std::string input = buf.str();
-
- iterator_t it_begin = input.c_str();
- iterator_t it_end = input.c_str() + input.size();
-
- boost::spirit::classic::tree_parse_info<iterator_t, factory_t> info = 
-   boost::spirit::classic::ast_parse<factory_t>(it_begin, it_end, mcsdgram, boost::spirit::classic::space_p);
-
- if (!info.full) {
-   throw PluginError("MCS Equilibrium Plugin: Inputfile syntax error!");
- }
-
- // if there's not 1 tree in the result of the parser, this is a bug
- assert(info.trees.size() == 1);
-
- // Convert the Parse Tree to a asp program
- std::stringstream ss;
- if (!Global::getInstance()->isCalculationOverExplanations()){
-    InputConverterDiagnosis::getInstance()->convertParseTreeToDLVProgram(*info.trees.begin(), ss);
- }else{
-    if (Global::getInstance()->isDiag()){
-            //The calculation over explanations produces a superset of the actual diagnosis. some of the contained tuples may not be diagnosis.
-            //If you want to print out the found superset remove this code, and enable the output code for diaagnosis in Outputrewriter.cpp
-            std::cout << "A calculation over explanations cannot produce D, please choose an other value for parameter --ieexplain!" << std::endl;
-            exit(0);
-    }
-    InputConverterExplanations::getInstance()->convertParseTreeToDLVProgram(*info.trees.begin(), ss);	
- }
-
- #ifdef DEBUG
-   std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << std::endl;
-   std::cout << "Converted DLV Program: " << std::endl;
-   std::cout << ss.str();
-   std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << std::endl;
- #endif
- o << ss.rdbuf();
-    
-
-   */
-} // end of MCSequilibriumConverter::convert
+}
 
 } // namespace mcsdiagexpl
 } // namespace dlvhex

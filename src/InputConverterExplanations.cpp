@@ -21,33 +21,36 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
 /**
- * @file   Converter.cpp
+ * @file   InputConverterExplanations.cpp
  * @author Gerald Weidinger
+ * @author Peter Schueller (refactored)
  * @date   Sun Jan 24 13:34:29 2010
  * 
- * @brief  Converts the Input file if --compoverex is set
+ * @brief  Realizes rewriting to obtain explanations (via saturation).
  */
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
-#include "Global.h"
 #endif /* HAVE_CONFIG_H */
 
 //#define DEBUG
 
-#include "InputConverter.h"
-#include "dlvhex/SpiritDebugging.h"
-#include "BridgeRuleEntry.h"
 #include "InputConverterExplanations.h"
+//#include "dlvhex/SpiritDebugging.h"
+//#include "BridgeRuleEntry.h"
 
-
-#include <iostream>
 #include <sstream>
 
 namespace dlvhex {
-  namespace mcsdiagexpl {
+namespace mcsdiagexpl {
 
+void InputConverterExplanations::convert(std::istream& i, std::ostream& o)
+{
+  throw std::runtime_error("todo InputConverterExplanations::convert");
+}
+
+#if 0
    	InputConverterExplanations* InputConverterExplanations::ice = NULL;
 
 	InputConverterExplanations*
@@ -210,11 +213,12 @@ void
 	o << "nr2(" << br.ruleid << ") :- spoil." << std::endl;
 
      }
+#endif
 
 
 
 
-  } // namespace mcsdiagexpl
+} // namespace mcsdiagexpl
 } // namespace dlvhex
 
 // vim:ts=8:

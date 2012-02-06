@@ -191,20 +191,9 @@ AM_CPPFLAGS = \
   $(BOOST_CPPFLAGS) \
   $(DLVHEX_CFLAGS)
 
-
-# link statically to test if it is loadable
-TESTSTATICLIBS = ${top_builddir}/src/libdlvhex-mcsie.la $(DLVHEX_LIBS)
 COMMONLDFLAGS = -avoid-version -module -L$(top_builddir)/src/ -rpath /
 COMMONLIBADD = -ldlvhex-mcsie
 
-# static testcases (these only check whether they can be linked)
-check_PROGRAMS = \
-  TestStatic-mcsie-medexample
-
-# static testcase (if symbols are missing, this fails with a link error)
-TestStatic_mcsie_medexample_SOURCES = dummymain.cpp
-TestStatic_mcsie_medexample_LDADD = ${top_builddir}/examples/libdlvhexplugin-mcsie-medexample.la $(TESTSTATICLIBS)
-# test plugin (if symbols are missing, this fails with "no such file" from dlerror())
 libdlvhexplugin_mcsie_medexample_la_SOURCES = medExample/Context3.cpp
 libdlvhexplugin_mcsie_medexample_la_LDFLAGS = $(COMMONLDFLAGS)
 libdlvhexplugin_mcsie_medexample_la_LIBADD = $(COMMONLIBADD)

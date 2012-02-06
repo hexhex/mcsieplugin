@@ -23,41 +23,35 @@
 
 
 /**
- * @file   ParseContext.h
+ * @file   Context.cpp
  * @author Markus Boegl
- * @date   Sun Jan 24 13:47:00 2010
+ * @author Peter Schueller (refactored)
+ * @date   Sun Jan 24 13:46:27 2010
  * 
  * @brief  Context element for Parsing the Input file
  */
-#ifndef _DLVHEX_MCSDIAGEXPL_PARSECONTEXT_H_
-#define _DLVHEX_MCSDIAGEXPL_PARSECONTEXT_H_
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif /* HAVE_CONFIG_H */
 
-#include <string>
+#include "Context.h"
 
 namespace dlvhex {
   namespace mcsdiagexpl {
 
-      class ParseContext {
-        private:
-          int contextnum;
-          std::string extatom;
-          std::string param;
+   Context::Context(int num, std::string e, std::string p)
+     : contextnum(num), extatom(e), param(p) {
+   }//BridgeRuleEntry End
 
-        public:
-          ParseContext(int num, std::string e, std::string p);
-          ParseContext();
+   Context::Context()
+     : contextnum(0), extatom(""), param("") {
+   }//BridgeRuleEntry End
 
-          int ContextNum() const { return contextnum; }
-          std::string ExtAtom() const { return extatom; }
-          std::string Param() const { return param; }
+   std::ostream&
+   Context::print(std::ostream& out) const
+   {
+      return out << "#context(" << contextnum << ",'" << extatom << "','" << param << "').";
+   }
 
-      }; // END class Context
-
-        std::ostream&
-        operator<< (std::ostream&, const ParseContext&);
-
-	void EXOP(std::ostream& out, const ParseContext& context);
-
-  }  // END namespace mcsdiagexpl
-} // END namespace dlvhex
-#endif // _DLVHEX_MCSDIAGEXPL_PARSECONTEXT_H_
+  } // namespace mcsdiagexpl
+} // namespace dlvhex
