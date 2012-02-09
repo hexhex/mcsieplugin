@@ -48,15 +48,6 @@ namespace mcsdiagexpl {
 class MCSIEPlugin:
   public BaseContextPlugin
 {
-  /*
-private:
-  InputConverter* mcseconverter;
-  OutputBuilder* equilibriumOB;
-  MCSIEPlugin(const MCSIEPlugin&);
-  AtomFunctionMap *afm;
-  bool bench;
-
-  */
 public:
   MCSIEPlugin();
   virtual ~MCSIEPlugin();
@@ -68,12 +59,9 @@ public:
   virtual void printUsage(std::ostream& o) const;
   virtual void processOptions(std::list<const char*>& pluginOptions, ProgramCtx& ctx);
   virtual PluginConverterPtr createConverter(ProgramCtx&);
-  /*
-  virtual void setupProgramCtx(ProgramCtx& pc);
-  virtual OutputBuilder* createOutputBuilder();
-  virtual void setOptions(bool doHelp, std::vector<std::string>& argv, std::ostream& out);
-  */
 
+  // change model callback
+  virtual void setupProgramCtx(ProgramCtx&);
 };
 
 } // END namespace mcsdiagexpl

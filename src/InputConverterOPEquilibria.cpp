@@ -33,7 +33,7 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "InputConverterOPEquilibria.h"
-
+#include "InputParser.h"
 
 #include <iostream>
 #include <sstream>
@@ -93,7 +93,7 @@ void writeBridgeRule(std::ostream& o, const BridgeRule& br)
   o << asAtom("i", br.Head()) << ".\n";
 
   // output rule
-  o << asAtom("b", br.Head()) << " :- ;
+  o << asAtom("b", br.Head()) << " :- ";
 
   // output bridge rule body
   for(BridgeRuleEntryIterator it = br.Body().begin();
