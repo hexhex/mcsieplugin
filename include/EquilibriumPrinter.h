@@ -1,8 +1,7 @@
 /* dlvhex-mcs-equilibrium-plugin
  * Calculate Equilibrium Semantics of Multi Context Systems in dlvhex
  *
- * Copyright (C) 2009,2010  Markus Boegl
- * Copyright (C) 2010,2011  Gerald Weidinger
+ * Copyright (C) 2012 Peter Schueller
  * 
  * This file is part of dlvhex-mcs-equilibrium-plugin.
  *
@@ -22,40 +21,35 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
 /**
- * @file   MinPrintDualConvertFinalCallback.cpp
+ * @file   EquilibriumPrinter.h
  * @author Peter Schueller
  * 
- * @brief  Final callback for MCSIE (prints minimal notions, converts to dual notion)
+ * @brief  Helper to print pairs of sets represented in answer sets.
  */
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif /* HAVE_CONFIG_H */
+#ifndef _DLVHEX_MCSDIAGEXPL_EQUILIBRIUMPRINTER_H_
+#define _DLVHEX_MCSDIAGEXPL_EQUILIBRIUMPRINTER_H_
 
-#include "MinPrintDualConvertFinalCallback.h"
+#include "ProgramCtxData.h"
 
-#include <cassert>
+#include <dlvhex2/AnswerSet.h>
+
+#include <ostream>
 
 namespace dlvhex {
 namespace mcsdiagexpl {
 
-MinPrintDualConvertFinalCallback::
-MinPrintDualConvertFinalCallback(ProgramCtxData& pcd):
-	pcd(pcd)
+class EquilibriumPrinter
 {
-}
+public:
+	EquilibriumPrinter(ProgramCtxData& pcd);
+  void print(std::ostream& o, AnswerSetPtr model);
 
-void MinPrintDualConvertFinalCallback::
-operator()()
-{
-	if( pcd.isminDiag() )
-		assert(false && "MinPrintDualConvertFinalCallback::operator()() not implemented");
-	if( pcd.isminExp() )
-		assert(false && "MinPrintDualConvertFinalCallback::operator()() not implemented");
-}
+protected:
+	ProgramCtxData& pcd;
+};
 
-} // namespace mcsdiagexpl
-} // namespace dlvhex
+} // END namespace mcsdiagexpl
+} // END namespace dlvhex
 
-// vim:ts=2:sw=2:
+#endif // _DLVHEX_MCSDIAGEXPL_EQUILIBRIUMPRINTER_H_

@@ -32,6 +32,7 @@
 
 #include "ProgramCtxData.h"
 #include "NotionPrinter.h"
+#include "EquilibriumPrinter.h"
 
 #include <dlvhex2/PluginInterface.h>
 
@@ -50,9 +51,6 @@ public:
   virtual bool operator()(AnswerSetPtr model);
 
 protected:
-	virtual void printEqInModel(std::ostream& o, AnswerSetPtr model);
-
-protected:
   ProgramCtxData& pcd;
 
   // whether to immediately print encountered models
@@ -67,6 +65,7 @@ protected:
   bool collectminimal;
 
 	NotionPrinter nprinter;
+	EquilibriumPrinter eqprinter;
 };
 
 } // END namespace mcsdiagexpl

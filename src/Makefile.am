@@ -15,6 +15,7 @@ libdlvhex_mcsie_la_SOURCES = \
   BridgeRuleEntry.cpp \
   Context.cpp \
   DLV_ASP_ContextAtom.cpp \
+	EquilibriumPrinter.cpp \
   InputConverterDiagnoses.cpp \
   InputConverterExplanations.cpp \
   InputConverterOPEquilibria.cpp \

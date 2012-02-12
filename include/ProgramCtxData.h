@@ -132,7 +132,7 @@ public:
 		PredicateMask bremask;
 
 		// mask for output beliefs of each context
-		std::vector<PredicateMask> obmasks;
+		std::list<PredicateMask> obmasks;
   };
 };
 typedef MCSIE::CtxData

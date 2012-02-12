@@ -60,7 +60,8 @@ PrintAndAccumulateModelCallback(ProgramCtxData& pcd):
 			(pcd.getMode() == ProgramCtxData::DIAGREWRITING)?
 			pcd.idd2:pcd.ide2,
 			(pcd.getMode() == ProgramCtxData::DIAGREWRITING)?
-			pcd.brdmask:pcd.bremask)
+			pcd.brdmask:pcd.bremask),
+	eqprinter(pcd)
 {
   bool anydiag = pcd.isDiag() || pcd.isminDiag();
   bool anyexpl = pcd.isExp() || pcd.isminExp();
@@ -76,7 +77,7 @@ PrintAndAccumulateModelCallback(ProgramCtxData& pcd):
 			collectminimal = true;
 		prefix = "D";
 		if( printeq )
-			prefix += "EQ";
+			prefix += ":EQ";
 		break;
 
 	case ProgramCtxData::EXPLREWRITING:
@@ -98,12 +99,6 @@ PrintAndAccumulateModelCallback(ProgramCtxData& pcd):
 	}
 }
 
-void PrintAndAccumulateModelCallback::
-printEqInModel(std::ostream& o, AnswerSetPtr model)
-{
-	assert(false && "todo impl");
-}
-
 // if print anything nonminimal (=printanything), do it
 // if collect minimal, check against known minimals
 //   if subset of existing replace it
@@ -118,9 +113,15 @@ operator()(AnswerSetPtr model)
 	{
 		o << prefix;
 		if( printnotion )
+		{
+			o << ":";
 			nprinter.print(o, model);
+		}
 		if( printeq )
-			printEqInModel(o, model);
+		{
+			o << ":";
+			eqprinter.print(o, model);
+		}
 		o << std::endl;
 	}
 

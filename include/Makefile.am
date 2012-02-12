@@ -6,7 +6,9 @@ MCSIEHEADERS = \
 		 BridgeRule.h \
 		 BridgeRuleEntry.h \
 		 Context.h \
+		 EquilibriumPrinter.h \
 		 MCS.h \
+		 NotionPrinter.h \
 		 BaseContextPlugin.h
 
 pkginclude_HEADERS = $(MCSIEHEADERS)
