@@ -1,4 +1,0 @@
-add InputConverterOPEquilibria for pure equilibrium calculation rewriting
-make InputConverterHelper a base class (~mixin) to InputConverter<foo>
-remove InputConverter as it is only a relay, configure the right converter in createConverter
-rename InputParserDriver to InputParser and make InputParser provide data structures, not spirit structures to InputConverter<foo>

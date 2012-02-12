@@ -1,7 +1,7 @@
 /* dlvhex-mcs-equilibrium-plugin
  * Calculate Equilibrium Semantics of Multi Context Systems in dlvhex
  *
- * Copyright (C) 2009,2010  Markus Boegl
+ * Copyright (C) 2012 Peter Schueller
  * 
  * This file is part of dlvhex-mcs-equilibrium-plugin.
  *
@@ -21,31 +21,38 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
 /**
- * @file   ExplanationPrintVisitor.h
- * @author Gerald Weidinger
- * @date   Sun Jan 24 13:44:22 2010
+ * @file   NotionPrinter.h
+ * @author Peter Schueller
  * 
- * @brief  PrintVisitor to go throught the Answersets and write as Equilibria when compoverexplnations i set
+ * @brief  Helper to print pairs of sets represented in answer sets.
  */
-#ifndef _DLVHEX_MCSDIAGEXPL_EXPLANATIONPRINTVISITOR_H_
-#define _DLVHEX_MCSDIAGEXPL_EXPLANATIONPRINTVISITOR_H_
+#ifndef _DLVHEX_MCSDIAGEXPL_NOTIONPRINTER_H_
+#define _DLVHEX_MCSDIAGEXPL_NOTIONPRINTER_H_
 
-#include "dlvhex/PrintVisitor.h"
+#include "ProgramCtxData.h"
+
+#include <dlvhex2/PredicateMask.h>
+#include <dlvhex2/AnswerSet.h>
+
+#include <ostream>
 
 namespace dlvhex {
-  namespace mcsdiagexpl {
+namespace mcsdiagexpl {
 
-    class ExplanationPrintVisitor : public RawPrintVisitor {
-      public:
-        explicit
-        ExplanationPrintVisitor(std::ostream&);
+class NotionPrinter
+{
+public:
+	NotionPrinter(ProgramCtxData& pcd, ID id1, ID id2, PredicateMask& mask);
+  void print(std::ostream& o, AnswerSetPtr model);
 
-        /// outputs the Equilibrium in '{(a,b,c), (cd,bx)}' form
-        virtual void visit(const AtomSet* const);
-    };
-  } // END namespace mcsdiagexpl
+protected:
+	ProgramCtxData& pcd;
+	ID id1, id2;
+	PredicateMask& mask;
+};
+
+} // END namespace mcsdiagexpl
 } // END namespace dlvhex
 
-#endif // _DLVHEX_MCSDIAGEXPL_EXPLANATIONPRINTVISITOR_H_
+#endif // _DLVHEX_MCSDIAGEXPL_NOTIONPRINTER_H_

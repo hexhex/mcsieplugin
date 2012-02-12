@@ -46,7 +46,7 @@ namespace dlvhex {
 namespace mcsdiagexpl {
 
 void
-ACC_ContextAtom::retrieve(const Query& query, Answer& answer)
+ACC_ContextAtom::retrieve(const Query& query, Answer& answer) throw (PluginError)
 {
   DBGLOG_SCOPE(DBG,"ACA::r",false);
   DBGLOG(DBG,"ACC_ContextAtom::retrieve");

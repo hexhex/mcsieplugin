@@ -1,7 +1,7 @@
 /* dlvhex-mcs-equilibrium-plugin
  * Calculate Equilibrium Semantics of Multi Context Systems in dlvhex
  *
- * Copyright (C) 2009,2010  Markus Boegl
+ * Copyright (C) 2012 Peter Schueller
  * 
  * This file is part of dlvhex-mcs-equilibrium-plugin.
  *
@@ -21,32 +21,38 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
 /**
- * @file   EquilibriumPrintVisitor.h
- * @author Markus Boegl
- * @date   Sun Jan 24 13:44:22 2010
+ * @file   MinPrintDualConvertFinalCallback.h
+ * @author Peter Schueller
  * 
- * @brief  PrintVisitor to go throught the Answersets and write as Equilibria
+ * @brief  Final callback for MCSIE (prints minimal notions, converts to dual notion)
  */
-#ifndef _DLVHEX_MCSDIAGEXPL_EQUILIBRIUMPRINTVISITOR_H_
-#define _DLVHEX_MCSDIAGEXPL_EQUILIBRIUMPRINTVISITOR_H_
+#ifndef _DLVHEX_MCSDIAGEXPL_FINALCALLBACK_H_
+#define _DLVHEX_MCSDIAGEXPL_FINALCALLBACK_H_
 
-#include "dlvhex/PrintVisitor.h"
+#include "ProgramCtxData.h"
+
+#include <dlvhex2/PluginInterface.h>
+
+#include <vector>
 
 namespace dlvhex {
-  namespace mcsdiagexpl {
+namespace mcsdiagexpl {
 
-    class EquilibriumPrintVisitor : public RawPrintVisitor {
-      public:
-        explicit
-        EquilibriumPrintVisitor(std::ostream&);
+class MinPrintDualConvertFinalCallback:
+	public FinalCallback
+{
+public:
+	MinPrintDualConvertFinalCallback(ProgramCtxData& pcd);
+	virtual ~MinPrintDualConvertFinalCallback() {}
 
-        /// outputs the Equilibrium in '{(a,b,c), (cd,bx)}' form
-        virtual void
-        visit(const AtomSet* const);
-    };
-  } // END namespace mcsdiagexpl
+  virtual void operator()();
+
+protected:
+	ProgramCtxData& pcd;
+};
+
+} // END namespace mcsdiagexpl
 } // END namespace dlvhex
 
-#endif // _DLVHEX_MCSDIAGEXPL_EQUILIBRIUMPRINTVISITOR_H_
+#endif // _DLVHEX_MCSDIAGEXPL_FINALCALLBACK_H_

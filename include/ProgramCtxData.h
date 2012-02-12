@@ -119,6 +119,20 @@ public:
 
     // parsed MCS representation
     MCS mcs_;
+
+	public:
+		// registry
+		RegistryPtr reg;
+
+		// mask for all bridge rule d1/d2 atoms
+		ID idd1, idd2;
+		PredicateMask brdmask;
+		// mask for all bridge rule e1/e2 atoms
+		ID ide1, ide2;
+		PredicateMask bremask;
+
+		// mask for output beliefs of each context
+		std::vector<PredicateMask> obmasks;
   };
 };
 typedef MCSIE::CtxData

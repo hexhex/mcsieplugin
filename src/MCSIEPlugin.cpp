@@ -41,6 +41,8 @@
 #include "InputConverterDiagnoses.h"
 #include "InputConverterExplanations.h"
 #include "InputConverterOPEquilibria.h"
+#include "PrintAndAccumulateModelCallback.h"
+#include "MinPrintDualConvertFinalCallback.h"
 
 #include <dlvhex2/ProgramCtx.h>
 #include <dlvhex2/PredicateMask.h>
@@ -64,179 +66,61 @@ MCSIEPlugin::~MCSIEPlugin()
 {
 }
 
-namespace
-{
-
-class WitnessCallback:
-  public ModelCallback
-{
-public:
-  WitnessCallback(ProgramCtxData& pcd);
-	virtual ~WitnessCallback() {}
-
-  virtual bool operator()(AnswerSetPtr model);
-	bool gotOne() const { return gotOneModel; }
-
-protected:
-  ProgramCtxData& pcd;
-  RegistryPtr reg;
-  // whether to print all encountered models
-  bool printall;
-  // whether to print equilibria in encountered models
-  bool printeq;
-  // how encountered models should be prefixed
-  std::string prefix;
-  // whether to collect subset-minimal parts of models
-  bool collectminimal;
-
-  PredicateMask brmask;
-  std::vector<PredicateMask> obmasks;
-};
-typedef boost::shared_ptr<WitnessCallback> WitnessCallbackPtr;
-
-WitnessCallback::WitnessCallback(ProgramCtxData& pcd, RegistryPtr reg):
-  pcd(pcd),
-  reg(reg),
-  printall(pcd.isDiag() || pcd.isExp() ||
-           pcd.getMode() == PluginCtxData::EQREWRITING),
-  printeq(pcd.isprintOPEQ()),
-  prefix(":"),
-  collectminimal(pcd.isminDiag() || pcd.isMinExp())
-{
-  // sanity checks
-  if( printeq && pcd.getMode() == ProgramCtxData::EXPLREWRITING )
-    throw PluginError("cannot use saturation encoding for calculating equilibria");
-
-  bool anydiag = pcd.isDiag() || pcd.isminDiag();
-  if( pcd.getMode() == ProgramCtxData::EQREWRITING && anydiag )
-    throw PluginError("cannot use equilibrium encoding for calculating diagnoses");
-
-  bool anyexpl = pcd.isExp() || pcd.isminExp();
-  if( pcd.getMode() == ProgramCtxData::EQREWRITING && anyexpl )
-    throw PluginError("cannot use equilibrium encoding for calculating explanations");
-
-  // to get diag from expl and vice versa we collect minimal ones
-  if( pcd.getMode() == ProgramCtxData::DIAGREWRITING && anyexpl )
-    collectminimal = true;
-  if( pcd.getMode() == ProgramCtxData::EXPLREWRITING && anydiag )
-    collectminimal = true;
-
-  // configure predicate mask for norm/d1/d2
-  brmask.setRegistry(reg);
-  ID idnorm(reg->storeConstantTerm("norm"));
-  ID idd1(reg->storeConstantTerm("d1"));
-  ID idd2(reg->storeConstantTerm("d2"));
-  brmask.addPredicate(idnorm);
-  brmask.addPredicate(idd1);
-  brmask.addPredicate(idd2);
-
-  // configure predicate mask for each context's output beliefs
-  assert(!pcd.mcs().contexts.empty() &&
-         "here we expect to have parsed the input and "
-         "we expect to know the number of contexts");
-  for(ContextIterator it = pcd.mcs().contexts.begin();
-      it != pcd.mcs().contexts.end(); ++it)
-  {
-    obmasks.push_back(PredicateMask());
-    PredicateMask& mask = obmasks.back();
-
-    std::ostringstream s;
-    s << "a" << it->ContextNum();
-
-    mask.setRegistry(reg);
-    ID idob(reg->storeConstantTerm(s.str()));
-    mask.addPredicate(idob);
-  }
-}
-
-// if print all, print it with prefix
-// if print eq, print eq
-// if collect minimal, check against known minimals
-//   if subset of existing replace it
-//   otherwise if not superset and not equal store new
-bool WitnessCallback::operator()(
-		AnswerSetPtr model)
-{
-  #if 0
-  RegistryPtr reg = model->interpretation->getRegistry();
-  const Interpretation::Storage& bits = model->interpretation->getStorage();
-  std::ostream& o = std::cout;
-
-	o << message;
-  o << '{';
-  Interpretation::Storage::enumerator it = bits.first();
-  if( it != bits.end() )
-  {
-    bool gotOutput =
-      reg->printAtomForUser(o, *it);
-    it++;
-    for(; it != bits.end(); ++it)
-    {
-      if( gotOutput )
-        o << ',';
-      gotOutput =
-        reg->printAtomForUser(o, *it);
-    }
-  }
-  o << '}' << std::endl;
-	gotOneModel = true;
-	if( abortAfterFirst )
-		return false;
-	else
-		return true;
-  #endif
-}
-
-#if 0
-class VerdictPrinterCallback:
-	public FinalCallback
-{
-public:
-	VerdictPrinterCallback(
-			const std::string& message, WitnessCallbackPtr wprinter);
-	virtual ~VerdictPrinterCallback() {}
-
-  virtual void operator()();
-
-protected:
-	std::string message;
-	WitnessCallbackPtr wprinter;
-};
-
-VerdictPrinterCallback::VerdictPrinterCallback(
-		const std::string& message,
-		WitnessCallbackPtr wprinter):
-	message(message),
-	wprinter(wprinter)
-{
-}
-
-void VerdictPrinterCallback::operator()()
-{
-	assert(!!wprinter);
-	// if no model was returned, we have a message to emit
-	if( !wprinter->gotOne() )
-	{
-		std::cout << message << std::endl;
-	}
-}
-#endif
-
-} // anonymous namespace
-
 // change model callback
 void MCSIEPlugin::setupProgramCtx(ProgramCtx& ctx)
 {
   ProgramCtxData& pcd = ctx.getPluginData<MCSIE>();
   if( pcd.isEnabled() )
   {
-		ModelCallbackPtr wprinter(
-        new WitnessCallback(pcd, ctx.registry()));
-		//FinalCallbackPtr fprinter(new FinalCallback(pcd));
+    // setup predicate masks
+
+    RegistryPtr reg(ctx.registry());
+
+    // store registry in ProgramCtxData
+    pcd.reg = reg;
+
+    // configure predicate mask for d1/d2
+    pcd.brdmask.setRegistry(reg);
+    pcd.idd1 = reg->storeConstantTerm("d1");
+    pcd.idd2 = reg->storeConstantTerm("d2");
+    pcd.brdmask.addPredicate(pcd.idd1);
+    pcd.brdmask.addPredicate(pcd.idd2);
+
+    // configure predicate mask for e1/e2
+    pcd.bremask.setRegistry(reg);
+    pcd.ide1 = reg->storeConstantTerm("e1");
+    pcd.ide2 = reg->storeConstantTerm("e2");
+    pcd.bremask.addPredicate(pcd.ide1);
+    pcd.bremask.addPredicate(pcd.ide2);
+
+    // configure predicate mask for each context's output beliefs
+    assert(!pcd.mcs().contexts.empty() &&
+           "here we expect to have parsed the input and "
+           "we expect to know the number of contexts");
+    for(ContextIterator it = pcd.mcs().contexts.begin();
+        it != pcd.mcs().contexts.end(); ++it)
+    {
+      pcd.obmasks.push_back(PredicateMask());
+      PredicateMask& mask = pcd.obmasks.back();
+
+      std::ostringstream s;
+      s << "a" << it->ContextNum();
+
+      mask.setRegistry(reg);
+      ID idob(reg->storeConstantTerm(s.str()));
+      mask.addPredicate(idob);
+    }
+
+    // register model callbacks (accumulate minimal notions, print nonminimal notions)
+		ModelCallbackPtr mcb(
+        new PrintAndAccumulateModelCallback(pcd));
 		#warning here we could try to only remove the default answer set printer
 		ctx.modelCallbacks.clear();
-		ctx.modelCallbacks.push_back(wprinter);
-		//ctx.finalCallbacks.push_back(fprinter);
+		ctx.modelCallbacks.push_back(mcb);
+
+    // register final callback (print minmimal notions, convert to dual notions)
+		FinalCallbackPtr fcb(new MinPrintDualConvertFinalCallback(pcd));
+		ctx.finalCallbacks.push_back(fcb);
   }
 }
 

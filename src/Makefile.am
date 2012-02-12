@@ -20,14 +20,14 @@ libdlvhex_mcsie_la_SOURCES = \
   InputConverterOPEquilibria.cpp \
   InputParser.cpp \
   MCS.cpp \
+	MinPrintDualConvertFinalCallback.cpp \
+  NotionPrinter.cpp \
+	PrintAndAccumulateModelCallback.cpp \
   ProgramCtxData.cpp \
   SaturationMetaAtom.cpp
 
 nopfoo = \
   OutputRewriter.cpp \
-  EquilibriumPrintVisitor.cpp \
-  DiagExplPrintVisitor.cpp \
-  ExplanationPrintVisitor.cpp \
   Timing.cpp
 
 # for more information on `-version-info' see

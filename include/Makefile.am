@@ -12,16 +12,15 @@ MCSIEHEADERS = \
 pkginclude_HEADERS = $(MCSIEHEADERS)
 
 noinst_HEADERS = \
-		 MCSIEPlugin.h \
 		 DLV_ASP_ContextAtom.h \
-		 InputParser.h \
 		 InputConverterDiagnoses.h \
 		 InputConverterExplanations.h \
-		 InputConverterOPEquilibria.h 
+		 InputConverterOPEquilibria.h \
+		 InputParser.h \
+		 MCSIEPlugin.h \
+		 MinPrintDualConvertFinalCallback.h \
+		 PrintAndAccumulateModelCallback.h
 
 foo = \
 		 OutputRewriter.h \
-		 EquilibriumPrintVisitor.h \
-		 DiagExplPrintVisitor.h \
-		 ExplanationPrintVisitor.h \
 		 Timing.h
