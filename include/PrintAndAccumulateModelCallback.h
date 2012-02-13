@@ -44,6 +44,7 @@ namespace mcsdiagexpl {
 class PrintAndAccumulateModelCallback:
   public ModelCallback
 {
+  friend class MinPrintDualConvertFinalCallback;
 public:
   PrintAndAccumulateModelCallback(ProgramCtxData& pcd);
 	virtual ~PrintAndAccumulateModelCallback() {}
@@ -63,6 +64,13 @@ protected:
   std::string prefix;
   // whether to collect subset-minimal parts of models
   bool collectminimal;
+
+  // id of first/second component of notion
+	ID id1, id2;
+  // mask for first/second component of notion
+	PredicateMask mask1, mask2;
+  // mask for full notion
+  PredicateMask& mask;
 
 	NotionPrinter nprinter;
 	EquilibriumPrinter eqprinter;

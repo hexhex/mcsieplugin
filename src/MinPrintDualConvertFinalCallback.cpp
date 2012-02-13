@@ -41,18 +41,72 @@ namespace dlvhex {
 namespace mcsdiagexpl {
 
 MinPrintDualConvertFinalCallback::
-MinPrintDualConvertFinalCallback(ProgramCtxData& pcd):
-	pcd(pcd)
+MinPrintDualConvertFinalCallback(ProgramCtxData& pcd, PrintAndAccumulateModelCallback& mcb):
+	pcd(pcd),
+  mcb(mcb),
+  nprinter(mcb.nprinter),
+  eqprinter(mcb.eqprinter)
 {
 }
 
-void MinPrintDualConvertFinalCallback::
+DiagRewritingFinalCallback::
+DiagRewritingFinalCallback(ProgramCtxData& pcd, PrintAndAccumulateModelCallback& mcb):
+  MinPrintDualConvertFinalCallback(pcd,mcb)
+{
+}
+
+ExplRewritingFinalCallback::
+ExplRewritingFinalCallback(ProgramCtxData& pcd, PrintAndAccumulateModelCallback& mcb):
+  MinPrintDualConvertFinalCallback(pcd,mcb)
+{
+}
+
+void DiagRewritingFinalCallback::
 operator()()
 {
+  typedef ProgramCtxData::MinimalNotion MinimalNotion;
+  typedef ProgramCtxData::MinimalNotionIterator MinimalNotionIterator;
+
+  std::ostream& o = std::cout;
+
 	if( pcd.isminDiag() )
-		assert(false && "MinPrintDualConvertFinalCallback::operator()() not implemented");
-	if( pcd.isminExp() )
-		assert(false && "MinPrintDualConvertFinalCallback::operator()() not implemented");
+  {
+    // print minimal diagnosis notions
+    for(MinimalNotionIterator it = pcd.minimals.begin();
+        it != pcd.minimals.end(); ++it)
+    {
+      if( pcd.isprintOPEQ() )
+      {
+        for(std::list<AnswerSetPtr>::const_iterator itl = it->full.begin();
+            itl != it->full.end(); ++itl)
+        {
+          o << "Dm:EQ:";
+          nprinter.print(o, *itl);
+          o << ":";
+          eqprinter.print(o,*itl);
+          o << std::endl;
+        }
+      }
+      else
+      {
+        o << "Dm:";
+        nprinter.print(o, it->full.front());
+        o << std::endl;
+      }
+    }
+  }
+
+	if( pcd.isminExp() || pcd.isExp() )
+		assert(false && "convertion to explanation not implemented");
+
+}
+
+void ExplRewritingFinalCallback::
+operator()()
+{
+  std::ostream& o = std::cout;
+
+  assert(false && "not implemented");
 }
 
 } // namespace mcsdiagexpl

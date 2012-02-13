@@ -31,6 +31,7 @@
 #define _DLVHEX_MCSDIAGEXPL_FINALCALLBACK_H_
 
 #include "ProgramCtxData.h"
+#include "PrintAndAccumulateModelCallback.h"
 
 #include <dlvhex2/PluginInterface.h>
 
@@ -43,13 +44,36 @@ class MinPrintDualConvertFinalCallback:
 	public FinalCallback
 {
 public:
-	MinPrintDualConvertFinalCallback(ProgramCtxData& pcd);
+	MinPrintDualConvertFinalCallback(ProgramCtxData& pcd, PrintAndAccumulateModelCallback& mcb);
 	virtual ~MinPrintDualConvertFinalCallback() {}
-
-  virtual void operator()();
 
 protected:
 	ProgramCtxData& pcd;
+  PrintAndAccumulateModelCallback& mcb;
+
+  // from within mcb
+  NotionPrinter& nprinter;
+  EquilibriumPrinter& eqprinter;
+};
+
+class DiagRewritingFinalCallback:
+  public MinPrintDualConvertFinalCallback
+{
+public:
+	DiagRewritingFinalCallback(ProgramCtxData& pcd, PrintAndAccumulateModelCallback& mcb);
+	virtual ~DiagRewritingFinalCallback() {}
+
+  virtual void operator()();
+};
+
+class ExplRewritingFinalCallback:
+  public MinPrintDualConvertFinalCallback
+{
+public:
+	ExplRewritingFinalCallback(ProgramCtxData& pcd, PrintAndAccumulateModelCallback& mcb);
+	virtual ~ExplRewritingFinalCallback() {}
+
+  virtual void operator()();
 };
 
 } // END namespace mcsdiagexpl

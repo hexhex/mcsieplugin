@@ -133,6 +133,22 @@ public:
 
 		// mask for output beliefs of each context
 		std::list<PredicateMask> obmasks;
+
+    // storage for accumulated minimal notions
+    struct MinimalNotion
+    {
+      // notion projected to mask1/mask2
+      InterpretationPtr projected1;
+      InterpretationPtr projected2;
+      // full interpretation
+      std::list<AnswerSetPtr> full;
+
+      MinimalNotion(InterpretationPtr proj1, InterpretationPtr proj2, AnswerSetPtr firstfull):
+        projected1(proj1), projected2(proj2) { full.push_back(firstfull); }
+    };
+    std::list<MinimalNotion> minimals;
+    typedef std::list<MinimalNotion>::iterator
+      MinimalNotionIterator;
   };
 };
 typedef MCSIE::CtxData

@@ -45,7 +45,7 @@ MCSIE::CtxData::CtxData():
   // whether plugin is enabled
   enabled(false),
   // how to calculate
-  mode(DIAGREWRITING),
+  mode(EQREWRITING),
   // what to display/calculate
   diagnose(false),
   explanation(false),

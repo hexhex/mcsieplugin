@@ -163,7 +163,7 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer)
       // constraint :- *it.
       Rule constraint(ID::MAINKIND_RULE | ID::SUBKIND_RULE_CONSTRAINT);
       constraint.body.push_back(ID::posLiteralFromAtom(kbidoa));
-      ID kbidconstraint = kbctx.registry()->rules.storeAndGetID(constraint);
+      ID kbidconstraint = kbctx.registry()->storeRule(constraint);
       kbctx.idb.push_back(kbidconstraint);
     }
 
@@ -190,7 +190,7 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer)
       // constraint :- not *it.
       Rule constraint(ID::MAINKIND_RULE | ID::SUBKIND_RULE_CONSTRAINT);
       constraint.body.push_back(ID::nafLiteralFromAtom(kbidoa));
-      ID kbidconstraint = kbctx.registry()->rules.storeAndGetID(constraint);
+      ID kbidconstraint = kbctx.registry()->storeRule(constraint);
       kbctx.idb.push_back(kbidconstraint);
     }
   }

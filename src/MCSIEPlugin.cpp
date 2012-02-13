@@ -112,15 +112,30 @@ void MCSIEPlugin::setupProgramCtx(ProgramCtx& ctx)
     }
 
     // register model callbacks (accumulate minimal notions, print nonminimal notions)
-		ModelCallbackPtr mcb(
-        new PrintAndAccumulateModelCallback(pcd));
+    PrintAndAccumulateModelCallback* ppcd =
+        new PrintAndAccumulateModelCallback(pcd);
+		ModelCallbackPtr mcb(ppcd);
 		#warning here we could try to only remove the default answer set printer
 		ctx.modelCallbacks.clear();
 		ctx.modelCallbacks.push_back(mcb);
 
     // register final callback (print minmimal notions, convert to dual notions)
-		FinalCallbackPtr fcb(new MinPrintDualConvertFinalCallback(pcd));
-		ctx.finalCallbacks.push_back(fcb);
+    switch(pcd.getMode())
+    {
+    case ProgramCtxData::DIAGREWRITING:
+      {
+        FinalCallbackPtr fcb(new DiagRewritingFinalCallback(pcd, *ppcd));
+        ctx.finalCallbacks.push_back(fcb);
+      }
+      break;
+    case ProgramCtxData::EXPLREWRITING:
+      {
+        FinalCallbackPtr fcb(new ExplRewritingFinalCallback(pcd, *ppcd));
+        ctx.finalCallbacks.push_back(fcb);
+      }
+      break;
+    // do nothing for eq mode
+    }
   }
 }
 
@@ -186,9 +201,9 @@ MCSIEPlugin::printUsage(std::ostream& out) const
   out << "     --ieexplain={D,Dm,E,Em} Select which analysis notions to compute" << std::endl;
   out << "     --ienoprintopeq         Do not print output-projected equilibria for diagnoses" << std::endl;
   out << "     --iemode={diag,expl,eq} Select mode of calculation:" << std::endl;
-  out << "              diag (default) Rewrite to guessing diagnoses + equilibria" << std::endl;
+  out << "              diag           Rewrite to guessing diagnoses + equilibria" << std::endl;
   out << "              expl           Rewrite to saturation encoding for explanations" << std::endl;
-  out << "              eq             Rewrite to equilibria calculation" << std::endl;
+  out << "              eq (default)   Rewrite to equilibria calculation" << std::endl;
 }
 
 void 
@@ -198,6 +213,9 @@ MCSIEPlugin::processOptions(
   MCSIE::CtxData& pcd = ctx.getPluginData<MCSIE>();
   std::vector<std::list<const char*>::iterator> found;
   std::string option;
+
+  // check whether any mode is set
+  bool nomode = true;
   
   for(std::list<const char*>::iterator it = pluginOptions.begin(); 
       it != pluginOptions.end(); it++) 
@@ -259,6 +277,7 @@ MCSIEPlugin::processOptions(
         if( f )
         {
           found.push_back(it);
+          nomode = false;
           continue;
         }
     }
@@ -294,6 +313,16 @@ MCSIEPlugin::processOptions(
       found.push_back(it);
       continue;
     }
+  }
+
+  if( nomode )
+  {
+    if( pcd.isDiag() || pcd.isminDiag() || pcd.isExp() || pcd.isminExp() )
+      // use diag rewriting if we want to get any inconsistency notions
+      pcd.setMode(ProgramCtxData::DIAGREWRITING);
+    else
+      // otherwise use equilibrium rewriting
+      pcd.setMode(ProgramCtxData::EQREWRITING);
   }
 
   for(std::vector<std::list<const char*>::iterator>::const_iterator it = found.begin(); 
