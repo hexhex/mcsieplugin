@@ -64,20 +64,20 @@ ExplRewritingFinalCallback(ProgramCtxData& pcd, PrintAndAccumulateModelCallback&
 void DiagRewritingFinalCallback::
 operator()()
 {
-  typedef ProgramCtxData::MinimalNotion MinimalNotion;
-  typedef ProgramCtxData::MinimalNotionIterator MinimalNotionIterator;
+  typedef MinimalNotionCollector::MinimalNotion MinimalNotion;
+  typedef std::list<MinimalNotion>::const_iterator MinimalNotionIterator;
 
   std::ostream& o = std::cout;
 
 	if( pcd.isminDiag() )
   {
     // print minimal diagnosis notions
-    for(MinimalNotionIterator it = pcd.minimals.begin();
-        it != pcd.minimals.end(); ++it)
+    for(MinimalNotionIterator it = pcd.mindcollector->getMinimals().begin();
+        it != pcd.mindcollector->getMinimals().end(); ++it)
     {
       if( pcd.isprintOPEQ() )
       {
-        for(std::list<AnswerSetPtr>::const_iterator itl = it->full.begin();
+        for(std::list<InterpretationPtr>::const_iterator itl = it->full.begin();
             itl != it->full.end(); ++itl)
         {
           o << "Dm:EQ:";

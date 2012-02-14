@@ -1,2 +1,4 @@
-a :- -b.
--b :- a.
+% nb stands for -b using a standard rewriting
+a :- nb.
+nb :- a.
+:- b, nb.

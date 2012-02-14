@@ -48,11 +48,11 @@ NotionPrinter::NotionPrinter(
 {
 }
 void NotionPrinter::
-print(std::ostream& o, AnswerSetPtr model)
+print(std::ostream& o, InterpretationPtr model)
 {
 	mask.updateMask();
 	InterpretationPtr projected(new Interpretation(pcd.reg));
-	projected->getStorage() = model->interpretation->getStorage() & mask.mask()->getStorage();
+	projected->getStorage() = model->getStorage() & mask.mask()->getStorage();
 	Interpretation::TrueBitIterator it, it_end;
 	// use sets to have the result sorted
 	std::set<std::string> comp1, comp2;

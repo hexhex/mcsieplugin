@@ -49,7 +49,7 @@ EquilibriumPrinter::EquilibriumPrinter(
 }
 
 void EquilibriumPrinter::
-print(std::ostream& o, AnswerSetPtr model)
+print(std::ostream& o, InterpretationPtr model)
 {
 	typedef std::list<PredicateMask>::iterator PredicateMaskIterator;
 
@@ -65,7 +65,7 @@ print(std::ostream& o, AnswerSetPtr model)
 		itm->updateMask();
 
 		InterpretationPtr projected(new Interpretation(pcd.reg));
-		projected->getStorage() = model->interpretation->getStorage() & itm->mask()->getStorage();
+		projected->getStorage() = model->getStorage() & itm->mask()->getStorage();
 		Interpretation::TrueBitIterator it, it_end;
 
 		// use sets to have the result sorted

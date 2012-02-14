@@ -8,6 +8,7 @@ MCSIEHEADERS = \
 		 Context.h \
 		 EquilibriumPrinter.h \
 		 MCS.h \
+		 MinimalNotionCollector.h \
 		 NotionPrinter.h \
 		 BaseContextPlugin.h
 

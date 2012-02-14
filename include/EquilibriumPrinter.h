@@ -32,7 +32,7 @@
 
 #include "ProgramCtxData.h"
 
-#include <dlvhex2/AnswerSet.h>
+#include <dlvhex2/Interpretation.h>
 
 #include <ostream>
 
@@ -43,7 +43,7 @@ class EquilibriumPrinter
 {
 public:
 	EquilibriumPrinter(ProgramCtxData& pcd);
-  void print(std::ostream& o, AnswerSetPtr model);
+  void print(std::ostream& o, InterpretationPtr model);
 
 protected:
 	ProgramCtxData& pcd;

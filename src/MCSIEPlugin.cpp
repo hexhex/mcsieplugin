@@ -80,18 +80,32 @@ void MCSIEPlugin::setupProgramCtx(ProgramCtx& ctx)
     pcd.reg = reg;
 
     // configure predicate mask for d1/d2
-    pcd.brdmask.setRegistry(reg);
     pcd.idd1 = reg->storeConstantTerm("d1");
     pcd.idd2 = reg->storeConstantTerm("d2");
+    pcd.brdmask.setRegistry(reg);
     pcd.brdmask.addPredicate(pcd.idd1);
     pcd.brdmask.addPredicate(pcd.idd2);
+    pcd.brd1mask.setRegistry(reg);
+    pcd.brd1mask.addPredicate(pcd.idd1);
+    pcd.brd2mask.setRegistry(reg);
+    pcd.brd2mask.addPredicate(pcd.idd2);
+    // configure collector (if we do not use them this will not hurt performance)
+    pcd.mindcollector.reset(
+        new MinimalNotionCollector(pcd.brd1mask, pcd.brd2mask));
 
     // configure predicate mask for e1/e2
-    pcd.bremask.setRegistry(reg);
     pcd.ide1 = reg->storeConstantTerm("e1");
     pcd.ide2 = reg->storeConstantTerm("e2");
+    pcd.bremask.setRegistry(reg);
     pcd.bremask.addPredicate(pcd.ide1);
     pcd.bremask.addPredicate(pcd.ide2);
+    pcd.bre1mask.setRegistry(reg);
+    pcd.bre1mask.addPredicate(pcd.ide1);
+    pcd.bre2mask.setRegistry(reg);
+    pcd.bre2mask.addPredicate(pcd.ide2);
+    // configure collector (if we do not use them this will not hurt performance)
+    pcd.minecollector.reset(
+        new MinimalNotionCollector(pcd.bre1mask, pcd.bre2mask));
 
     // configure predicate mask for each context's output beliefs
     assert(!pcd.mcs().contexts.empty() &&
@@ -112,29 +126,44 @@ void MCSIEPlugin::setupProgramCtx(ProgramCtx& ctx)
     }
 
     // register model callbacks (accumulate minimal notions, print nonminimal notions)
-    PrintAndAccumulateModelCallback* ppcd =
-        new PrintAndAccumulateModelCallback(pcd);
-		ModelCallbackPtr mcb(ppcd);
-		#warning here we could try to only remove the default answer set printer
-		ctx.modelCallbacks.clear();
-		ctx.modelCallbacks.push_back(mcb);
-
     // register final callback (print minmimal notions, convert to dual notions)
     switch(pcd.getMode())
     {
     case ProgramCtxData::DIAGREWRITING:
       {
+        PrintAndAccumulateModelCallback* ppcd =
+            new PrintAndAccumulateModelCallback(pcd,
+                pcd.idd1, pcd.idd2, pcd.brdmask, pcd.mindcollector);
+        ModelCallbackPtr mcb(ppcd);
+        #warning here we could try to only remove the default answer set printer
+        ctx.modelCallbacks.clear();
+        ctx.modelCallbacks.push_back(mcb);
         FinalCallbackPtr fcb(new DiagRewritingFinalCallback(pcd, *ppcd));
         ctx.finalCallbacks.push_back(fcb);
       }
       break;
     case ProgramCtxData::EXPLREWRITING:
       {
+        PrintAndAccumulateModelCallback* ppcd =
+            new PrintAndAccumulateModelCallback(pcd,
+                pcd.ide1, pcd.ide2, pcd.bremask, pcd.minecollector);
+        ModelCallbackPtr mcb(ppcd);
+        #warning here we could try to only remove the default answer set printer
+        ctx.modelCallbacks.clear();
+        ctx.modelCallbacks.push_back(mcb);
         FinalCallbackPtr fcb(new ExplRewritingFinalCallback(pcd, *ppcd));
         ctx.finalCallbacks.push_back(fcb);
       }
       break;
-    // do nothing for eq mode
+    case ProgramCtxData::EQREWRITING:
+      {
+        ModelCallbackPtr mcb(new PrintEQModelCallback(pcd));
+        #warning here we could try to only remove the default answer set printer
+        ctx.modelCallbacks.clear();
+        ctx.modelCallbacks.push_back(mcb);
+        // no final callback
+      }
+      break;
     }
   }
 }
@@ -196,14 +225,18 @@ MCSIEPlugin::printUsage(std::ostream& out) const
 {
   //      123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-
   out << "     MCS Inconsistency Explainer (Diagnosis, Explanation, Equilibria)" << std::endl;
+  out << "         Choosing no mode will activate --iemode=eq." << std::endl;
+  out << "         Choosing a mode displays the respective minimal notion." << std::endl;
   out << "     --ieenable              Enable plugin" << std::endl;
   out << "     --iepath=<path>         Path prefix for context files" << std::endl;
   out << "     --ieexplain={D,Dm,E,Em} Select which analysis notions to compute" << std::endl;
-  out << "     --ienoprintopeq         Do not print output-projected equilibria for diagnoses" << std::endl;
   out << "     --iemode={diag,expl,eq} Select mode of calculation:" << std::endl;
   out << "              diag           Rewrite to guessing diagnoses + equilibria" << std::endl;
   out << "              expl           Rewrite to saturation encoding for explanations" << std::endl;
-  out << "              eq (default)   Rewrite to equilibria calculation" << std::endl;
+  out << "              eq             Rewrite to equilibria calculation" << std::endl;
+  out << "     --ienoprintopeq         Do not print output-projected equilibria for diagnoses" << std::endl;
+  out << "                             (This is automatically activated if --iemode=expl.)" << std::endl;
+
 }
 
 void 
@@ -214,8 +247,9 @@ MCSIEPlugin::processOptions(
   std::vector<std::list<const char*>::iterator> found;
   std::string option;
 
-  // check whether any mode is set
+  // check whether any mode/any display is set
   bool nomode = true;
+  bool nodisp = true;
   
   for(std::list<const char*>::iterator it = pluginOptions.begin(); 
       it != pluginOptions.end(); it++) 
@@ -246,7 +280,10 @@ MCSIEPlugin::processOptions(
               }
         }
         if (f)
+        {
+          nodisp = false;
           found.push_back(it);
+        }
         continue;
     }
 
@@ -317,12 +354,26 @@ MCSIEPlugin::processOptions(
 
   if( nomode )
   {
-    if( pcd.isDiag() || pcd.isminDiag() || pcd.isExp() || pcd.isminExp() )
+    if( nodisp )
+    {
+      // use equilibrium rewriting
+      pcd.setMode(ProgramCtxData::EQREWRITING);
+    }
+    else
+    {
       // use diag rewriting if we want to get any inconsistency notions
       pcd.setMode(ProgramCtxData::DIAGREWRITING);
-    else
-      // otherwise use equilibrium rewriting
-      pcd.setMode(ProgramCtxData::EQREWRITING);
+    }
+  }
+  else
+  {
+    if( nodisp )
+    {
+      if( pcd.getMode() == ProgramCtxData::DIAGREWRITING )
+        pcd.setminDiag();
+      if( pcd.getMode() == ProgramCtxData::EXPLREWRITING )
+        pcd.setminExp();
+    }
   }
 
   for(std::vector<std::list<const char*>::iterator>::const_iterator it = found.begin(); 

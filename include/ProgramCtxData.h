@@ -35,6 +35,7 @@
 
 #include <dlvhex2/PluginInterface.h>
 #include "MCS.h"
+#include "MinimalNotionCollector.h"
 
 #include <ostream>
 #include <sstream>
@@ -127,28 +128,17 @@ public:
 		// mask for all bridge rule d1/d2 atoms
 		ID idd1, idd2;
 		PredicateMask brdmask;
+		PredicateMask brd1mask, brd2mask;
 		// mask for all bridge rule e1/e2 atoms
 		ID ide1, ide2;
 		PredicateMask bremask;
+		PredicateMask bre1mask, bre2mask;
 
 		// mask for output beliefs of each context
 		std::list<PredicateMask> obmasks;
 
-    // storage for accumulated minimal notions
-    struct MinimalNotion
-    {
-      // notion projected to mask1/mask2
-      InterpretationPtr projected1;
-      InterpretationPtr projected2;
-      // full interpretation
-      std::list<AnswerSetPtr> full;
-
-      MinimalNotion(InterpretationPtr proj1, InterpretationPtr proj2, AnswerSetPtr firstfull):
-        projected1(proj1), projected2(proj2) { full.push_back(firstfull); }
-    };
-    std::list<MinimalNotion> minimals;
-    typedef std::list<MinimalNotion>::iterator
-      MinimalNotionIterator;
+    MinimalNotionCollectorPtr mindcollector;
+    MinimalNotionCollectorPtr minecollector;
   };
 };
 typedef MCSIE::CtxData

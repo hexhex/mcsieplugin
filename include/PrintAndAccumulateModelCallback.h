@@ -33,6 +33,7 @@
 #include "ProgramCtxData.h"
 #include "NotionPrinter.h"
 #include "EquilibriumPrinter.h"
+#include "MinimalNotionCollector.h"
 
 #include <dlvhex2/PluginInterface.h>
 
@@ -46,7 +47,8 @@ class PrintAndAccumulateModelCallback:
 {
   friend class MinPrintDualConvertFinalCallback;
 public:
-  PrintAndAccumulateModelCallback(ProgramCtxData& pcd);
+  PrintAndAccumulateModelCallback(ProgramCtxData& pcd,
+    ID id1, ID id2, PredicateMask& fullmask, MinimalNotionCollectorPtr mincollector);
 	virtual ~PrintAndAccumulateModelCallback() {}
 
   virtual bool operator()(AnswerSetPtr model);
@@ -67,12 +69,25 @@ protected:
 
   // id of first/second component of notion
 	ID id1, id2;
-  // mask for first/second component of notion
-	PredicateMask mask1, mask2;
   // mask for full notion
-  PredicateMask& mask;
+  PredicateMask& fullmask;
 
+  MinimalNotionCollectorPtr mincollector;
 	NotionPrinter nprinter;
+	EquilibriumPrinter eqprinter;
+};
+
+class PrintEQModelCallback:
+  public ModelCallback
+{
+public:
+  PrintEQModelCallback(ProgramCtxData& pcd);
+	virtual ~PrintEQModelCallback() {}
+
+  virtual bool operator()(AnswerSetPtr model);
+
+protected:
+  ProgramCtxData& pcd;
 	EquilibriumPrinter eqprinter;
 };
 

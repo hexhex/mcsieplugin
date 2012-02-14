@@ -1,5 +1,7 @@
 EXTRA_DIST = \
-  mcsie.test \
+  diagrewriting.test \
+  explrewriting.test \
+  eqrewriting.test \
   test1/dlvctx_master.hex \
   test1/testctx_master.hex \
   test1/dlvctx_ctx1.dlv \

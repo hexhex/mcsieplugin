@@ -33,7 +33,7 @@
 #include "ProgramCtxData.h"
 
 #include <dlvhex2/PredicateMask.h>
-#include <dlvhex2/AnswerSet.h>
+#include <dlvhex2/Interpretation.h>
 
 #include <ostream>
 
@@ -44,7 +44,7 @@ class NotionPrinter
 {
 public:
 	NotionPrinter(ProgramCtxData& pcd, ID id1, ID id2, PredicateMask& mask);
-  void print(std::ostream& o, AnswerSetPtr model);
+  void print(std::ostream& o, InterpretationPtr model);
 
 protected:
 	ProgramCtxData& pcd;

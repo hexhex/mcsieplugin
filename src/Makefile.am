@@ -22,6 +22,7 @@ libdlvhex_mcsie_la_SOURCES = \
   InputParser.cpp \
   MCS.cpp \
 	MinPrintDualConvertFinalCallback.cpp \
+  MinimalNotionCollector.cpp \
   NotionPrinter.cpp \
 	PrintAndAccumulateModelCallback.cpp \
   ProgramCtxData.cpp \

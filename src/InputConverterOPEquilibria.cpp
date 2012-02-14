@@ -93,9 +93,11 @@ void writeBridgeRule(std::ostream& o, const BridgeRule& br)
   o << asAtom("i", br.Head()) << ".\n";
 
   // output rule
-  o << asAtom("b", br.Head()) << " :- ";
+  o << asAtom("b", br.Head());
 
   // output bridge rule body
+  if( !br.Body().empty() )
+    o << " :- ";
   for(BridgeRuleEntryIterator it = br.Body().begin();
       it != br.Body().end(); ++it)
   {
