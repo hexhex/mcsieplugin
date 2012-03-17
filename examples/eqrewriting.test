@@ -1,0 +1,30 @@
+./test1/dlvctx_master.hex ./test1/dlvctx.out --ieenable
+./test1/dlvctx_master.hex ./test1/dlvctx.out --ieenable --iemode=eq
+./test1/testctx_master.hex ./test1/dlvctx.out --ieenable
+./test1/testctx_master.hex ./test1/dlvctx.out --ieenable --iemode=eq
+./test2/dlvctx_master.hex ./test2/dlvctx.out --ieenable
+./test2/testctx_master.hex ./test2/dlvctx.out --ieenable
+./test3/dlvctx_master.hex ./test3/dlvctx.out --ieenable
+./test3/testctx_master.hex ./test3/dlvctx.out --ieenable
+./benchmark1/benchctx_master.hex ./benchmark1/dlvctx.out --ieenable
+./benchmark1/dlvctx_master.hex ./benchmark1/dlvctx.out --ieenable
+./benchmark2/dlvctx_master.hex ./benchmark2/dlvctx.out --ieenable
+./benchmark2/benchctx_master.hex ./benchmark2/dlvctx.out --ieenable
+./benchmark3/dlvctx_master.hex ./benchmark3/dlvctx.out --ieenable
+./benchmark3/benchctx_master.hex ./benchmark3/dlvctx.out --ieenable
+./benchmark4/dlvctx_master.hex ./benchmark4/dlvctx.out --ieenable
+./benchmark4/benchctx_master.hex ./benchmark4/dlvctx.out --ieenable
+./benchmark5/dlvctx_master.hex ./benchmark5/dlvctx.out --ieenable
+./benchmark5/benchctx_master.hex ./benchmark5/dlvctx.out --ieenable
+./benchmark6/dlvctx_master.hex ./benchmark6/dlvctx.out --ieenable
+./benchmark6/benchctx_master.hex ./benchmark6/dlvctx.out --ieenable
+./benchmark7/dlvctx_master.hex ./benchmark7/dlvctx.out --ieenable
+./benchmark7/benchctx_master.hex ./benchmark7/dlvctx.out --ieenable
+./benchmark8/dlvctx_master.hex ./benchmark8/dlvctx.out --ieenable
+./benchmark8/benchctx_master.hex ./benchmark8/dlvctx.out --ieenable
+./benchmark9/dlvctx_master.hex ./benchmark9/dlvctx.out --ieenable
+./benchmark9/benchctx_master.hex ./benchmark9/dlvctx.out --ieenable
+./benchmark10/dlvctx_master.hex ./benchmark10/dlvctx.out --ieenable
+./benchmark10/benchctx_master.hex ./benchmark10/dlvctx.out --ieenable
+./benchmark11/dlvctx_master.hex ./benchmark11/dlvctx.out --ieenable
+./benchmark11/benchctx_master.hex ./benchmark11/dlvctx.out --ieenable
