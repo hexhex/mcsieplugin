@@ -37,127 +37,125 @@
 //#define DEBUG
 
 #include "InputConverterExplanations.h"
-//#include "dlvhex/SpiritDebugging.h"
-//#include "BridgeRuleEntry.h"
-
-#include <sstream>
+#include "InputParser.h"
+#include "MCS.h"
 
 namespace dlvhex {
 namespace mcsdiagexpl {
 
-void InputConverterExplanations::convert(std::istream& i, std::ostream& o)
+namespace
 {
-  throw std::runtime_error("todo InputConverterExplanations::convert");
+
+void writeBridgeRule(std::ostream& o, const BridgeRule& r);
+void writeContext(std::ostream& o, const Context& c);
+void writeProgram(std::ostream& o, const MCS& m);
+
+void writeProgram(std::ostream& o, const MCS& m)
+{
+  for(BridgeRuleIterator it = m.rules.begin();
+      it != m.rules.end(); ++it)
+  {
+    writeBridgeRule(o, *it);
+  }
+  for(ContextIterator it = m.contexts.begin();
+      it != m.contexts.end(); ++it)
+  {
+    writeContext(o, *it);
+  }
 }
 
-#if 0
-     ////////////////////////////////////////////////
-     // write the Parsed Program in the out stream //
-     // first write out the Rules an additional    //
-     // output of the rules, then the              /#include "InputConverterDiagnosis.h"/
-     // external Atom output for the context       //
-     ////////////////////////////////////////////////
-     for (std::vector<BridgeRule>::iterator it = bridgerules.begin(); it != bridgerules.end(); ++it) {
-	BridgeRule elem = *it;
-	writeProgram(o,elem);
-     }//end for-loop print bridgerules
-     int maxctx = 0;
-     for (std::vector<ParseContext>::iterator it = context.begin(); it != context.end(); ++it) {
-	ParseContext elem = *it;
+void writeContext(std::ostream& o, const Context& context)
+{
+   const int cn = context.ContextNum();
 
+   // guess oputs
+   o << "a" << cn << "(X) v na" << cn << "(X) :- o" << cn << "(X).\n";
 
-	//8.) spoil if the guessed belief state is no equilibrium
-	o << "spoil :- not &saturation_meta_context[\"" << elem.ExtAtom()  <<"\",spoil,"
-		 << elem.ContextNum() << ",pres_" << elem.ContextNum() << ",in_" << elem.ContextNum()
-		 << ",out_" << elem.ContextNum() << ",\"" << elem.Param() << "\"]." << std::endl; 
+   // saturate on spoil
+   o << "a" << cn << "(X) :- o" << cn << "(X), spoil.\n";
+   o << "na" << cn << "(X) :- o" << cn << "(X), spoil.\n";
 
-        if( elem.ContextNum() > maxctx )
-          maxctx = elem.ContextNum();
-     }//end for-loop print context
+   // spoil if guesses are contradictory
+   o << "spoil :- a" << cn << "(X), na" << cn << "(X).\n";
 
+   // check context with constraint
+   o << ":- not &" << context.ExtAtom()
+       << "[" << cn << ",a" << cn << ",b" << cn << ",o" << cn << ","
+       << "\"" << context.Param() << "\"]().\n"; 
 
-	// this code would be correct but it consumes more time
-	// than the grounded rules written in writeProgram, which are loically identical.
-	// 2.) guess a subset of the candidate explanation
-	// for which holds that E1 C_ r1 C_ brM and r2 C_ brM \ E2
-	//o << "foo3(r1). foo3(r2). foo3(r3)." << std::endl;
-	//o << "r1(R) :- e1(R)." << std::endl;
-	//o << "r1(R) v nr1(R) :- ne1(R)." << std::endl;
-	//o << "r2(R) v nr2(R) :- ne2(R)." << std::endl;
-	
-	// 11.) ensure saturation
-	o << ":- not spoil." << std::endl;
+    // spoil if the guessed belief state is no equilibrium
+    o <<
+      "spoil :- not &saturation_meta_context[\"" << context.ExtAtom()  <<"\",spoil," <<
+      cn << ",a" << cn << ",b" << cn << ",o" << cn << "," <<
+      "\"" << context.Param() << "\"].\n"; 
 
+   // mark context as existing
+   o << "ctx(" << cn << ")." << std::endl;
+}
 
-   } // end convertParseTreeToDLVProgramEx
+void writeBridgeRule(std::ostream& o, const BridgeRule& br)
+{
+  // write bridgerule in asp form
+  std::list<int> ilist;
 
-void 
-   InputConverterExplanations::writeProgram(std::ostream& o, BridgeRule br) {
-     // write bridgerule in asp form
-     std::list<std::string> brlist = (Global::getInstance())->getRuleList();
-     brlist.push_back(br.ruleid);
-     (Global::getInstance())->setRuleList(brlist);
+  // mark outputs: OUT_i via "o<i>(belief)"
+  for(BridgeRuleEntryIterator it = br.Body().begin(); it != br.Body().end(); ++it)
+  {
+    o << asAtom("o", *it) << ".\n";
+  }
 
-     // 4.) derive applicable rule heads 
-     o << "in_" << br.head.ContextID() << "(" << br.head.Fact() << ") :- r1(" << br.ruleid << ")";
-     for (std::vector<BridgeRuleEntry>::iterator it = br.body.begin(); it != br.body.end(); ++it) {
-       const BridgeRuleEntry& elem = *it;
-	if (elem.Neg()){
-		o << ", abs_" << elem.ContextID() << "(" << elem.Fact() << ")";	
-	}else{
-		o << ", pres_" << elem.ContextID() << "(" << elem.Fact() << ")";	
-	}
-     }
-     o << "." << std::endl;		
+  // mark input: IN_i via "i<i>(belief)"
+  o << asAtom("i", br.Head()) << ".\n";
 
+  // guess explanation candidate (independently for e1 and e2)
+  o << "e1(" << br.Id() << ") v ne1(" << br.Id() << ").\n";
+  o << "e2(" << br.Id() << ") v ne2(" << br.Id() << ").\n";
 
-     for (std::vector<BridgeRuleEntry>::iterator it = br.body.begin(); it != br.body.end(); ++it) {
-       const BridgeRuleEntry& elem = *it;	
+  // guess set of rules (r1,r2) such that
+  //
+  // e1 \subseteq r1 \subseteq BR
+  o << "r1(" << br.Id() << ") :- e1(" << br.Id() << ").\n";
+  o << "r1(" << br.Id() << ") v nr1(" << br.Id() << ") :- ne1(" << br.Id() << ").\n";
+  // r2 \subseteq BR \setminus e2
+  o << "r2(" << br.Id() << ") v nr2(" << br.Id() << ") :- ne2(" << br.Id() << ").\n";
 
-	// 3.) guess a belief state, every a e Outi
-	o << "pres_" << elem.ContextID() << "(" << elem.Fact() << ") v abs_" << elem.ContextID() << "(" << elem.Fact() << ")." << std::endl;
-	// 7.) i.e. OUTi, so Vo e OUTi add out_i(o)	
-	o << "out_" << elem.ContextID() << "(" << elem.Fact() << ")." << std::endl;
-	// 10.) saturate on spoil	
-	o << "pres_" << elem.ContextID() << "(" << elem.Fact() << ") :- spoil." << std::endl;
-	o << "abs_" << elem.ContextID() << "(" << elem.Fact() << ") :- spoil." << std::endl;
-	//9.) spoil if our guesses are wrong by themselves.
-	o << "spoil :- pres_" << elem.ContextID() << "(" << elem.Fact() << "), " << "abs_" << elem.ContextID() << "(" << elem.Fact() << ")." 
-		<< std::endl;
+  // spoil if guess is contradictory
+  o << "spoil :- r1(" << br.Id() << "), nr1(" << br.Id() << ").\n";
+  o << "spoil :- r2(" << br.Id() << "), nr2(" << br.Id() << ").\n";
 
-     }
+  // output r1 rule
+  o << asAtom("b", br.Head()) << " :- r1(" << br.Id() << ")";
+  for(BridgeRuleEntryIterator it = br.Body().begin();
+      it != br.Body().end(); ++it)
+  {
+    const BridgeRuleEntry& elem = *it;
+    if( elem.Neg() )
+      o << ", " << asAtom("na", elem);
+    else
+      o << ", " << asAtom("a", elem);
+  }
+  o << ".\n";
 
-	// 5.) derive heads of unconditional rules.
-	o << "in_" << br.head.ContextID() << "(" << br.head.Fact() << ") :- r2(" << br.ruleid << ")." << std::endl;
-	// 10.) saturate on spoil
-	o << "in_" << br.head.ContextID() << "(" << br.head.Fact() << ") :- spoil." << std::endl;
-	// 9.) spoil if our guesses are wrong by themselves.
-	o << "spoil :- r1(" << br.ruleid << "), " << "nr1(" << br.ruleid << ")." << std::endl;
-	o << "spoil :- r2(" << br.ruleid << "), " << "nr2(" << br.ruleid << ")." << std::endl;
-	
-	// 1.) guess an explanation candidate.
-	o << "e1(" << br.ruleid << ") v ne1(" << br.ruleid << ")." << std::endl;
-	o << "e2(" << br.ruleid << ") v ne2(" << br.ruleid << ")." << std::endl;
-	o << ":- e1(" << br.ruleid << "), ne1(" << br.ruleid << ")." << std::endl;
-	o << ":- e2(" << br.ruleid << "), ne2(" << br.ruleid << ")." << std::endl;;
+  // output r2 rule
+  o << asAtom("b", br.Head()) << " :- r2(" << br.Id() << ").\n";
 
-	// 2.) guess a subset of the candidate explanation
-	// for which holds that E1 C_ r1 C_ brM and r2 C_ brM \ E2
-	o << "r1(" << br.ruleid << ") :- e1(" << br.ruleid << ")." << std::endl;
-	o << "r1(" << br.ruleid << ") v nr1(" << br.ruleid << ") :- ne1(" << br.ruleid << ")." << std::endl;
-	o << "r2(" << br.ruleid << ") v nr2(" << br.ruleid << ") :- ne2(" << br.ruleid << ")." << std::endl;
+  // saturate on spoil
+  o << "r1("  << br.Id() << ") :- spoil.\n";
+  o << "nr1(" << br.Id() << ") :- spoil.\n";
+  o << "r2("  << br.Id() << ") :- spoil.\n";
+  o << "nr2(" << br.Id() << ") :- spoil.\n";
+  o << asAtom("b", br.Head()) << " :- spoil.\n";
+}
 
-	// 10.) saturate on spoil	
-	o << "r1(" << br.ruleid << ") :- spoil." << std::endl;
-	o << "r2(" << br.ruleid << ") :- spoil." << std::endl;
-	o << "nr1(" << br.ruleid << ") :- spoil." << std::endl;
-	o << "nr2(" << br.ruleid << ") :- spoil." << std::endl;
+} // anonymous namespace
 
-     }
-#endif
-
-
-
+void InputConverterExplanations::convert(std::istream& i, std::ostream& o)
+{
+  InputParser p;
+  p.parse(i, pcd.mcs());
+  
+  writeProgram(o, pcd.mcs());
+}
 
 } // namespace mcsdiagexpl
 } // namespace dlvhex

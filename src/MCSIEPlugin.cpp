@@ -299,6 +299,7 @@ MCSIEPlugin::processOptions(
         else if( mode == "expl" )
         {
           pcd.setMode(ProgramCtxData::EXPLREWRITING);
+          pcd.setprintOPEQ(false);
           f = true;
         }
         else if( mode == "eq" )
