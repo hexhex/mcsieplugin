@@ -32,7 +32,9 @@
 #ifndef _DLVHEX_MCSDIAGEXPL_SATURATION_META_ATOM_H
 #define _DLVHEX_MCSDIAGEXPL_SATURATION_META_ATOM_H
 
-#include "BaseContextAtom.h"
+#include "ProgramCtxData.h"
+
+#include <dlvhex2/PluginInterface.h>
 
 namespace dlvhex {
     namespace mcsdiagexpl {
@@ -40,21 +42,12 @@ namespace dlvhex {
 	class SaturationMetaAtom : public PluginAtom {
 	    
 	public:
-	    SaturationMetaAtom(): PluginAtom("saturation_meta_context", false)
-            {
-		addInputConstant();
-		addInputPredicate();
-		addInputConstant();
-		addInputPredicate();
-		addInputPredicate();
-		addInputPredicate();
-		addInputConstant();
-		setOutputArity(0);
-	    }
+	    SaturationMetaAtom(ProgramCtxData& pcd);
 
 	    void retrieve(const Query& query, Answer& answer);
-	    
-	
+
+        protected:
+            ProgramCtxData& pcd;
 	};
 	
   } // namespace mcsdiagexpl

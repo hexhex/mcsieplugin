@@ -62,6 +62,8 @@ void writeProgram(std::ostream& o, const MCS& m)
   {
     writeContext(o, *it);
   }
+
+  o << ":- not spoil." << std::endl;
 }
 
 void writeContext(std::ostream& o, const Context& context)
@@ -78,13 +80,8 @@ void writeContext(std::ostream& o, const Context& context)
    // spoil if guesses are contradictory
    o << "spoil :- a" << cn << "(X), na" << cn << "(X).\n";
 
-   // check context with constraint
-   o << ":- not &" << context.ExtAtom()
-       << "[" << cn << ",a" << cn << ",b" << cn << ",o" << cn << ","
-       << "\"" << context.Param() << "\"]().\n"; 
-
-    // spoil if the guessed belief state is no equilibrium
-    o <<
+   // spoil if the guessed belief state is no equilibrium
+   o <<
       "spoil :- not &saturation_meta_context[\"" << context.ExtAtom()  <<"\",spoil," <<
       cn << ",a" << cn << ",b" << cn << ",o" << cn << "," <<
       "\"" << context.Param() << "\"].\n"; 

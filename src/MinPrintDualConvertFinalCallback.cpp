@@ -26,6 +26,7 @@
 /**
  * @file   MinPrintDualConvertFinalCallback.cpp
  * @author Peter Schueller
+ * @author Gerald Weidinger
  * 
  * @brief  Final callback for MCSIE (prints minimal notions, converts to dual notion)
  */
@@ -104,9 +105,27 @@ operator()()
 void ExplRewritingFinalCallback::
 operator()()
 {
+  typedef MinimalNotionCollector::MinimalNotion MinimalNotion;
+  typedef std::list<MinimalNotion>::const_iterator MinimalNotionIterator;
+
   std::ostream& o = std::cout;
 
-  assert(false && "not implemented");
+	if( pcd.isminExp() )
+  {
+    // print minimal explanation notions
+    for(MinimalNotionIterator it = pcd.minecollector->getMinimals().begin();
+        it != pcd.minecollector->getMinimals().end(); ++it)
+    {
+      o << "Em:";
+      nprinter.print(o, it->full.front());
+      o << std::endl;
+    }
+  }
+
+  assert(!pcd.isDiag() && "convertion from explanation to diagnosis not possible!");
+
+	if( pcd.isminDiag() )
+		assert(false && "convertion to diagnosis not implemented");
 }
 
 } // namespace mcsdiagexpl

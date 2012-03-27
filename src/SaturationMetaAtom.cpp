@@ -35,57 +35,90 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "SaturationMetaAtom.h"
-//#include "Timing.h"
+#include "BaseContextAtom.h"
+
+#include <dlvhex2/Registry.h>
+
 //#include "Global.h"
 
-#include <dlvhex2/PluginInterface.h>
-
-#include <boost/algorithm/string.hpp>
+//#include <boost/algorithm/string.hpp>
 
 
 namespace dlvhex {
-  namespace mcsdiagexpl {
-      
+namespace mcsdiagexpl {
 
-      void SaturationMetaAtom::retrieve(const Query& query, Answer& answer) {
-	  // check if saturation is the case
-        throw std::runtime_error("todo implement SaturationMetaAtom::retrieve");
-        #if 0
-	  const std::string& sat_pred = query.getInputTuple()[1].getUnquotedString();
-	  AtomSet interpretation = query.getInterpretation();
-	  AtomSet saturation;
-	  interpretation.matchPredicate(sat_pred,saturation);
-	  
-	  if( saturation.empty() ) {
-	      // saturation is not the case, check if context is consistent
+SaturationMetaAtom::SaturationMetaAtom(ProgramCtxData& pcd):
+  PluginAtom("saturation_meta_context", false),
+  pcd(pcd)
+{
+  // context atom name
+  addInputConstant();
+  // saturation/spoil predicate
+  addInputPredicate();
+  // context id
+  addInputConstant();
+  // active output belief predicate
+  addInputPredicate();
+  // active input belief predicate
+  addInputPredicate();
+  // output belief interface predicate
+  addInputPredicate();
+  // context evaluation parameter to be passed onto context atom
+  addInputConstant();
+  setOutputArity(0);
+}
 
-	      // find the external atom of the context
-            // TODO the contextname is the name of the context processing atom?
-	      std::string contextname = query.getInputTuple()[0].getUnquotedString();
-	      boost::shared_ptr<PluginAtom> pa=Global::getInstance()->
-		  getProgramCtx()->getPluginContainer()->getAtom(contextname);
-	      
-	      // construct query to context atom
-	      AtomSet interp;
-	      interp.insert(interpretation);
-	      interp.remove(sat_pred); // remove saturation predicate
-	      Tuple input=query.getInputTuple();
-	      input.erase(input.begin(),input.begin()+2); // remove first two inputs
-	      Tuple pat=query.getPatternTuple();
-	      Query *qcon = new Query(interp,input,pat);
-	      
-	      // call external context atom
-	      pa->retrieve(*qcon,answer);
-	  }
-	  else {
-	      // saturation is the case, signal that context is inconsistent
-	      // by adding no tuple to &answer
-	  }
-          #endif
-      }
-      
+void SaturationMetaAtom::retrieve(const Query& query, Answer& answer)
+{
+  assert(query.input.size() == 7);
+
+  // id of constant of saturate/spoil predicate
+  ID saturate_pred = query.input[1];
+
+  // get id of 0-ary atom
+  OrdinaryAtom saturate_oatom(ID::MAINKIND_ATOM | ID::SUBKIND_ATOM_ORDINARYG);
+  saturate_oatom.tuple.push_back(saturate_pred);
+  ID saturate_atom = registry->storeOrdinaryGAtom(saturate_oatom);
+  DBGLOG(DBG,"got saturate_pred=" << saturate_pred << " and saturate_atom=" << saturate_atom);
+
+  // check if atom <saturate_pred> is true in interpretation
+  bool saturate = query.interpretation->getFact(saturate_atom.address);
+  LOG(DBG,"SaturationMetaAtom called with saturate=" << saturate);
+
+  if( saturate )
+  {
+    // saturation is the case, signal that context is inconsistent
+    // by adding no tuple to answer
+    answer.use(); // mark as used, this is required if we do not add tuples
+  }
+  else
+  {
+    // saturation is not the case, check if context is consistent
+
+    // name of context external atom
+    ID contextatomname_id = query.input[0];
+    const std::string& contextatomname_str = registry->getTermStringByID(contextatomname_id);
+    assert(contextatomname_str.size() > 2);
+    const std::string contextatomname(contextatomname_str,1,contextatomname_str.size()-2);
+    DBGLOG(DBG,"got context atom id " << contextatomname_id << " and name '" << contextatomname << "'");
+
+    ContextAtomPtr cat = pcd.getContextAtom(contextatomname);
+    assert(!!cat);
+
+    // construct query to context atom
+    Query childQuery(
+        query.interpretation,
+        // remove first two inputs
+        Tuple(query.input.begin()+2,query.input.end()),
+        query.pattern);
+
+    // call external context atom
+    cat->retrieve(childQuery, answer);
+  }
+}
 
 
-  } // namespace mcsequilibrium
+
+} // namespace mcsequilibrium
 } // namespace dlvhex
 // vim:ts=8:

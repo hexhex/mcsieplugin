@@ -55,7 +55,8 @@ public:
   template<typename ContextAtomT>
   void registerAtom(ProgramCtxData& pcd) const
   {
-    pcd.getContextAtoms().push_back(ContextAtomPtr(new ContextAtomT(pcd)));
+    pcd.addContextAtom(
+        ContextAtomPtr(new ContextAtomT(pcd)));
   };
 
   // overwrite this if you want to add more than only context atoms

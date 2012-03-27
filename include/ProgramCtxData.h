@@ -89,10 +89,9 @@ public:
     void setprintOPEQ(bool to=true);
     void setMode(Mode mode);
 
-    const std::vector<ContextAtomPtr>& getContextAtoms() const
-      { return contextAtoms; }
-    std::vector<ContextAtomPtr>& getContextAtoms()
-      { return contextAtoms; }
+    void addContextAtom(ContextAtomPtr at);
+    ContextAtomPtr getContextAtom(const std::string& name) const;
+    const std::vector<ContextAtomPtr>& getContextAtoms() const;
 
     const MCS& mcs() const
       { return mcs_; }
@@ -117,6 +116,9 @@ public:
 
     // MCSIE context atoms registered by MCSIE and MCSIE plugins
     std::vector<ContextAtomPtr> contextAtoms;
+    // a map for the same set of atoms
+    typedef std::map<std::string, ContextAtomPtr> ContextAtomMap;
+    ContextAtomMap contextAtomsByName;
 
     // parsed MCS representation
     MCS mcs_;

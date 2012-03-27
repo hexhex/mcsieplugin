@@ -35,6 +35,7 @@
 #endif /* HAVE_CONFIG_H */
 
 #include "ProgramCtxData.h"
+#include "BaseContextAtom.h"
 
 namespace dlvhex
 {
@@ -96,6 +97,43 @@ MCSIE::CtxData::setMode(Mode to) {
          to == EXPLREWRITING ||
          to == EQREWRITING);
   mode = to;
+}
+
+void
+MCSIE::CtxData::addContextAtom(ContextAtomPtr at)
+{
+  const std::string& name = at->getPredicate();
+
+  ContextAtomMap::const_iterator it = contextAtomsByName.find(name);
+  if( it != contextAtomsByName.end() )
+  {
+    LOG(WARNING,"context atom with name '" << name << "' already registered! (ignoring)");
+  }
+  else
+  {
+    contextAtoms.push_back(at);
+    contextAtomsByName[name] = at;
+  }
+}
+
+const std::vector<ContextAtomPtr>&
+MCSIE::CtxData::getContextAtoms() const
+{
+  return contextAtoms;
+}
+
+ContextAtomPtr
+MCSIE::CtxData::getContextAtom(
+    const std::string& name) const
+{
+  ContextAtomMap::const_iterator it = contextAtomsByName.find(name);
+  if( it == contextAtomsByName.end() )
+  {
+    LOG(ERROR,"could not find context atom with name '" << name << "'!");
+    throw std::runtime_error("error looking up context atom (see error log)");
+  }
+
+  return it->second;
 }
 
 } // namespace mcsdiagexpl

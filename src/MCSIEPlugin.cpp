@@ -211,7 +211,7 @@ MCSIEPlugin::createAtoms(ProgramCtx& ctx) const
         BaseContextPlugin::createAtoms(ctx));
 
     // register additional atoms
-    atoms.push_back(PluginAtomPtr(new SaturationMetaAtom));
+    atoms.push_back(PluginAtomPtr(new SaturationMetaAtom(pcd)));
     return atoms;
   }
   else
