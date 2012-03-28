@@ -70,6 +70,9 @@ SaturationMetaAtom::SaturationMetaAtom(ProgramCtxData& pcd):
 
 void SaturationMetaAtom::retrieve(const Query& query, Answer& answer)
 {
+  LOG_SCOPE(INFO,"SMA",false);
+  LOG(INFO,"= SaturationMetaAtom::retrieve");
+
   assert(query.input.size() == 7);
 
   // id of constant of saturate/spoil predicate
@@ -89,6 +92,7 @@ void SaturationMetaAtom::retrieve(const Query& query, Answer& answer)
   {
     // saturation is the case, signal that context is inconsistent
     // by adding no tuple to answer
+    LOG(INFO,"saturate is true -> returning no tuples");
     answer.use(); // mark as used, this is required if we do not add tuples
   }
   else
@@ -106,13 +110,22 @@ void SaturationMetaAtom::retrieve(const Query& query, Answer& answer)
     assert(!!cat);
 
     // construct query to context atom
+    InterpretationPtr queryint;
+    {
+      // build interpretation without saturation atom
+      // TODO this should not be necessary!
+      queryint.reset(new Interpretation(registry));
+      queryint->add(*query.interpretation);
+      queryint->clearFact(saturate_atom.address);
+    }
     Query childQuery(
-        query.interpretation,
+        queryint,
         // remove first two inputs
         Tuple(query.input.begin()+2,query.input.end()),
         query.pattern);
 
     // call external context atom
+    LOG(INFO,"saturate is false -> delegating to context atom " << contextatomname);
     cat->retrieve(childQuery, answer);
   }
 }
