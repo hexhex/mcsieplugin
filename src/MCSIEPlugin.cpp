@@ -204,7 +204,7 @@ std::vector<PluginAtomPtr>
 MCSIEPlugin::createAtoms(ProgramCtx& ctx) const
 {
   MCSIE::CtxData& pcd = ctx.getPluginData<MCSIE>();
-  if( pcd.isEnabled() )
+  if( true ) // provide atoms in every case! pcd.isEnabled() )
   {
     // get context atoms
     std::vector<PluginAtomPtr> atoms(

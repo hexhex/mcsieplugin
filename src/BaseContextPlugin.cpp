@@ -27,7 +27,7 @@ std::vector<PluginAtomPtr>
 BaseContextPlugin::createAtoms(ProgramCtx& ctx) const
 {
   MCSIE::CtxData& pcd = ctx.getPluginData<MCSIE>();
-  if( pcd.isEnabled() )
+  if( true ) // provide atoms in any case! pcd.isEnabled() )
   {
     // get number of currently loaded atoms
     // (those are the ones loded by any MCSIE BaseContextPlugin)
