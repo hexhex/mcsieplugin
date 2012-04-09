@@ -138,7 +138,7 @@ void MCSIEPlugin::setupProgramCtx(ProgramCtx& ctx)
         #warning here we could try to only remove the default answer set printer
         ctx.modelCallbacks.clear();
         ctx.modelCallbacks.push_back(mcb);
-        FinalCallbackPtr fcb(new DiagRewritingFinalCallback(pcd, *ppcd));
+        FinalCallbackPtr fcb(new DiagRewritingFinalCallback(pcd, *ppcd, ctx.aspsoftware));
         ctx.finalCallbacks.push_back(fcb);
       }
       break;
@@ -151,7 +151,7 @@ void MCSIEPlugin::setupProgramCtx(ProgramCtx& ctx)
         #warning here we could try to only remove the default answer set printer
         ctx.modelCallbacks.clear();
         ctx.modelCallbacks.push_back(mcb);
-        FinalCallbackPtr fcb(new ExplRewritingFinalCallback(pcd, *ppcd));
+        FinalCallbackPtr fcb(new ExplRewritingFinalCallback(pcd, *ppcd, ctx.aspsoftware));
         ctx.finalCallbacks.push_back(fcb);
       }
       break;

@@ -41,24 +41,27 @@
 namespace dlvhex {
 namespace mcsdiagexpl {
 
+typedef ASPSolverManager::SoftwareConfigurationPtr ASPSoftwarePtr;
+
 MinPrintDualConvertFinalCallback::
-MinPrintDualConvertFinalCallback(ProgramCtxData& pcd, PrintAndAccumulateModelCallback& mcb):
+MinPrintDualConvertFinalCallback(ProgramCtxData& pcd, PrintAndAccumulateModelCallback& mcb, ASPSoftwarePtr software):
 	pcd(pcd),
   mcb(mcb),
+  software(software),
   nprinter(mcb.nprinter),
   eqprinter(mcb.eqprinter)
 {
 }
 
 DiagRewritingFinalCallback::
-DiagRewritingFinalCallback(ProgramCtxData& pcd, PrintAndAccumulateModelCallback& mcb):
-  MinPrintDualConvertFinalCallback(pcd,mcb)
+DiagRewritingFinalCallback(ProgramCtxData& pcd, PrintAndAccumulateModelCallback& mcb, ASPSoftwarePtr software):
+  MinPrintDualConvertFinalCallback(pcd, mcb, software)
 {
 }
 
 ExplRewritingFinalCallback::
-ExplRewritingFinalCallback(ProgramCtxData& pcd, PrintAndAccumulateModelCallback& mcb):
-  MinPrintDualConvertFinalCallback(pcd,mcb)
+ExplRewritingFinalCallback(ProgramCtxData& pcd, PrintAndAccumulateModelCallback& mcb, ASPSoftwarePtr software):
+  MinPrintDualConvertFinalCallback(pcd, mcb, software)
 {
 }
 
@@ -110,6 +113,8 @@ operator()()
 
   std::ostream& o = std::cout;
 
+  RegistryPtr reg = pcd.reg;
+
 	if( pcd.isminExp() )
   {
     // print minimal explanation notions
@@ -124,8 +129,104 @@ operator()()
 
   assert(!pcd.isDiag() && "convertion from explanation to diagnosis not possible!");
 
-	if( pcd.isminDiag() )
-		assert(false && "convertion to diagnosis not implemented");
+	if( !pcd.isminDiag() )
+    return;
+
+  // else do conversion minimal explanations -> minimal diagnoses
+  // (if we need to convert to diagnoses, we already collected
+  // minimal explanations during model enumeration!)
+  std::string prog;
+  {
+    std::stringstream ss;
+    ss << "d1(R) v nd1(R) :- rule(R)." << std::endl;
+    ss << "d2(R) v nd2(R) :- rule(R)." << std::endl;
+    ss << ":- d1(R), d2(R).\n";
+    ss << ":- not d1OK, not d2OK." << std::endl;
+
+    // for every bridge rule we create a predicate rule(br).    		
+    for(BridgeRuleIterator it = pcd.mcs().rules.begin();
+        it != pcd.mcs().rules.end(); ++it)
+    {
+      ss << "rule(" << it->Id() << ").\n";
+    }
+
+    unsigned i = 0; // index for explanations
+    std::stringstream ssD1ok, ssD2ok; // check for hitting set of d1 and of d2
+    ssD1ok << "d1OK :- ";
+    ssD2ok << "d2OK :- ";
+
+    // for each minimal explanation
+    for(MinimalNotionIterator itn = pcd.minecollector->getMinimals().begin();
+        itn != pcd.minecollector->getMinimals().end(); ++itn, ++i)
+    {
+      // mark in hitting set check
+      if (i != 0) {
+        ssD1ok << ", ";
+        ssD2ok << ", ";
+      }
+      ssD1ok << "inExp" << i << "_E1(R" << i <<"), d1(R" << i << ")";
+      ssD2ok << "inExp" << i << "_E2(R" << i <<"), d2(R" << i << ")";
+
+      // create inExp<i>_E1 and inExp<i>_E2
+
+      {
+        Interpretation::TrueBitIterator it, it_end;
+        for(boost::tie(it, it_end) = itn->projected1->trueBits();
+            it != it_end; ++it)
+        {
+          const OrdinaryAtom& a = itn->projected1->getAtomToBit(it);
+          assert(a.tuple.size() == 2);
+          ss << "inExp" << i << "_E1(" << reg->getTermStringByID(a.tuple[1]) << ")." << std::endl;
+        }
+
+        for(boost::tie(it, it_end) = itn->projected2->trueBits();
+            it != it_end; ++it)
+        {
+          const OrdinaryAtom& a = itn->projected2->getAtomToBit(it);
+          assert(a.tuple.size() == 2);
+          ss << "inExp" << i << "_E2(" << reg->getTermStringByID(a.tuple[1]) << ")." << std::endl;
+        }
+      }
+    }
+
+    ssD1ok << "." << std::endl;
+    ssD2ok << "." << std::endl;
+    ss << ssD1ok.str();
+    ss << ssD2ok.str();
+
+    prog = ss.str();
+  }
+
+  DBGLOG(DBG,"conversion from explanations to diagnoses uses program:\n" << prog);
+
+  InputProviderPtr inp(new InputProvider());
+  inp->addStringInput(prog,"mcsie_conv_expl_diag");
+
+  ASPSolverManager mgr;
+  ASPSolverManager::ResultsPtr results = mgr.solve(*software, *inp, reg);
+
+  // retrieve all answer sets
+  // and feed them into minimal diagnosis notion collector (unused so far in --iemode=expl)
+  AnswerSetPtr as = results->getNextAnswerSet();
+  while( !!as )
+  {
+    DBGLOG(DBG,"Em->Dm converter got answer set " << *as->interpretation);
+    pcd.mindcollector->record(as->interpretation);
+    as = results->getNextAnswerSet();
+  }
+
+  // get minimal notions and print them
+  NotionPrinter dmprinter(pcd, pcd.idd1, pcd.idd2, pcd.brdmask);
+  for(std::list<MinimalNotion>::const_iterator it =
+        pcd.mindcollector->getMinimals().begin();
+      it != pcd.mindcollector->getMinimals().end(); ++it)
+  {
+    assert(!pcd.isprintOPEQ() && "cannot print output projected equilibria when converting explanations to diagnoses");
+    assert(it->full.size() == 1 && "should only have one answer set for converted notions");
+    o << "Dm:";
+    dmprinter.print(o, it->full.front());
+    o << std::endl;
+  }
 }
 
 } // namespace mcsdiagexpl

@@ -42,13 +42,7 @@ namespace
   std::set<std::set<std::string> > 
   BenchContext1::acc(const std::string& param, const std::set<std::string>& input) {
     std::set<std::set<std::string> > ret;
-    for (std::set<std::string>::iterator it = input.begin(); it != input.end(); it++) {
-	std::set<std::string> s;
-	if (s.find(*it) == s.end()) {
-	  s.insert(*it);
-	}
-	ret.insert(s);
-    }
+    ret.insert(input);
     return ret;
   }
 
@@ -57,13 +51,7 @@ namespace
   std::set<std::set<std::string> > 
   BenchContext2::acc(const std::string& param, const std::set<std::string>& input) {
     std::set<std::set<std::string> > ret;
-    for (std::set<std::string>::iterator it = input.begin(); it != input.end(); it++) {
-	std::set<std::string> s;
-	if (s.find(*it) == s.end()) {
-	  s.insert(*it);
-	}
-	ret.insert(s);
-    }
+    ret.insert(input);
     return ret;
   }
 
@@ -72,13 +60,7 @@ namespace
   std::set<std::set<std::string> > 
   BenchContext3::acc(const std::string& param, const std::set<std::string>& input) {
     std::set<std::set<std::string> > ret;
-    for (std::set<std::string>::iterator it = input.begin(); it != input.end(); it++) {
-	std::set<std::string> s;
-	if (s.find(*it) == s.end()) {
-	  s.insert(*it);
-	}
-	ret.insert(s);
-    }
+    ret.insert(input);
     return ret;
   }
 
@@ -88,13 +70,7 @@ namespace
   BenchContext4::acc(const std::string& param, const std::set<std::string>& input) {
     std::set<std::set<std::string> > ret;
     if (input.find("d") == input.end()) {
-      std::set<std::string> s;
-      for (std::set<std::string>::iterator it = input.begin(); it != input.end(); it++) {
-	  if (s.find(*it) == s.end()) {
-	    s.insert(*it);
-	  }
-      }
-      ret.insert(s);
+      ret.insert(input);
     }
     return ret;
   }

@@ -1,4 +1,7 @@
+%a.
+%b.
 #context(1,"dlv_asp_context_acc", "./benchmark6/dlvctx_ctx1.dlv").
+%:- d.
 #context(2,"dlv_asp_context_acc", "./benchmark6/dlvctx_ctx2.dlv").
 
 r1:(2:d) :- (1:a), not (2:c).

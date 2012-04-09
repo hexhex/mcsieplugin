@@ -1,6 +1,10 @@
+% empty
 #context(1,"dlv_asp_context_acc", "./benchmark7/dlvctx_ctx1.dlv").
+% empty
 #context(2,"dlv_asp_context_acc", "./benchmark7/dlvctx_ctx2.dlv").
+% empty
 #context(3,"dlv_asp_context_acc", "./benchmark7/dlvctx_ctx3.dlv").
+% :- d.
 #context(4,"dlv_asp_context_acc", "./benchmark7/dlvctx_ctx4.dlv").
 
 r1:(2:b) :- not (1:a).

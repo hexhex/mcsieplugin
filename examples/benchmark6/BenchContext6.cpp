@@ -55,8 +55,7 @@ namespace
   BenchContext2::acc(const std::string& param, const std::set<std::string>& input) {
     std::set<std::set<std::string> > ret;
     if (input.find("d") == input.end()) {
-      std::set<std::string> s;
-      ret.insert(s);
+      ret.insert(input);
     }
     return ret;
   }

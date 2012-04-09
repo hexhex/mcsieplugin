@@ -34,6 +34,7 @@
 #include "PrintAndAccumulateModelCallback.h"
 
 #include <dlvhex2/PluginInterface.h>
+#include <dlvhex2/ASPSolverManager.h>
 
 #include <vector>
 
@@ -44,12 +45,13 @@ class MinPrintDualConvertFinalCallback:
 	public FinalCallback
 {
 public:
-	MinPrintDualConvertFinalCallback(ProgramCtxData& pcd, PrintAndAccumulateModelCallback& mcb);
+	MinPrintDualConvertFinalCallback(ProgramCtxData& pcd, PrintAndAccumulateModelCallback& mcb, ASPSolverManager::SoftwareConfigurationPtr software);
 	virtual ~MinPrintDualConvertFinalCallback() {}
 
 protected:
 	ProgramCtxData& pcd;
   PrintAndAccumulateModelCallback& mcb;
+  ASPSolverManager::SoftwareConfigurationPtr software;
 
   // from within mcb
   NotionPrinter& nprinter;
@@ -60,7 +62,7 @@ class DiagRewritingFinalCallback:
   public MinPrintDualConvertFinalCallback
 {
 public:
-	DiagRewritingFinalCallback(ProgramCtxData& pcd, PrintAndAccumulateModelCallback& mcb);
+	DiagRewritingFinalCallback(ProgramCtxData& pcd, PrintAndAccumulateModelCallback& mcb, ASPSolverManager::SoftwareConfigurationPtr software);
 	virtual ~DiagRewritingFinalCallback() {}
 
   virtual void operator()();
@@ -70,7 +72,7 @@ class ExplRewritingFinalCallback:
   public MinPrintDualConvertFinalCallback
 {
 public:
-	ExplRewritingFinalCallback(ProgramCtxData& pcd, PrintAndAccumulateModelCallback& mcb);
+	ExplRewritingFinalCallback(ProgramCtxData& pcd, PrintAndAccumulateModelCallback& mcb, ASPSolverManager::SoftwareConfigurationPtr software);
 	virtual ~ExplRewritingFinalCallback() {}
 
   virtual void operator()();
