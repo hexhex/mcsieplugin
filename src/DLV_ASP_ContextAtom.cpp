@@ -47,9 +47,8 @@
 #include <dlvhex2/InputProvider.h>
 #include <dlvhex2/ProgramCtx.h>
 #include <dlvhex2/HexParser.h>
+#include <dlvhex2/OrdinaryASPProgram.h>
 #include <dlvhex2/ASPSolverManager.h>
-//#include <dlvhex/ProgramCtx.h>
-//#include <dlvhex2/DLVProcess.h>
 #include <dlvhex2/ASPSolver.h>
 
 namespace dlvhex {
@@ -199,7 +198,7 @@ DLV_ASP_ContextAtom::retrieve(const Query& query, Answer& answer)
   {
     typedef ASPSolverManager::SoftwareConfiguration<ASPSolver::DLVSoftware> DLVConfiguration;
     DLVConfiguration dlv;
-    ASPProgram program(kbctx.registry(), kbctx.idb, kbctx.edb, kbctx.maxint);
+    OrdinaryASPProgram program(kbctx.registry(), kbctx.idb, kbctx.edb, kbctx.maxint);
     LOG(DBG,"context program:" << std::endl << 
       printManyToString<RawPrinter>(kbctx.idb,"\n",kbctx.registry()) << std::endl <<
       *kbctx.edb << std::endl);
