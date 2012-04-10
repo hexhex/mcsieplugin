@@ -73,6 +73,8 @@ operator()()
 
   std::ostream& o = std::cout;
 
+  RegistryPtr reg = pcd.reg;
+
 	if( pcd.isminDiag() )
   {
     // print minimal diagnosis notions
@@ -100,9 +102,114 @@ operator()()
     }
   }
 
-	if( pcd.isminExp() || pcd.isExp() )
-		assert(false && "convertion to explanation not implemented");
+	if( !pcd.isminExp() && !pcd.isExp() )
+    return;
 
+  // else do conversion minimal diagnoses -> explanations
+  // (if we need to convert to explanations, we already collected
+  // minimal diagnoses during model enumeration!)
+  std::string prog;
+  do
+  {
+    std::stringstream ss;
+    ss << "e1(R) v ne1(R) :- rule(R)." << std::endl;
+    ss << "e2(R) v ne2(R) :- rule(R)." << std::endl;
+
+    // for every bridge rule we create a predicate rule(br).    		
+    for(BridgeRuleIterator it = pcd.mcs().rules.begin();
+        it != pcd.mcs().rules.end(); ++it)
+    {
+      ss << "rule(" << it->Id() << ").\n";
+    }
+
+    // for each minimal diagnosis
+    for(MinimalNotionIterator itn = pcd.mindcollector->getMinimals().begin();
+        itn != pcd.mindcollector->getMinimals().end(); ++itn)
+    {
+      {
+        bool first = true;
+        Interpretation::TrueBitIterator it, it_end;
+        for(boost::tie(it, it_end) = itn->projected1->trueBits();
+            it != it_end; ++it)
+        {
+          const OrdinaryAtom& a = itn->projected1->getAtomToBit(it);
+          assert(a.tuple.size() == 2);
+          const std::string& ruleid = reg->getTermStringByID(a.tuple[1]);
+          if( first ) first = false;
+          else ss << " v ";
+          ss << "e1(" << ruleid << ")";
+        }
+
+        for(boost::tie(it, it_end) = itn->projected2->trueBits();
+            it != it_end; ++it)
+        {
+          const OrdinaryAtom& a = itn->projected2->getAtomToBit(it);
+          assert(a.tuple.size() == 2);
+          const std::string& ruleid = reg->getTermStringByID(a.tuple[1]);
+          if( first ) first = false;
+          else ss << " v ";
+          ss << "e2(" << ruleid << ")";
+        }
+
+        if( first )
+        {
+          // empty diagnosis -> system is consistent -> make this program inconsistent
+          ss << "true. :- true.\n";
+        }
+        else
+        {
+          ss << ".\n";
+        }
+      }
+    }
+
+    prog = ss.str();
+  }
+  while(false);
+
+  DBGLOG(DBG,"conversion from diagnoses to explanations uses program:\n" << prog);
+
+  InputProviderPtr inp(new InputProvider());
+  inp->addStringInput(prog,"mcsie_conv_diag_expl");
+
+  ASPSolverManager mgr;
+  ASPSolverManager::ResultsPtr results = mgr.solve(*software, *inp, reg);
+
+  // prepare notion printer for explanations
+  NotionPrinter eprinter(pcd, pcd.ide1, pcd.ide2, pcd.bremask);
+
+  // retrieve all answer sets
+  // and feed them into minimal diagnosis notion collector (unused so far in --iemode=expl)
+  AnswerSetPtr as = results->getNextAnswerSet();
+  while( !!as )
+  {
+    DBGLOG(DBG,"Dm->Em converter got answer set " << *as->interpretation);
+    if( pcd.isExp() )
+    {
+      o << "E:";
+      eprinter.print(o, as->interpretation);
+      o << std::endl;
+    }
+    if( pcd.isminExp() )
+    {
+      pcd.minecollector->record(as->interpretation);
+    }
+    as = results->getNextAnswerSet();
+  }
+
+  if( pcd.isminExp() )
+  {
+    // get minimal notions and print them
+    for(std::list<MinimalNotion>::const_iterator it =
+          pcd.minecollector->getMinimals().begin();
+        it != pcd.minecollector->getMinimals().end(); ++it)
+    {
+      assert(it->full.size() == 1 && "should only have one answer set for converted notions");
+      o << "Em:";
+      eprinter.print(o, it->full.front());
+      o << std::endl;
+    }
+  }
 }
 
 void ExplRewritingFinalCallback::

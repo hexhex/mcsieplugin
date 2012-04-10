@@ -51,7 +51,7 @@ PrintAndAccumulateModelCallback(
     PredicateMask& fullmask,
     MinimalNotionCollectorPtr mincollector):
   pcd(pcd),
-  printanything(pcd.isDiag() || pcd.isExp()),
+  printanything(false),
   printnotion(pcd.isDiag() || pcd.isExp()),
   printeq(pcd.isprintOPEQ()),
   prefix(""),
@@ -74,6 +74,7 @@ PrintAndAccumulateModelCallback(
 	{
 	case ProgramCtxData::DIAGREWRITING:
 		// to get diag from expl and vice versa we collect minimal ones
+    printanything = pcd.isDiag();
 		if( anyexpl )
 			collectminimal = true;
 		prefix = "D";
@@ -83,6 +84,7 @@ PrintAndAccumulateModelCallback(
 
 	case ProgramCtxData::EXPLREWRITING:
 		// to get diag from expl and vice versa we collect minimal ones
+    printanything = pcd.isExp();
 		if( printeq )
 			throw PluginError("cannot use saturation encoding for calculating equilibria");
 		if( anydiag )
