@@ -57,6 +57,14 @@ public:
   bool Neg() const { return neg; }
 
   std::ostream& print(std::ostream&) const;
+
+  bool operator<(const BridgeRuleEntry& other) const
+  {
+    return
+      (contextid < other.contextid) ||
+      (contextid == other.contextid && fact < other.fact) ||
+      (contextid == other.contextid && fact == other.fact && neg < other.neg);
+  }
 };
 
 std::ostream& printBridgeRuleEntryAsASPHelperAtom(std::ostream& o, const char* prefix, const BridgeRuleEntry& entry);

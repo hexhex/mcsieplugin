@@ -1,3 +1,4 @@
+./test1/dlvctx_master.hex ./test1/dm.out --ieenable --ieexplain=Dm --ienoprintopeq
 ./benchmark1/dlvctx_master.hex ./benchmark1/d_opeq.out --ieexplain=D --ieenable
 ./benchmark1/dlvctx_master.hex ./benchmark1/d.out --ieexplain=D --ienoprintopeq --ieenable
 ./benchmark1/dlvctx_master.hex ./benchmark1/dm_opeq.out --ieexplain=Dm --ieenable

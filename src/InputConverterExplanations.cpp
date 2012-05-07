@@ -46,17 +46,47 @@ namespace mcsdiagexpl {
 namespace
 {
 
-void writeBridgeRule(std::ostream& o, const BridgeRule& r);
+typedef std::list<BridgeRule> BridgeRuleList;
+typedef BridgeRuleList::const_iterator BridgeRuleListIterator;
+
+typedef std::map<BridgeRuleEntry, BridgeRuleList > BridgeRulesByHead;
+typedef BridgeRulesByHead::iterator BridgeRulesByHeadIterator;
+
+void writeBridgeRulesForOneHead(
+    std::ostream& o,
+    const BridgeRuleEntry& head, const BridgeRuleList& r,
+    unsigned& atbody_base);
 void writeContext(std::ostream& o, const Context& c);
 void writeProgram(std::ostream& o, const MCS& m);
 
 void writeProgram(std::ostream& o, const MCS& m)
 {
+  BridgeRulesByHead br_by_head;
+
   for(BridgeRuleIterator it = m.rules.begin();
       it != m.rules.end(); ++it)
   {
-    writeBridgeRule(o, *it);
+    BridgeRulesByHeadIterator byit = br_by_head.find(it->Head());
+    if( byit == br_by_head.end() )
+    {
+      BridgeRuleList brl;
+      brl.push_back(*it);
+      br_by_head.insert(std::make_pair(it->Head(), brl));
+    }
+    else
+    {
+      BridgeRuleList& brl = byit->second;
+      brl.push_back(*it);
+    }
   }
+
+  unsigned atbody = 1;
+  for(BridgeRulesByHeadIterator byit = br_by_head.begin();
+      byit != br_by_head.end(); ++byit)
+  {
+    writeBridgeRulesForOneHead(o, byit->first, byit->second, atbody);
+  }
+
   for(ContextIterator it = m.contexts.begin();
       it != m.contexts.end(); ++it)
   {
@@ -82,7 +112,7 @@ void writeContext(std::ostream& o, const Context& context)
 
    // spoil if the guessed belief state is no equilibrium
    o <<
-      "spoil :- not &saturation_meta_context[\"" << context.ExtAtom()  <<"\",spoil," <<
+      "spoil :- &saturation_meta_context[\"" << context.ExtAtom()  <<"\",spoil," <<
       cn << ",a" << cn << ",b" << cn << ",o" << cn << "," <<
       "\"" << context.Param() << "\"].\n"; 
 
@@ -90,6 +120,7 @@ void writeContext(std::ostream& o, const Context& context)
    o << "ctx(" << cn << ")." << std::endl;
 }
 
+#if 0
 void writeBridgeRule(std::ostream& o, const BridgeRule& br)
 {
   // write bridgerule in asp form
@@ -142,6 +173,118 @@ void writeBridgeRule(std::ostream& o, const BridgeRule& br)
   o << "r2("  << br.Id() << ") :- spoil.\n";
   o << "nr2(" << br.Id() << ") :- spoil.\n";
   o << asAtom("b", br.Head()) << " :- spoil.\n";
+}
+#endif
+
+void writeBridgeRulesForOneHead(
+    std::ostream& o,
+    const BridgeRuleEntry& head, const BridgeRuleList& r,
+    unsigned& atbody_base)
+{
+  // for all bridge rules in this list
+  for(BridgeRuleListIterator itr = r.begin(); 
+      itr != r.end(); ++itr)
+  {
+    // mark outputs: OUT_i via "o<i>(belief)"
+    for(BridgeRuleEntryIterator it = itr->Body().begin(); it != itr->Body().end(); ++it)
+    {
+      o << asAtom("o", *it) << ".\n";
+    }
+
+    // mark input: IN_i via "i<i>(belief)"
+    o << asAtom("i", head) << ".\n";
+
+    // guess explanation candidate (independently for e1 and e2)
+    o << "e1(" << itr->Id() << ") v ne1(" << itr->Id() << ").\n";
+    o << "e2(" << itr->Id() << ") v ne2(" << itr->Id() << ").\n";
+
+    // guess set of rules (r1,r2) such that
+    //
+    // e1 \subseteq r1 \subseteq BR
+    o << "r1(" << itr->Id() << ") :- e1(" << itr->Id() << ").\n";
+    o << "r1(" << itr->Id() << ") v nr1(" << itr->Id() << ") :- ne1(" << itr->Id() << ").\n";
+    // r2 \subseteq BR \setminus e2
+    o << "r2(" << itr->Id() << ") v nr2(" << itr->Id() << ") :- ne2(" << itr->Id() << ").\n";
+    o << "nr2(" << itr->Id() << ") :- e2(" << itr->Id() << ").\n";
+
+    // spoil if guess is contradictory
+    o << "spoil :- r1(" << itr->Id() << "), nr1(" << itr->Id() << ").\n";
+    o << "spoil :- r2(" << itr->Id() << "), nr2(" << itr->Id() << ").\n";
+  }
+
+  // for all bridge rules in this list
+
+  // output rules for body 1 -> bdy_1 -> head, body 2 -> bdy_2 -> head, ..., r2 -> head
+  unsigned atbody = atbody_base;
+  for(BridgeRuleListIterator itr = r.begin(); 
+      itr != r.end(); ++itr, ++atbody)
+  {
+    const BridgeRule& br = *itr;
+
+    // bdy_integer :- r1 + body
+    o << "bdy" << atbody << " :- " << "r1(" << br.Id() << ")";
+    for(BridgeRuleEntryIterator it = br.Body().begin();
+        it != br.Body().end(); ++it)
+    {
+      const BridgeRuleEntry& elem = *it;
+      if( elem.Neg() )
+        o << ", " << asAtom("na", elem);
+      else
+        o << ", " << asAtom("a", elem);
+    }
+    o << ".\n";
+
+    // head :- bdy_integer
+    o << asAtom("b", head) << " :- bdy" << atbody << ".\n";
+
+    // head :- r2 rule
+    o << asAtom("b", head) << " :- r2(" << br.Id() << ").\n";
+  }
+
+  // output rule for head -> one of bodies
+  atbody = atbody_base;
+  for(BridgeRuleListIterator itr = r.begin(); 
+      itr != r.end(); ++itr, ++atbody)
+  {
+    if( atbody != atbody_base )
+      o << " v ";
+    // r2 rule v bdy
+    o << "r2(" << itr->Id() << ") v " << "bdy" << atbody;
+  }
+  o << " :- " << asAtom("b", head) << ".\n";
+
+  // output rules for bdy_integer -> body atoms
+  atbody = atbody_base;
+  for(BridgeRuleListIterator itr = r.begin(); 
+      itr != r.end(); ++itr, ++atbody)
+  {
+    for(BridgeRuleEntryIterator it = itr->Body().begin();
+        it != itr->Body().end(); ++it)
+    {
+      const BridgeRuleEntry& elem = *it;
+      if( elem.Neg() )
+        o << asAtom("na", elem);
+      else
+        o << asAtom("a", elem);
+      o << " :- " << "bdy" << atbody << ".\n";
+    }
+  }
+
+  // saturate on spoil
+  atbody = atbody_base;
+  for(BridgeRuleListIterator itr = r.begin(); 
+      itr != r.end(); ++itr, ++atbody)
+  {
+    const BridgeRule& br = *itr;
+    o << "bdy" << atbody << " :- spoil.\n";
+    o << "r1("  << br.Id() << ") :- spoil.\n";
+    o << "nr1(" << br.Id() << ") :- spoil.\n";
+    o << "r2("  << br.Id() << ") :- spoil.\n";
+    o << "nr2(" << br.Id() << ") :- spoil.\n";
+  }
+  o << asAtom("b", head) << " :- spoil.\n";
+
+  atbody_base = atbody;
 }
 
 } // anonymous namespace

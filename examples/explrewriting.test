@@ -1,4 +1,3 @@
-#
 # first test call parameters for benchmark1 (will not do this for subsequent examples)
 #
 ./benchmark1/benchctx_master.hex ./benchmark1/em.out --ieenable --iemode=expl
@@ -11,6 +10,10 @@
 ./benchmark1/dlvctx_master.hex ./benchmark1/em.out --ieexplain=Em --ieenable --iemode=expl
 #
 # test semantics of everything together (e+em+dm) for subsequent benchmarks
+#
+# this is too slow for nightly tests!
+# (system is consistent, so return value should be one Dm ({},{})!)
+#./test1/dlvctx_master.hex ./test1/dm.out --ieenable --ieexplain=Dm --iemode=expl
 #
 ./benchmark2/benchctx_master.hex ./benchmark2/eemdm.out --ieexplain=E,Em,Dm --ieenable --iemode=expl
 #./benchmark2/dlvctx_master.hex ./benchmark2/e.out --ieexplain=E --ieenable --iemode=expl

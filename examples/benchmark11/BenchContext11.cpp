@@ -48,9 +48,7 @@ namespace
       s.insert("b");
     }
     for (std::set<std::string>::iterator it = input.begin(); it != input.end(); it++) {
-	if (s.find(*it) == s.end()) {
-	  s.insert(*it);
-	}
+      s.insert(*it);
     }
     ret.insert(s);
     return ret;
@@ -62,10 +60,11 @@ namespace
   BenchContext2::acc(const std::string& param, const std::set<std::string>& input) {
     std::set<std::set<std::string> > ret;
     std::set<std::string> s;
-    if (input.find("c") != input.end()) {
-	s.insert("c");
-    } else {
-	s.insert("d");
+    if (input.find("c") == input.end()) {
+      s.insert("d");
+    }
+    for (std::set<std::string>::iterator it = input.begin(); it != input.end(); it++) {
+      s.insert(*it);
     }
     ret.insert(s);
     return ret;

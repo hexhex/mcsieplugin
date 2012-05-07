@@ -88,12 +88,13 @@ void SaturationMetaAtom::retrieve(const Query& query, Answer& answer)
   bool saturate = query.interpretation->getFact(saturate_atom.address);
   LOG(DBG,"SaturationMetaAtom called with saturate=" << saturate);
 
+  bool retval = false;
   if( saturate )
   {
     // saturation is the case, signal that context is inconsistent
-    // by adding no tuple to answer
-    LOG(INFO,"saturate is true -> returning no tuples");
-    answer.use(); // mark as used, this is required if we do not add tuples
+    // by adding empty tuple (=true) to answer
+    LOG(INFO,"saturate is true -> returning true");
+    retval = true;
   }
   else
   {
@@ -126,7 +127,30 @@ void SaturationMetaAtom::retrieve(const Query& query, Answer& answer)
 
     // call external context atom
     LOG(INFO,"saturate is false -> delegating to context atom " << contextatomname);
-    cat->retrieve(childQuery, answer);
+    Answer subanswer;
+    cat->retrieve(childQuery, subanswer);
+    if( subanswer.get().size() == 0 )
+    {
+      // context is inconsistent -> return true
+      retval = true;
+    }
+    else
+    {
+      // context is consistent -> return false
+      retval = false;
+    }
+  }
+
+  if( retval )
+  {
+    // empty tuple = true
+    answer.get().push_back(Tuple());
+  }
+  else
+  {
+    // mark as used, this is required if we do not add tuples
+    // no tuple = false
+    answer.use();
   }
 }
 
