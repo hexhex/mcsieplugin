@@ -1,0 +1,11 @@
+#context(1,"dlv_asp_context_acc", "./medExamplePSThesis/db.dlv").
+#context(2,"dlv_asp_context_acc", "./medExamplePSThesis/onto.dlv").
+#context(3,"ontology_context3_acc", "").
+#context(4,"dlv_asp_context_acc", "./medExamplePSThesis/dss.dlv").
+
+r1: (2:customer02031985) :- (1:person02031985).
+r2: (3:pneumonia) :- (2:xray_pneumonia).
+r3: (3:marker) :- (2:blood_marker).
+r4: (4:need_ab) :- (3:bacterial_disease).
+r5: (4:need_strong) :- (3:atyppneumonia).
+r6: (4:allow_strong_ab) :- not (1:allergy_strong_ab).

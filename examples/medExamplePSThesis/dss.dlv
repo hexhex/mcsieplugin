@@ -1,0 +1,3 @@
+give_strong v give_weak :- need_ab.
+give_strong :- need_strong.
+-give_strong :- need_strong, not allow_strong_ab.

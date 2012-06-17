@@ -50,6 +50,11 @@ Context3::acc(
 		// additionally accept atyppneumonia
     s.insert("atyppneumonia");
   }
+  if( input.count("pneumonia") == 1 )
+	{
+		// additionally accept bacterial_disease
+    s.insert("bacterial_disease");
+  }
 	ret.insert(s);
   return ret;
 }

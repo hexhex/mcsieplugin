@@ -1,0 +1,2 @@
+bacterial_disease :- pneumonia.
+atyppneumonia :- pneumonia, marker.
