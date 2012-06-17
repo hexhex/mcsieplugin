@@ -1,5 +1,5 @@
 #context(1,"dlv_asp_context_acc", "./medExamplePSThesis/db.dlv").
-#context(2,"dlv_asp_context_acc", "./medExamplePSThesis/onto.dlv").
+#context(2,"dlv_asp_context_acc", "./medExamplePSThesis/lab.dlv").
 #context(3,"ontology_context3_acc", "").
 #context(4,"dlv_asp_context_acc", "./medExamplePSThesis/dss.dlv").
 

@@ -109,7 +109,6 @@ operator()()
   // (if we need to convert to explanations, we already collected
   // minimal diagnoses during model enumeration!)
   std::string prog;
-  do
   {
     std::stringstream ss;
     ss << "e1(R) v ne1(R) :- rule(R)." << std::endl;
@@ -165,7 +164,6 @@ operator()()
 
     prog = ss.str();
   }
-  while(false);
 
   DBGLOG(DBG,"conversion from diagnoses to explanations uses program:\n" << prog);
 
@@ -247,8 +245,8 @@ operator()()
     std::stringstream ss;
     ss << "d1(R) v nd1(R) :- rule(R)." << std::endl;
     ss << "d2(R) v nd2(R) :- rule(R)." << std::endl;
-    ss << ":- d1(R), d2(R).\n";
-    ss << ":- not d1OK, not d2OK." << std::endl;
+    ss << ":- d1(R), d2(R)." << std::endl; // this is not necessary, but not wrong either
+    // (we only use the subset-minimal result of this, which never contains d1 and d2 for a rule)
 
     // for every bridge rule we create a predicate rule(br).    		
     for(BridgeRuleIterator it = pcd.mcs().rules.begin();
@@ -257,33 +255,22 @@ operator()()
       ss << "rule(" << it->Id() << ").\n";
     }
 
-    unsigned i = 0; // index for explanations
-    std::stringstream ssD1ok, ssD2ok; // check for hitting set of d1 and of d2
-    ssD1ok << "d1OK :- ";
-    ssD2ok << "d2OK :- ";
-
     // for each minimal explanation
     for(MinimalNotionIterator itn = pcd.minecollector->getMinimals().begin();
-        itn != pcd.minecollector->getMinimals().end(); ++itn, ++i)
+        itn != pcd.minecollector->getMinimals().end(); ++itn)
     {
-      // mark in hitting set check
-      if (i != 0) {
-        ssD1ok << ", ";
-        ssD2ok << ", ";
-      }
-      ssD1ok << "inExp" << i << "_E1(R" << i <<"), d1(R" << i << ")";
-      ssD2ok << "inExp" << i << "_E2(R" << i <<"), d2(R" << i << ")";
-
-      // create inExp<i>_E1 and inExp<i>_E2
-
       {
+        bool first = true;
         Interpretation::TrueBitIterator it, it_end;
         for(boost::tie(it, it_end) = itn->projected1->trueBits();
             it != it_end; ++it)
         {
           const OrdinaryAtom& a = itn->projected1->getAtomToBit(it);
           assert(a.tuple.size() == 2);
-          ss << "inExp" << i << "_E1(" << reg->getTermStringByID(a.tuple[1]) << ")." << std::endl;
+          const std::string& ruleid = reg->getTermStringByID(a.tuple[1]);
+          if( first ) first = false;
+          else ss << " v ";
+          ss << "d1(" << ruleid << ")";
         }
 
         for(boost::tie(it, it_end) = itn->projected2->trueBits();
@@ -291,15 +278,19 @@ operator()()
         {
           const OrdinaryAtom& a = itn->projected2->getAtomToBit(it);
           assert(a.tuple.size() == 2);
-          ss << "inExp" << i << "_E2(" << reg->getTermStringByID(a.tuple[1]) << ")." << std::endl;
+          const std::string& ruleid = reg->getTermStringByID(a.tuple[1]);
+          if( first ) first = false;
+          else ss << " v ";
+          ss << "d2(" << ruleid << ")";
+        }
+
+        if( !first )
+        {
+          // nonempty explanation -> finish disjunction
+          ss << ".\n";
         }
       }
     }
-
-    ssD1ok << "." << std::endl;
-    ssD2ok << "." << std::endl;
-    ss << ssD1ok.str();
-    ss << ssD2ok.str();
 
     prog = ss.str();
   }

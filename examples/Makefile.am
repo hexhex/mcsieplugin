@@ -166,6 +166,15 @@ EXTRA_DIST = \
   medExample/kb4.dlv \
   medExample/dmem_opeq.out \
   medExample/plusloop_dmem_opeq.out \
+  medExamplePSThesis/master.hex \
+  medExamplePSThesis/master_cppcontext3.hex \
+  medExamplePSThesis/master_plusloop.hex \
+  medExamplePSThesis/db.dlv \
+  medExamplePSThesis/lab.dlv \
+  medExamplePSThesis/onto.dlv \
+  medExamplePSThesis/dss.dlv \
+  medExamplePSThesis/dmem_opeq.out \
+  medExamplePSThesis/plusloop_dmem_opeq.out \
   independent_inc1/master.hex \
   independent_inc1/dlvctx_ctx1.dlv \
   independent_inc1/dlvctx_ctx2.dlv \

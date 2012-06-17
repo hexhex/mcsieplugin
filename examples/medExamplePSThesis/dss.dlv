@@ -1,3 +1,4 @@
 give_strong v give_weak :- need_ab.
 give_strong :- need_strong.
--give_strong :- need_strong, not allow_strong_ab.
+ngive_strong :- need_strong, not allow_strong_ab.
+:- give_strong, ngive_strong.

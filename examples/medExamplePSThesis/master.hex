@@ -1,6 +1,6 @@
 #context(1,"dlv_asp_context_acc", "./medExamplePSThesis/db.dlv").
-#context(2,"dlv_asp_context_acc", "./medExamplePSThesis/onto.dlv").
-#context(3,"dlv_asp_context_acc", "./medExamplePSThesis/lab.dlv").
+#context(2,"dlv_asp_context_acc", "./medExamplePSThesis/lab.dlv").
+#context(3,"dlv_asp_context_acc", "./medExamplePSThesis/onto.dlv").
 #context(4,"dlv_asp_context_acc", "./medExamplePSThesis/dss.dlv").
 
 r1: (2:customer02031985) :- (1:person02031985).

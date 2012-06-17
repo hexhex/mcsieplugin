@@ -11,9 +11,9 @@
 #
 # test semantics of everything together (e+em+dm) for subsequent benchmarks
 #
-# this is too slow for nightly tests!
+# this is too slow for explicit ufs check!
 # (system is consistent, so return value should be one Dm ({},{})!)
-#./test1/dlvctx_master.hex ./test1/dm.out --ieenable --ieexplain=Dm --iemode=expl
+./test1/dlvctx_master.hex ./test1/dm.out --ieenable --ieexplain=Dm --iemode=expl
 #
 ./benchmark2/benchctx_master.hex ./benchmark2/eemdm.out --ieexplain=E,Em,Dm --ieenable --iemode=expl
 #./benchmark2/dlvctx_master.hex ./benchmark2/e.out --ieexplain=E --ieenable --iemode=expl
@@ -69,9 +69,9 @@
 #./benchmark7/benchctx_master.hex ./benchmark7/em.out --ieenable --iemode=expl
 #./benchmark7/dlvctx_master.hex ./benchmark7/dm.out --ieexplain=Dm --ieenable --iemode=expl
 #
-# this is too slow for nightly tests!
+# this is too slow for explicit ufs check!
 # (system is consistent, so return value should be one Dm ({},{})!)
-#./benchmark8/benchctx_master.hex ./benchmark8/eemdm.out --ieexplain=E,Em,Dm --ieenable --iemode=expl
+./benchmark8/benchctx_master.hex ./benchmark8/eemdm.out --ieexplain=E,Em,Dm --ieenable --iemode=expl
 #./benchmark8/dlvctx_master.hex ./benchmark8/e.out --ieexplain=E --ieenable --iemode=expl
 #./benchmark8/benchctx_master.hex ./benchmark8/e.out --ieexplain=E --ieenable --iemode=expl
 #./benchmark8/dlvctx_master.hex ./benchmark8/em.out --ieenable --iemode=expl
@@ -106,3 +106,5 @@
 #./benchmark11/benchctx_master.hex ./benchmark11/em.out --ieexplain=Em --ieenable --iemode=expl
 #./benchmark11/dlvctx_master.hex ./benchmark11/dm.out --ieexplain=Dm --ieenable --iemode=expl
 #./benchmark11/benchctx_master.hex ./benchmark11/dm.out --ieexplain=Dm --ieenable --iemode=expl
+#
+./medExamplePSThesis/master.hex ./medExamplePSThesis/dmem_noopeq.out --ieexplain=Dm,Em --ieenable --iemode=expl

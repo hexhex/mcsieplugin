@@ -142,4 +142,6 @@
 ./medExample/master.hex ./medExample/dmem_opeq.out --ieexplain=Dm,Em --ieenable
 ./medExample/master_plusloop.hex ./medExample/plusloop_dmem_opeq.out --ieexplain=Dm,Em --ieenable
 ./medExample/master_cppcontext3.hex ./medExample/dmem_opeq.out --ieexplain=Dm,Em --ieenable
+./medExamplePSThesis/master.hex ./medExamplePSThesis/dmem_opeq.out --ieexplain=Dm,Em --ieenable
+./medExamplePSThesis/master_cppcontext3.hex ./medExamplePSThesis/dmem_opeq.out --ieexplain=Dm,Em --ieenable
 ./independent_inc1/master.hex ./independent_inc1/dmem_opeq.out --ieexplain=Dm,Em --ieenable
