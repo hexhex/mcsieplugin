@@ -120,6 +120,7 @@ void SaturationMetaAtom::retrieve(const Query& query, Answer& answer)
       queryint->clearFact(saturate_atom.address);
     }
     Query childQuery(
+        query.ctx,
         queryint,
         // remove first two inputs
         Tuple(query.input.begin()+2,query.input.end()),
