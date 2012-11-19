@@ -1,4 +1,4 @@
-confstr="--solver=genuinegc --flpcheck=ufs;--solver=genuinegc --flpcheck=none"
+confstr="--flpcheck=ufs --ufslearn --extlearn;--flpcheck=aufs --ufslearn --extlearn"
 IFS=';' read -ra confs <<< "$confstr"
 header="#size"
 i=0
@@ -20,7 +20,7 @@ do
 	for c in "${confs[@]}"
 	do
 		echo -ne -e " "
-		output=$(timeout 300 dlvhex2 $c --plugindir=../../src/.libs --ieenable --iemode=expl --ieexplain=E $instance --silent | wc -l)
+		output=$(timeout 300 time -f %e dlvhex2 $c --plugindir=../../src/.libs --ieenable --iemode=expl --ieexplain=E $instance --silent 2>&1 >/dev/null)
 		if [[ $? == 124 ]]; then
 			output="---"
 		fi
