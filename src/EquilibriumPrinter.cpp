@@ -59,7 +59,7 @@ print(std::ostream& o, InterpretationPtr model)
 	ContextIterator itc;
 	PredicateMaskIterator itm;
 	for(itc = mcs.contexts.begin(), itm = pcd.obmasks.begin();
-			itc != mcs.contexts.end(), itm != pcd.obmasks.end();
+			itc != mcs.contexts.end() && itm != pcd.obmasks.end();
 			++itc, ++itm)
 	{
 		itm->updateMask();
