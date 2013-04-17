@@ -19,7 +19,7 @@ done
 echo $header
 
 # do benchmark
-echo -ne "$instance "
+echo -ne "$instance"
 
 # for all configurations
 i=0
