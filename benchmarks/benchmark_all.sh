@@ -6,7 +6,7 @@ else
 	to=$1
 fi
 
-cd benchmarks
+cd instances 
 for instance in *.mcsie
 do
 	echo "
@@ -17,12 +17,12 @@ do
 		Log = $instance.log
 		Requirements = machine == \"lion.kr.tuwien.ac.at\"
 		request_memory = 4096 
-		Initialdir = $PWD/
+		Initialdir = $PWD
 		notification = never
 
 		# queue
 		request_cpus = 1 
-		Arguments = $instance $to
+		Arguments = $PATH $LD_LIBRARY_PATH $instance $to
 		Queue 1
 	     " > p.job
 	condor_submit p.job
