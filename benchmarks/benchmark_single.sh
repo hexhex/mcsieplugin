@@ -30,11 +30,14 @@ i=0
 for c in "${confs[@]}"
 do
 	echo -ne -e " "
-	cmd="timeout $to time -f %e dlvhex2 $c --plugindir=../../src/.libs --ieenable --iemode=expl --ieexplain=E $instance"
-	output=$($cmd 2>&1 >/dev/null)
-	if [[ $? == 124 ]]; then
+	cmd="timeout $to time -o $instance.time.dat -f %e dlvhex2 $c --plugindir=../../src/.libs --ieenable --iemode=expl --ieexplain=E $instance"
+	$($cmd 2>/dev/null >/dev/null)
+	ret=$?
+	output=$(cat $instance.time.dat)
+	if [[ $ret == 124 ]]; then
 		output="---"
 	fi
+	rm $instance.time.dat
 	echo -ne $output
 	let i=i+1
 done
