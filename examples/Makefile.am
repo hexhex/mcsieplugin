@@ -8,6 +8,7 @@ EXTRA_DIST = \
   test1/dlvctx_ctx2.dlv \
   test1/dlvctx_ctx3.dlv \
   test1/dlvctx.out \
+  test1/dm.out \
   test2/dlvctx_master.hex \
   test2/testctx_master.hex \
   test2/dlvctx_ctx1.dlv \
@@ -30,6 +31,7 @@ EXTRA_DIST = \
   benchmark1/dlvctx.out \
   benchmark1/dm_opeq.out \
   benchmark1/e.out \
+  benchmark1/eemdm.out \
   benchmark1/d_opeq.out \
   benchmark2/dlvctx_master.hex \
   benchmark2/benchctx_master.hex \
@@ -45,6 +47,7 @@ EXTRA_DIST = \
   benchmark2/dm_opeq.out \
   benchmark2/e.out \
   benchmark2/d_opeq.out \
+  benchmark2/eemdm.out \
   benchmark3/dlvctx_master.hex \
   benchmark3/benchctx_master.hex \
   benchmark3/dlvctx_ctx1.dlv \
@@ -58,6 +61,7 @@ EXTRA_DIST = \
   benchmark3/dm_opeq.out \
   benchmark3/e.out \
   benchmark3/d_opeq.out \
+  benchmark3/eemdm.out \
   benchmark4/dlvctx_master.hex \
   benchmark4/benchctx_master.hex \
   benchmark4/dlvctx_ctx1.dlv \
@@ -70,6 +74,7 @@ EXTRA_DIST = \
   benchmark4/dm_opeq.out \
   benchmark4/e.out \
   benchmark4/d_opeq.out \
+  benchmark4/eemdm.out \
   benchmark5/dlvctx_master.hex \
   benchmark5/benchctx_master.hex \
   benchmark5/dlvctx_ctx1.dlv \
@@ -85,6 +90,7 @@ EXTRA_DIST = \
   benchmark5/ddm.out \
   benchmark5/dlvctx.out \
   benchmark5/d_opeq.out \
+  benchmark5/eemdm.out \
   benchmark6/dlvctx_master.hex \
   benchmark6/benchctx_master.hex \
   benchmark6/dlvctx_ctx1.dlv \
@@ -98,6 +104,7 @@ EXTRA_DIST = \
   benchmark6/dm_opeq.out \
   benchmark6/e.out \
   benchmark6/d_opeq.out \
+  benchmark6/eemdm.out \
   benchmark7/dlvctx_master.hex \
   benchmark7/benchctx_master.hex \
   benchmark7/dlvctx_ctx1.dlv \
@@ -113,12 +120,14 @@ EXTRA_DIST = \
   benchmark7/ddm.out \
   benchmark7/dlvctx.out \
   benchmark7/d_opeq.out \
+  benchmark7/eemdm.out \
   benchmark8/dlvctx_master.hex \
   benchmark8/benchctx_master.hex \
   benchmark8/dlvctx_ctx1.dlv \
   benchmark8/dlvctx_ctx2.dlv \
   benchmark8/dlvctx_ctx3.dlv \
   benchmark8/dlvctx.out \
+  benchmark8/eemdm.out \
   benchmark9/dlvctx_master.hex \
   benchmark9/benchctx_master.hex \
   benchmark9/dlvctx_ctx1.dlv \
@@ -131,6 +140,7 @@ EXTRA_DIST = \
   benchmark9/dm_opeq.out \
   benchmark9/e.out \
   benchmark9/d_opeq.out \
+  benchmark9/eemdm.out \
   benchmark10/dlvctx_master.hex \
   benchmark10/benchctx_master.hex \
   benchmark10/dlvctx_ctx1.dlv \
@@ -144,6 +154,7 @@ EXTRA_DIST = \
   benchmark10/dm_opeq.out \
   benchmark10/e.out \
   benchmark10/d_opeq.out \
+  benchmark10/eemdm.out \
   benchmark11/dlvctx_master.hex \
   benchmark11/benchctx_master.hex \
   benchmark11/dlvctx_ctx1.dlv \
@@ -157,6 +168,7 @@ EXTRA_DIST = \
   benchmark11/dm_opeq.out \
   benchmark11/e.out \
   benchmark11/d_opeq.out \
+  benchmark11/eemdm.out \
   medExample/master.hex \
   medExample/master_cppcontext3.hex \
   medExample/master_plusloop.hex \
@@ -168,17 +180,17 @@ EXTRA_DIST = \
   medExample/plusloop_dmem_opeq.out \
   medExamplePSThesis/master.hex \
   medExamplePSThesis/master_cppcontext3.hex \
-  medExamplePSThesis/master_plusloop.hex \
   medExamplePSThesis/db.dlv \
   medExamplePSThesis/lab.dlv \
   medExamplePSThesis/onto.dlv \
   medExamplePSThesis/dss.dlv \
+  medExamplePSThesis/dmem_noopeq.out \
   medExamplePSThesis/dmem_opeq.out \
-  medExamplePSThesis/plusloop_dmem_opeq.out \
   independent_inc1/master.hex \
   independent_inc1/dlvctx_ctx1.dlv \
   independent_inc1/dlvctx_ctx2.dlv \
   independent_inc1/dmem_opeq.out
+
 
 check_LTLIBRARIES = \
   libdlvhexplugin-mcsie-medexample.la \
