@@ -1,29 +1,25 @@
 MCSIEHEADERS = \
-		 ContextInterfacePlugin.h \
-		 ContextInterfaceAtom.h \
-		 BaseContextAtom.h \
 		 ACC_ContextAtom.h \
+		 BaseContextAtom.h \
+		 BaseContextPlugin.h \
 		 BridgeRule.h \
 		 BridgeRuleEntry.h \
 		 Context.h \
-		 EquilibriumPrinter.h \
-		 MCS.h \
-		 MinimalNotionCollector.h \
-		 NotionPrinter.h \
-		 BaseContextPlugin.h
-
-pkginclude_HEADERS = $(MCSIEHEADERS)
-
-noinst_HEADERS = \
+		 ContextInterfaceAtom.h \
+		 ContextInterfacePlugin.h \
 		 DLV_ASP_ContextAtom.h \
+		 EquilibriumPrinter.h \
 		 InputConverterDiagnoses.h \
 		 InputConverterExplanations.h \
 		 InputConverterOPEquilibria.h \
 		 InputParser.h \
-		 MCSIEPlugin.h \
+		 MCS.h \
 		 MinPrintDualConvertFinalCallback.h \
-		 PrintAndAccumulateModelCallback.h
+		 MinimalNotionCollector.h \
+		 NotionPrinter.h \
+		 PrintAndAccumulateModelCallback.h \
+     ProgramCtxData.h \
+     SaturationMetaAtom.h \
+		 MCSIEPlugin.h
 
-foo = \
-		 OutputRewriter.h \
-		 Timing.h
+pkginclude_HEADERS = $(MCSIEHEADERS)
