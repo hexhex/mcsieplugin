@@ -7,7 +7,7 @@ AC_CONFIG_MACRO_DIR([m4])
 # for documentation of the versioning scheme see
 # https://sourceforge.net/apps/trac/dlvhex/wiki/LibraryVersions
 DLVHEX_DEFINE_VERSION([MCSIEPLUGIN],[$PACKAGE_VERSION])
-DLVHEX_DEFINE_VERSION([DLVHEX_ABI],[7.0.0])
+DLVHEX_DEFINE_VERSION([DLVHEX_ABI],[7.2.0])
 
 AM_INIT_AUTOMAKE
 
