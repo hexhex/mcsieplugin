@@ -8,5 +8,5 @@ TESTS_ENVIRONMENT = \
   EXAMPLESDIR=$(top_srcdir)/examples \
   OUTDIR=$(top_srcdir)/examples/
   
-TESTS = $(top_srcdir)/testsuite/run-dlvhex-tests.sh
+TESTS = run-dlvhex-tests.sh
 
