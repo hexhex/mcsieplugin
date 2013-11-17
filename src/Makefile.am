@@ -28,10 +28,6 @@ libdlvhex_mcsie_la_SOURCES = \
   ProgramCtxData.cpp \
   SaturationMetaAtom.cpp
 
-nopfoo = \
-  OutputRewriter.cpp \
-  Timing.cpp
-
 # for more information on `-version-info' see
 # <http://www.gnu.org/software/libtool/manual.html#Versioning>, and
 # the USENIX paper `Library Interface Versioning in Solaris and Linux'
