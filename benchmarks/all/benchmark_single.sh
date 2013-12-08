@@ -5,7 +5,7 @@ export LD_LIBRARY_PATH=$2
 instance=$3
 to=$4
 
-confstr="--flpcheck=explicit --noflpcriterion;--flpcheck=explicit --extlearn --noflpcriterion;--flpcheck=ufsm --noflpcriterion;--flpcheck=ufsm --extlearn --noflpcriterion;--flpcheck=ufsm --extlearn --ufslearn --noflpcriterion;--flpcheck=ufs;--flpcheck=ufs --extlearn;--flpcheck=ufs --extlearn --ufslearn;--flpcheck=aufs;--flpcheck=aufs --extlearn;--flpcheck=aufs --extlearn --ufslearn;--flpcheck=explicit --noflpcriterion -n=1;--flpcheck=explicit --extlearn --noflpcriterion -n=1;--flpcheck=ufsm -n=1;--flpcheck=ufsm --extlearn --noflpcriterion -n=1;--flpcheck=ufsm --extlearn --ufslearn --noflpcriterion -n=1;--flpcheck=ufs -n=1;--flpcheck=ufs --extlearn -n=1;--flpcheck=ufs --extlearn --ufslearn -n=1;--flpcheck=aufs -n=1;--flpcheck=aufs --extlearn -n=1;--flpcheck=aufs --extlearn --ufslearn -n=1"
+confstr="--flpcheck=explicit --flpcriterion=head;--flpcheck=explicit --extlearn --flpcriterion=head;--flpcheck=ufsm --flpcriterion=head;--flpcheck=ufsm --extlearn --flpcriterion=head;--flpcheck=ufsm --extlearn --ufslearn --flpcriterion=head;--flpcheck=ufs;--flpcheck=ufs --extlearn;--flpcheck=ufs --extlearn --ufslearn;--flpcheck=aufs;--flpcheck=aufs --extlearn;--flpcheck=aufs --extlearn --ufslearn;--flpcheck=aufs --extlearn --ufslearn --ufscheckheuristics=periodic;--flpcheck=aufs --extlearn --ufslearn --ufscheckheuristics=max;--flpcheck=explicit --flpcriterion=head -n=1;--flpcheck=explicit --extlearn --flpcriterion=head -n=1;--flpcheck=ufsm -n=1;--flpcheck=ufsm --extlearn --flpcriterion=head -n=1;--flpcheck=ufsm --extlearn --ufslearn --flpcriterion=head -n=1;--flpcheck=ufs -n=1;--flpcheck=ufs --extlearn -n=1;--flpcheck=ufs --extlearn --ufslearn -n=1;--flpcheck=aufs -n=1;--flpcheck=aufs --extlearn -n=1;--flpcheck=aufs --extlearn --ufslearn -n=1;--flpcheck=aufs --extlearn --ufslearn --ufscheckheuristics=periodic -n=1;--flpcheck=aufs --extlearn --ufslearn --ufscheckheuristics=max -n=1"
 confstr2=$(cat ../conf)
 if [ $? == 0 ]; then
         confstr=$confstr2
@@ -30,7 +30,7 @@ i=0
 for c in "${confs[@]}"
 do
 	echo -ne -e " "
-	cmd="timeout $to time -o $instance.time.dat -f %e dlvhex2 $c --plugindir=../../../src/.libs --ieenable --iemode=expl --ieexplain=E $instance"
+	cmd="timeout $to time -o $instance.time.dat -f %e dlvhex2 $c --claspconfig=none --plugindir=../../../src/.libs --ieenable --iemode=expl --ieexplain=E $instance"
 	$($cmd 2>/dev/null >/dev/null)
 	ret=$?
 	output=$(cat $instance.time.dat)
