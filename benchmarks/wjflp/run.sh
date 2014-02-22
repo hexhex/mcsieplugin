@@ -11,7 +11,7 @@ source $runheader
 cd instances
 if [[ $all -eq 1 ]]; then
 	# run all instances using the benchmark script run insts
-	$bmscripts/runinsts.sh "*.mcsie" "$mydir/run.sh" "$mydir/instances" "$to"
+	$bmscripts/runinsts.sh "*.mcsie" "$mydir/run.sh" "$mydir/instances" "$to" "" "" "$req"
 else
 	# run single instance
 	confstr=";--extlearn;--welljustified;-n=1;--extlearn -n=1;--welljustified -n=1"
