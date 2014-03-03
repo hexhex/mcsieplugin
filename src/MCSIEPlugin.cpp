@@ -135,7 +135,7 @@ void MCSIEPlugin::setupProgramCtx(ProgramCtx& ctx)
             new PrintAndAccumulateModelCallback(pcd,
                 pcd.idd1, pcd.idd2, pcd.brdmask, pcd.mindcollector);
         ModelCallbackPtr mcb(ppcd);
-        #warning here we could try to only remove the default answer set printer
+        WARNING("here we could try to only remove the default answer set printer")
         ctx.modelCallbacks.clear();
         ctx.modelCallbacks.push_back(mcb);
         FinalCallbackPtr fcb(new DiagRewritingFinalCallback(pcd, *ppcd, ctx.aspsoftware));
@@ -148,7 +148,7 @@ void MCSIEPlugin::setupProgramCtx(ProgramCtx& ctx)
             new PrintAndAccumulateModelCallback(pcd,
                 pcd.ide1, pcd.ide2, pcd.bremask, pcd.minecollector);
         ModelCallbackPtr mcb(ppcd);
-        #warning here we could try to only remove the default answer set printer
+        WARNING("here we could try to only remove the default answer set printer")
         ctx.modelCallbacks.clear();
         ctx.modelCallbacks.push_back(mcb);
         FinalCallbackPtr fcb(new ExplRewritingFinalCallback(pcd, *ppcd, ctx.aspsoftware));
@@ -158,7 +158,7 @@ void MCSIEPlugin::setupProgramCtx(ProgramCtx& ctx)
     case ProgramCtxData::EQREWRITING:
       {
         ModelCallbackPtr mcb(new PrintEQModelCallback(pcd));
-        #warning here we could try to only remove the default answer set printer
+        WARNING("here we could try to only remove the default answer set printer")
         ctx.modelCallbacks.clear();
         ctx.modelCallbacks.push_back(mcb);
         // no final callback
@@ -392,6 +392,7 @@ MCSIEPlugin theMCSIEPlugin;
 IMPLEMENT_PLUGINABIVERSIONFUNCTION
 
 extern "C"
+DLVHEX_PLUGINEXPORT
 void* PLUGINIMPORTFUNCTION()
 {
   return reinterpret_cast<void*>(&dlvhex::mcsdiagexpl::theMCSIEPlugin);

@@ -91,6 +91,7 @@ namespace mcsdiagexpl {
       }
       o << ".";
     }
+	return o;
   }
 
 } // namespace mcsdiagexpl
