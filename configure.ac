@@ -64,6 +64,8 @@ BOOST_SMART_PTR
 BOOST_STRING_ALGO
 BOOST_TOKENIZER
 
+AC_DEFINE([POSIX], [1], [Defined on POSIX systems.])
+
 #
 # all needed makefiles
 #
