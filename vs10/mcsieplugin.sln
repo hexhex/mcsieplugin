@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mcsieplugin", "mcsieplugin\mcsieplugin.vcxproj", "{B829DEBC-6F7C-4DFD-BDC2-6DEBF26C8947}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "setup", "setup\setup.vdproj", "{7F0ABD98-366B-49DB-95E9-BDCAC7DF75A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -13,6 +15,8 @@ Global
 		{B829DEBC-6F7C-4DFD-BDC2-6DEBF26C8947}.Debug|Win32.Build.0 = Debug|Win32
 		{B829DEBC-6F7C-4DFD-BDC2-6DEBF26C8947}.Release|Win32.ActiveCfg = Release|Win32
 		{B829DEBC-6F7C-4DFD-BDC2-6DEBF26C8947}.Release|Win32.Build.0 = Release|Win32
+		{7F0ABD98-366B-49DB-95E9-BDCAC7DF75A6}.Debug|Win32.ActiveCfg = Debug
+		{7F0ABD98-366B-49DB-95E9-BDCAC7DF75A6}.Release|Win32.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
