@@ -1,5 +1,5 @@
 AC_PREREQ([2.61])
-AC_INIT([dlvhex-mcsieplugin],[2.0.0],[dlvhex-devel@lists.sourceforge.net])
+AC_INIT([dlvhex2-mcsieplugin],[2.0.0],[dlvhex-devel@lists.sourceforge.net])
 AC_CONFIG_SRCDIR([src/MCSIEPlugin.cpp])
 AC_CONFIG_HEADERS([src/config.h])
 
