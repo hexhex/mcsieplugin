@@ -14,7 +14,7 @@ if [[ $all -eq 1 ]]; then
 	$bmscripts/runinsts.sh "*.mcsie" "$mydir/run.sh" "$mydir/instances" "$to" "" "" "$req"
 else
 	# run single instance
-	confstr=";--extlearn;--welljustified;-n=1;--extlearn -n=1;--welljustified -n=1"
+	confstr="--extlearn=none;--extlearn;--welljustified;-n=1;--extlearn -n=1;--welljustified -n=1"
 
 	$bmscripts/runconfigs.sh "dlvhex2 --claspconfig=none --plugindir=../../../src/.libs --ieenable --iemode=expl --ieexplain=E CONF INST" "$confstr" "$instance" "$to"
 fi
