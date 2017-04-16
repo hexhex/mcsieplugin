@@ -66,6 +66,22 @@ BOOST_TOKENIZER
 
 AC_DEFINE([POSIX], [1], [Defined on POSIX systems.])
 
+SAVE_CPPFLAGS="$CPPFLAGS"
+SAVE_LIBS="$LIBS"
+CPPFLAGS="$CPPFLAGS $DLVHEX_CFLAGS -DBOOST_SYSTEM_NO_DEPRECATED"
+LIBS="$DLVHEX_LIBS $LIBS" # prepend to LIBS, append to FLAGS
+AC_LINK_IFELSE(dnl
+  [AC_LANG_SOURCE(dnl
+    [[
+    #include <dlvhex2/ASPSolver.h>
+    int main(int, char**) { dlvhex::ASPSolver::DLVSoftware::Options o; }
+    ]])dnl
+  ],[],
+  [AC_MSG_ERROR([MCSIE requires dlvhex2 to be built with dlv support: please put dlv in your PATH and reconfigure/rebuild/reinstall dlvhex2, then reconfigure MCSIE])]
+  )
+CPPFLAGS="$SAVE_CPPFLAGS"
+LIBS="$SAVE_LIBS"
+
 #
 # all needed makefiles
 #
